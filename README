@@ -1,0 +1,6 @@
+ABOUT
+=======
+
+SIM-Server (Semantic Instrumentation and Monitoring - Server) is responsible for
+receiving data from SIM-Agents and mapping it to the metrics ontology database.
+Some of the metrics are also keept into a rrd database.
