@@ -15,13 +15,8 @@
  */
 package sim.server;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.sun.net.httpserver.HttpServer;
 
 /**
  * This class is responsible to start up the SIM-Server application.
@@ -33,27 +28,17 @@ import com.sun.net.httpserver.HttpServer;
  * @author mcq
  * 
  */
-@SuppressWarnings("restriction")
 public class Main {
-	private static final Logger log = LoggerFactory.getLogger(Main.class);
-	private static final int SERVER_PORT = 8099;
-	private static final String SERVER_PATH = "/server";
+	
+	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		startHttpCommunicationServer();
-	}
-
-	public static void startHttpCommunicationServer() {
-		try {
-			HttpServer server = HttpServer.create(new InetSocketAddress(SERVER_PORT), 0);
-			server.createContext(SERVER_PATH, new HttpCommunicationHandler());
-			server.start();
-		} catch (IOException e) {
-			log.error("failed to start http communication server", e);
-		}
+		ServerHttpThread serverHttpThread = new ServerHttpThread();
+		Thread thread = new Thread(serverHttpThread);
+		thread.run();
 	}
 
 }

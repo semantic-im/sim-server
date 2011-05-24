@@ -25,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sim.data.Metrics;
+import sim.server.storage.StorageWriter;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -33,13 +34,12 @@ import com.sun.net.httpserver.HttpHandler;
  * @author mcq
  * 
  */
-/**
- * @author mcq
- * 
- */
 @SuppressWarnings("restriction")
-public class HttpCommunicationHandler implements HttpHandler {
-	private static final Logger log = LoggerFactory.getLogger(HttpCommunicationHandler.class);
+public class ServerHttpHandler implements HttpHandler {
+
+	private static final Logger logger = LoggerFactory.getLogger(ServerHttpHandler.class);
+	
+	private static final int MAX_METRICS_READ = 100;
 
 	/*
 	 * (non-Javadoc)
@@ -53,36 +53,32 @@ public class HttpCommunicationHandler implements HttpHandler {
 		ObjectInputStream ois = new ObjectInputStream(xchg.getRequestBody());
 		Object o = null;
 		try {
+			int count = 0;
 			while (true) {
+				if (count == MAX_METRICS_READ) {
+					logger.info("max object read of " + MAX_METRICS_READ + " was reached, closing connection");
+					break;
+				}
 				try {
 					o = ois.readObject();
+					count++;
 				} catch (EOFException e) {
-					log.debug("no more data to read, closing connection ...");
+					logger.debug("no more data to read, closing connection ...");
 					break;
 				}
 				if (o instanceof Metrics) {
-					log.info(o.toString());
-					processMeasurement((Metrics) o);
+					logger.info(o.toString());
+					StorageWriter.addMeasurement((Metrics) o);
 				}
 			}
 		} catch (ClassNotFoundException e) {
-			log.error("class not found", e);
+			logger.error("class not found", e);
 			throw new RuntimeException("class not found", e);
 		}
 		xchg.sendResponseHeaders(200, "SUCCESS".length());
 		OutputStream os = xchg.getResponseBody();
 		os.write("SUCCESS".getBytes());
 		os.close();
-	}
-
-	/**
-	 * Maps the java object to semantic concepts, uploads to semantic and RRD
-	 * database.
-	 * 
-	 * @param measurement
-	 */
-	private void processMeasurement(Metrics measurement) {
-		// TODO: add here code
 	}
 
 }

@@ -1,0 +1,2627 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix : <http://www.larkc.eu/ontologies/IMOntology.rdf#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@base <http://www.larkc.eu/ontologies/IMOntology.rdf> .
+
+<http://www.larkc.eu/ontologies/IMOntology.rdf> rdf:type owl:Ontology .
+
+
+#################################################################
+#
+#    Annotation properties
+#
+#################################################################
+
+
+<http://purl.org/dc/elements/1.1/description> rdf:type owl:AnnotationProperty .
+rdfs:comment rdf:type owl:AnnotationProperty .
+
+
+#################################################################
+#
+#    Object Properties
+#
+#################################################################
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasApplicationSession
+
+:hasApplicationSession rdf:type owl:ObjectProperty ;
+                       
+                       <http://purl.org/dc/elements/1.1/description> "connects an application with a application session" ;
+                       
+                       rdfs:domain :Application ;
+                       
+                       rdfs:range :Session .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasContext
+
+:hasContext rdf:type owl:ObjectProperty ;
+            
+            rdfs:range :Context ;
+            
+            rdfs:domain :MethodMetric ;
+            
+            rdfs:subPropertyOf owl:topObjectProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasEndTimePoint
+
+:hasEndTimePoint rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :TimeInterval ;
+                 
+                 rdfs:range :TimePoint .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasException
+
+:hasException rdf:type owl:ObjectProperty ;
+              
+              <http://purl.org/dc/elements/1.1/description> "if the method ended with an exception this returns the string representation of the exception" ;
+              
+              rdfs:range :Exception ;
+              
+              rdfs:domain :Method ;
+              
+              rdfs:subPropertyOf owl:topObjectProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMeasurementUnit
+
+:hasMeasurementUnit rdf:type owl:ObjectProperty ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "specifies the measurement unit of a metric" ;
+                    
+                    rdfs:range :MeasurementUnit ;
+                    
+                    rdfs:domain :Metric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMetricType
+
+:hasMetricType rdf:type owl:ObjectProperty ;
+               
+               <http://purl.org/dc/elements/1.1/description> "specifies the type of a metric" ;
+               
+               rdfs:domain :Metric ;
+               
+               rdfs:range :MetricType .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNamespace
+
+:hasNamespace rdf:type owl:ObjectProperty ;
+              
+              <http://purl.org/dc/elements/1.1/description> "specifies the namespace of a query" ;
+              
+              rdfs:range :Namespace ;
+              
+              rdfs:domain :Query .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPlatformCPULoad
+
+:hasPlatformCPULoad rdf:type owl:ObjectProperty ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "the CPU LOAD of the LarKC platform at a given timestamp" ;
+                    
+                    rdfs:domain :Platform ;
+                    
+                    rdfs:range :PlatformCPULoad .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPlatformExecutionTime
+
+:hasPlatformExecutionTime rdf:type owl:ObjectProperty ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "the time elapsed since the platform was started until its execution has ended" ;
+                          
+                          rdfs:domain :Platform ;
+                          
+                          rdfs:range :PlatformExecutionTime .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPlatformMemoryDim
+
+:hasPlatformMemoryDim rdf:type owl:ObjectProperty ;
+                      
+                      <http://purl.org/dc/elements/1.1/description> "specifies the memory dimension used by a platform" ;
+                      
+                      rdfs:domain :Platform ;
+                      
+                      rdfs:range :PlatformMemoryDim .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPlatformMemoryUsage
+
+:hasPlatformMemoryUsage rdf:type owl:ObjectProperty ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "the memory percent usage of the platform at a given timestamp" ;
+                        
+                        rdfs:domain :Platform ;
+                        
+                        rdfs:range :PlatformMemoryUsage .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPluginDataLayerAccessDim
+
+:hasPluginDataLayerAccessDim rdf:type owl:ObjectProperty ;
+                             
+                             <http://purl.org/dc/elements/1.1/description> "the size in BYTES of the returned data after an access to the data layer, during the execution of the plugin" ;
+                             
+                             rdfs:domain :Plugin ;
+                             
+                             rdfs:range :PluginDataLayerAccessDim .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPluginInputSize
+
+:hasPluginInputSize rdf:type owl:ObjectProperty ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "specifies the size of a plugin input" ;
+                    
+                    rdfs:domain :Plugin ;
+                    
+                    rdfs:range :PluginInputSize .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPluginInstanceCreation
+
+:hasPluginInstanceCreation rdf:type owl:ObjectProperty ;
+                           
+                           <http://purl.org/dc/elements/1.1/description> "specifies the creation of a new plugin" ;
+                           
+                           rdfs:domain :Plugin ;
+                           
+                           rdfs:range :PluginInstanceCreation .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPluginOutputSize
+
+:hasPluginOutputSize rdf:type owl:ObjectProperty ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "specifies the size of a plugin output" ;
+                     
+                     rdfs:domain :Plugin ;
+                     
+                     rdfs:range :PluginOutputSize .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPluginTotalExecutionTime
+
+:hasPluginTotalExecutionTime rdf:type owl:ObjectProperty ;
+                             
+                             <http://purl.org/dc/elements/1.1/description> "specifies the total execution time for a plugin" ;
+                             
+                             rdfs:domain :Plugin ;
+                             
+                             rdfs:range :PluginTotalExecutionTime .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasQueryCompletionStatus
+
+:hasQueryCompletionStatus rdf:type owl:ObjectProperty ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "specifies the completion status of a query" ;
+                          
+                          rdfs:domain :Query ;
+                          
+                          rdfs:range :QueryCompletionStatus .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasQuerySize
+
+:hasQuerySize rdf:type owl:ObjectProperty ;
+              
+              <http://purl.org/dc/elements/1.1/description> "specifies the size of a query" ;
+              
+              rdfs:domain :Query ;
+              
+              rdfs:range :QuerySize .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasQueryTotalResponseTime
+
+:hasQueryTotalResponseTime rdf:type owl:ObjectProperty ;
+                           
+                           rdfs:domain :Query ;
+                           
+                           rdfs:range :QueryTotalResponseTime .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasResult
+
+:hasResult rdf:type owl:ObjectProperty ;
+           
+           rdfs:domain :Query ;
+           
+           rdfs:range :Result .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasStartTimePoint
+
+:hasStartTimePoint rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:domain :TimeInterval ;
+                   
+                   rdfs:range :TimePoint .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasSystemMetric
+
+:hasSystemMetric rdf:type owl:ObjectProperty ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "connects a system with a system metric that is measured on that system" ;
+                 
+                 rdfs:domain :System ;
+                 
+                 rdfs:range :SystemMetric ;
+                 
+                 rdfs:subPropertyOf owl:topObjectProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasTag
+
+:hasTag rdf:type owl:ObjectProperty ;
+        
+        <http://purl.org/dc/elements/1.1/description> "specifies one or more tags for a metric - used to specify the metric context" ;
+        
+        rdfs:range :Tag ;
+        
+        rdfs:domain owl:Thing .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasTimeInterval
+
+:hasTimeInterval rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :PerTimeInterval ;
+                 
+                 rdfs:range :TimeInterval .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasValue
+
+:hasValue rdf:type owl:ObjectProperty ;
+          
+          <http://purl.org/dc/elements/1.1/description> "specifies the value of a metric, i.e. value of a measurement" ;
+          
+          rdfs:domain :Metric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasVariable
+
+:hasVariable rdf:type owl:ObjectProperty ;
+             
+             <http://purl.org/dc/elements/1.1/description> "specifies a variable of a query" ;
+             
+             rdfs:domain :Query ;
+             
+             rdfs:range :Variable .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasWorkflowCPULoad
+
+:hasWorkflowCPULoad rdf:type owl:ObjectProperty ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "specified the load of the CPU during the execution of the workflow" ;
+                    
+                    rdfs:domain :Workflow ;
+                    
+                    rdfs:range :WorkflowCPULoad .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasWorkflowDuration
+
+:hasWorkflowDuration rdf:type owl:ObjectProperty ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "specifies the duration of a workflow" ;
+                     
+                     rdfs:domain :Workflow ;
+                     
+                     rdfs:range :WorkflowDuration .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasWorkflowMemoryDim
+
+:hasWorkflowMemoryDim rdf:type owl:ObjectProperty ;
+                      
+                      <http://purl.org/dc/elements/1.1/description> "specfies the memory dimension used by a workflow" ;
+                      
+                      rdfs:domain :Workflow ;
+                      
+                      rdfs:range :WorkflowMemoryDim .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasWorkflowMemoryUsage
+
+:hasWorkflowMemoryUsage rdf:type owl:ObjectProperty ;
+                        
+                        rdfs:domain :Workflow ;
+                        
+                        rdfs:range :WorkflowMemoryUsage .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#measuredForApplication
+
+:measuredForApplication rdf:type owl:ObjectProperty ;
+                        
+                        rdfs:range :Application ;
+                        
+                        rdfs:domain :MethodMetric ;
+                        
+                        rdfs:subPropertyOf owl:topObjectProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#measuredForApplicationSession
+
+:measuredForApplicationSession rdf:type owl:ObjectProperty ;
+                               
+                               rdfs:domain :MethodMetric ;
+                               
+                               rdfs:range :Session ;
+                               
+                               rdfs:subPropertyOf owl:topObjectProperty .
+
+
+
+###  http://www.w3.org/2002/07/owl#topObjectProperty
+
+owl:topObjectProperty rdf:type owl:ObjectProperty .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasAverageNumberOf
+
+:hasAverageNumberOf rdf:type owl:DatatypeProperty ;
+                    
+                    rdfs:domain :WorkflowsPerTimeInterval ;
+                    
+                    rdfs:range xsd:float .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasBeginExecutionTime
+
+:hasBeginExecutionTime rdf:type owl:DatatypeProperty ;
+                       
+                       rdfs:domain :Method ;
+                       
+                       rdfs:range xsd:long ;
+                       
+                       rdfs:subPropertyOf owl:topDataProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasClassName
+
+:hasClassName rdf:type owl:DatatypeProperty ;
+              
+              <http://purl.org/dc/elements/1.1/description> "full class name where the metrics are collected" ;
+              
+              rdfs:domain :Method ;
+              
+              rdfs:subPropertyOf :hasName ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasContent
+
+:hasContent rdf:type owl:DatatypeProperty ;
+            
+            <http://purl.org/dc/elements/1.1/description> "specifies the string representation of the query" ;
+            
+            rdfs:domain :Query ;
+            
+            rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasDataValue
+
+:hasDataValue rdf:type owl:DatatypeProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasDateTimeStamp
+
+:hasDateTimeStamp rdf:type owl:DatatypeProperty ;
+                  
+                  rdfs:domain :TimePoint ;
+                  
+                  rdfs:range xsd:dateTimeStamp .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasEndExecutionTime
+
+:hasEndExecutionTime rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:domain :Method ;
+                     
+                     rdfs:range xsd:long ;
+                     
+                     rdfs:subPropertyOf owl:topDataProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasEndedWithError
+
+:hasEndedWithError rdf:type owl:DatatypeProperty ;
+                   
+                   <http://purl.org/dc/elements/1.1/description> "true if the method ended with an exception" ;
+                   
+                   rdfs:domain :Method ;
+                   
+                   rdfs:range xsd:boolean ;
+                   
+                   rdfs:subPropertyOf owl:topDataProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMethodName
+
+:hasMethodName rdf:type owl:DatatypeProperty ;
+               
+               <http://purl.org/dc/elements/1.1/description> "method name where the metrics are collected" ;
+               
+               rdfs:domain :Method ;
+               
+               rdfs:subPropertyOf :hasName ;
+               
+               rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasName
+
+:hasName rdf:type owl:DatatypeProperty ;
+         
+         rdfs:range xsd:string ;
+         
+         rdfs:domain owl:Thing ;
+         
+         rdfs:subPropertyOf owl:topDataProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfDataSetSources
+
+:hasNumberOfDataSetSources rdf:type owl:DatatypeProperty ;
+                           
+                           <http://purl.org/dc/elements/1.1/description> "specifies the number of dataset source of FROM clauses in a query" ;
+                           
+                           rdfs:domain :Query ;
+                           
+                           rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfNamespaces
+
+:hasNumberOfNamespaces rdf:type owl:DatatypeProperty ;
+                       
+                       <http://purl.org/dc/elements/1.1/description> "specifies the number of namespaces that are used in a query" ;
+                       
+                       rdfs:domain :Query ;
+                       
+                       rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfNodes
+
+:hasNumberOfNodes rdf:type owl:DatatypeProperty ;
+                  
+                  <http://purl.org/dc/elements/1.1/description> "the number of nodes that the plugin is executed on" ;
+                  
+                  rdfs:domain :Plugin ;
+                  
+                  rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfOperators
+
+:hasNumberOfOperators rdf:type owl:DatatypeProperty ;
+                      
+                      <http://purl.org/dc/elements/1.1/description> "specifies the number of logical operator in a query" ;
+                      
+                      rdfs:domain :Query ;
+                      
+                      rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfPlugins
+
+:hasNumberOfPlugins rdf:type owl:DatatypeProperty ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "the total number of plug-ins that were involved in the execution of the workflow" ;
+                    
+                    rdfs:domain :Workflow ;
+                    
+                    rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfResultLimit
+
+:hasNumberOfResultLimit rdf:type owl:DatatypeProperty ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "gives the value of n from the SPARQL statement LIMIT n" ;
+                        
+                        rdfs:domain :Query ;
+                        
+                        rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfResultOrdering
+
+:hasNumberOfResultOrdering rdf:type owl:DatatypeProperty ;
+                           
+                           <http://purl.org/dc/elements/1.1/description> "specifies the number of fields in the ORDER BY statement" ;
+                           
+                           rdfs:domain :Query ;
+                           
+                           rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfThreads
+
+:hasNumberOfThreads rdf:type owl:DatatypeProperty ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "specifies the total number of threads started during the execution of the workflow" ;
+                    
+                    rdfs:domain :Workflow ;
+                    
+                    rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfThreadsInPlugin
+
+:hasNumberOfThreadsInPlugin rdf:type owl:DatatypeProperty ;
+                            
+                            <http://purl.org/dc/elements/1.1/description> "the number of threads started by the plugin" ;
+                            
+                            rdfs:domain :Plugin ;
+                            
+                            rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfVariables
+
+:hasNumberOfVariables rdf:type owl:DatatypeProperty ;
+                      
+                      <http://purl.org/dc/elements/1.1/description> "specifies the number of variables that are used in a query" ;
+                      
+                      rdfs:domain :Query ;
+                      
+                      rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberOfWorkflows
+
+:hasNumberOfWorkflows rdf:type owl:DatatypeProperty ;
+                      
+                      rdfs:domain :WorkflowsPerTimeInterval ;
+                      
+                      rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumberResultOffset
+
+:hasNumberResultOffset rdf:type owl:DatatypeProperty ;
+                       
+                       <http://purl.org/dc/elements/1.1/description> "gives the value of m from the SPARQL statement OFFSET m" ;
+                       
+                       rdfs:domain :Query ;
+                       
+                       rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumeberOfQueries
+
+:hasNumeberOfQueries rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:comment "specifies the number of queries attached to a QueriesPerTimeInterval concept or its subconcepts" ;
+                     
+                     rdfs:domain :QueriesPerTimeInterval ;
+                     
+                     rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasTimeStamp
+
+:hasTimeStamp rdf:type owl:DatatypeProperty ;
+              
+              <http://purl.org/dc/elements/1.1/description> "specifies the time stamp when the measurment was performed" ;
+              
+              rdfs:domain :Metric ;
+              
+              rdfs:range xsd:dateTime .
+
+
+
+###  http://www.w3.org/2002/07/owl#topDataProperty
+
+owl:topDataProperty rdf:type owl:DatatypeProperty .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Application
+
+:Application rdf:type owl:Class ;
+             
+             <http://purl.org/dc/elements/1.1/description> "Generic concept of application (LarKC is one example)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#AvgDimenssion
+
+:AvgDimenssion rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MetricType .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#CPULoad
+
+:CPULoad rdf:type owl:Class ;
+         
+         rdfs:subClassOf :MetricType ;
+         
+         <http://purl.org/dc/elements/1.1/description> "The load of the CPU at the time of measurement (per computation node)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Context
+
+:Context rdf:type owl:Class ;
+         
+         <http://purl.org/dc/elements/1.1/description> "Generic concept of context which contains method specific information" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Duration
+
+:Duration rdf:type owl:Class ;
+          
+          rdfs:subClassOf :MetricType ;
+          
+          <http://purl.org/dc/elements/1.1/description> "The time between two events (e.g. the time it took for some code to be executed)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Event
+
+:Event rdf:type owl:Class ;
+       
+       rdfs:subClassOf :MetricType ;
+       
+       <http://purl.org/dc/elements/1.1/description> "Some code point has been reached and the time stamp at which this event occurred is transmitted" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Exception
+
+:Exception rdf:type owl:Class ;
+           
+           rdfs:subClassOf :MetricType ;
+           
+           <http://purl.org/dc/elements/1.1/description> "An exceptional condition occurred while processing the request" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#IORead
+
+:IORead rdf:type owl:Class ;
+        
+        rdfs:subClassOf :SystemMetric ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasDataValue ;
+                          owl:allValuesFrom xsd:long
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasTag ;
+                          owl:hasValue :SystemTag
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasMetricType ;
+                          owl:allValuesFrom :Size
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasMeasurementUnit ;
+                          owl:hasValue :Byte
+                        ] ;
+        
+        <http://purl.org/dc/elements/1.1/description> "I/O read" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#IOWrite
+
+:IOWrite rdf:type owl:Class ;
+         
+         rdfs:subClassOf :SystemMetric ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasMeasurementUnit ;
+                           owl:hasValue :Byte
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasTag ;
+                           owl:hasValue :SystemTag
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasMetricType ;
+                           owl:allValuesFrom :Size
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasDataValue ;
+                           owl:allValuesFrom xsd:long
+                         ] ;
+         
+         <http://purl.org/dc/elements/1.1/description> "I/O write" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#IdleCPULoad
+
+:IdleCPULoad rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SystemMetric ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMeasurementUnit ;
+                               owl:hasValue :Percent
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMetricType ;
+                               owl:allValuesFrom :CPULoad
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:float
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasTag ;
+                               owl:hasValue :SystemTag
+                             ] ;
+             
+             <http://purl.org/dc/elements/1.1/description> "Idle CPU load" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#IdleCPUTime
+
+:IdleCPUTime rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SystemMetric ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMeasurementUnit ;
+                               owl:hasValue :Microsecond
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasTag ;
+                               owl:hasValue :SystemTag
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:float
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMetricType ;
+                               owl:allValuesFrom :Duration
+                             ] ;
+             
+             <http://purl.org/dc/elements/1.1/description> "Idle CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#IrqCPULoad
+
+:IrqCPULoad rdf:type owl:Class ;
+            
+            rdfs:subClassOf :SystemMetric ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasMeasurementUnit ;
+                              owl:hasValue :Percent
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasMetricType ;
+                              owl:allValuesFrom :CPULoad
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasTag ;
+                              owl:hasValue :SystemTag
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasDataValue ;
+                              owl:allValuesFrom xsd:float
+                            ] ;
+            
+            <http://purl.org/dc/elements/1.1/description> "Irq CPU load" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#IrqCPUTime
+
+:IrqCPUTime rdf:type owl:Class ;
+            
+            rdfs:subClassOf :SystemMetric ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasMeasurementUnit ;
+                              owl:hasValue :Microsecond
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasMetricType ;
+                              owl:allValuesFrom :Duration
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasTag ;
+                              owl:hasValue :SystemTag
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasDataValue ;
+                              owl:allValuesFrom xsd:float
+                            ] ;
+            
+            <http://purl.org/dc/elements/1.1/description> "Irq CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MeasurementUnit
+
+:MeasurementUnit rdf:type owl:Class ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "concept that represents an abstract measurement unit" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MemoryPercent
+
+:MemoryPercent rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MetricType ;
+               
+               <http://purl.org/dc/elements/1.1/description> "The memory load at the time of the measurement (per computation node)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Method
+
+:Method rdf:type owl:Class ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents a method that is instrumented" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MethodMetric
+
+:MethodMetric rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Metric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Metric
+
+:Metric rdf:type owl:Class ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents an abstract metric" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MetricType
+
+:MetricType rdf:type owl:Class .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Namespace
+
+:Namespace rdf:type owl:Class ;
+           
+           rdfs:subClassOf [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasDataValue ;
+                             owl:someValuesFrom xsd:anyURI
+                           ] ;
+           
+           <http://purl.org/dc/elements/1.1/description> "concept that represents a namespace from a SPARQL query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#NumberOfEventPerUnitTime
+
+:NumberOfEventPerUnitTime rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :MetricType ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "the number fof events per unit time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PerTimeInterval
+
+:PerTimeInterval rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Metric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Platform
+
+:Platform rdf:type owl:Class ;
+          
+          <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC platform" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformCPULoad
+
+:PlatformCPULoad rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Metric ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMetricType ;
+                                   owl:allValuesFrom :CPULoad
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMeasurementUnit ;
+                                   owl:hasValue :Percent
+                                 ] ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "the CPU LOAD of the LarKC platform at a given timestamp" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformExecutionTime
+
+:PlatformExecutionTime rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :Metric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMetricType ;
+                                         owl:allValuesFrom :Duration
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMeasurementUnit ;
+                                         owl:hasValue :Microsecond
+                                       ] ;
+                       
+                       <http://purl.org/dc/elements/1.1/description> "the time elapsed since the platform was started until its execution has ended" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformMemoryDim
+
+:PlatformMemoryDim rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Metric ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMeasurementUnit ;
+                                     owl:hasValue :Byte
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMetricType ;
+                                     owl:allValuesFrom :Size
+                                   ] ;
+                   
+                   <http://purl.org/dc/elements/1.1/description> "the amount of memory used by the platform at a given time-stamp" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformMemoryUsage
+
+:PlatformMemoryUsage rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :Metric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMetricType ;
+                                       owl:allValuesFrom :MemoryPercent
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMeasurementUnit ;
+                                       owl:hasValue :Percent
+                                     ] ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "the memory percent usage of the platform at a given time-stamp" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Plugin
+
+:Plugin rdf:type owl:Class ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC plugin" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginDataLayerAccessDim
+
+:PluginDataLayerAccessDim rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :Metric ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasMetricType ;
+                                            owl:allValuesFrom :Size
+                                          ] ,
+                                          [ rdf:type owl:Class ;
+                                            owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :PluginTag
+                                                                 ]
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :QueryTag
+                                                                 ]
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :WorkflowTag
+                                                                 ]
+                                                               )
+                                          ] ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "the size in BYTES of the returned data after an access to the data layer, during the execution of the plug-in" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginException
+
+:PluginException rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Metric ,
+                                 [ rdf:type owl:Class ;
+                                   owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :PluginTag
+                                                        ]
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :QueryTag
+                                                        ]
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :WorkflowTag
+                                                        ]
+                                                      )
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMetricType ;
+                                   owl:allValuesFrom :Exception
+                                 ] ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "marks an uncaught exception in a plug-in" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInputSize
+
+:PluginInputSize rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Metric ,
+                                 [ rdf:type owl:Class ;
+                                   owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :PluginTag
+                                                        ]
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :QueryTag
+                                                        ]
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :WorkflowTag
+                                                        ]
+                                                      )
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasDataValue ;
+                                   owl:allValuesFrom xsd:integer
+                                 ] ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "concept that represents the size of the input of a plugin" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInputSizeInBytes
+
+:PluginInputSizeInBytes rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :PluginInputSize ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMeasurementUnit ;
+                                          owl:hasValue :Byte
+                                        ] ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "the size of the input of a plugin represented in bytes" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInputSizeInTriples
+
+:PluginInputSizeInTriples rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :PluginInputSize ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "the size of the input of a plugin represented in number of RDF triples" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInstanceCreation
+
+:PluginInstanceCreation rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :Metric ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMetricType ;
+                                          owl:allValuesFrom :Event
+                                        ] ,
+                                        [ rdf:type owl:Class ;
+                                          owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                 owl:onProperty :hasTag ;
+                                                                 owl:hasValue :PluginTag
+                                                               ]
+                                                               [ rdf:type owl:Restriction ;
+                                                                 owl:onProperty :hasTag ;
+                                                                 owl:hasValue :QueryTag
+                                                               ]
+                                                               [ rdf:type owl:Restriction ;
+                                                                 owl:onProperty :hasTag ;
+                                                                 owl:hasValue :WorkflowTag
+                                                               ]
+                                                             )
+                                        ] ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "the instantiation of a new plug-in" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInstanceCreationPerTimeInterval
+
+:PluginInstanceCreationPerTimeInterval rdf:type owl:Class ;
+                                       
+                                       rdfs:subClassOf :PerTimeInterval ,
+                                                       [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasMetricType ;
+                                                         owl:allValuesFrom :NumberOfEventPerUnitTime
+                                                       ] ,
+                                                       [ rdf:type owl:Class ;
+                                                         owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTag ;
+                                                                                owl:hasValue :MethodTag
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTag ;
+                                                                                owl:hasValue :PlatformTag
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTag ;
+                                                                                owl:hasValue :PluginTag
+                                                                              ]
+                                                                            )
+                                                       ] ;
+                                       
+                                       <http://purl.org/dc/elements/1.1/description> "The number of plug-in instances creation for a given plug-in in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginMethodInvocationPerTimeInterval
+
+:PluginMethodInvocationPerTimeInterval rdf:type owl:Class ;
+                                       
+                                       rdfs:subClassOf :PerTimeInterval ,
+                                                       [ rdf:type owl:Class ;
+                                                         owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTag ;
+                                                                                owl:hasValue :MethodTag
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTag ;
+                                                                                owl:hasValue :PlatformTag
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTag ;
+                                                                                owl:hasValue :PluginTag
+                                                                              ]
+                                                                              [ rdf:type owl:Restriction ;
+                                                                                owl:onProperty :hasTag ;
+                                                                                owl:hasValue :WorkflowTag
+                                                                              ]
+                                                                            )
+                                                       ] ,
+                                                       [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasMetricType ;
+                                                         owl:allValuesFrom :NumberOfEventPerUnitTime
+                                                       ] ;
+                                       
+                                       <http://purl.org/dc/elements/1.1/description> "The number of invocations of a given method in a given plug-in in a given work-flow in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginOutoutSizeInBytes
+
+:PluginOutoutSizeInBytes rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :PluginOutputSize ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasMeasurementUnit ;
+                                           owl:hasValue :Byte
+                                         ] ;
+                         
+                         <http://purl.org/dc/elements/1.1/description> "the size of the output of a plugin represented in bytes" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginOutputSize
+
+:PluginOutputSize rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :Metric ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:allValuesFrom xsd:integer
+                                  ] ,
+                                  [ rdf:type owl:Class ;
+                                    owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasTag ;
+                                                           owl:hasValue :PluginTag
+                                                         ]
+                                                         [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasTag ;
+                                                           owl:hasValue :QueryTag
+                                                         ]
+                                                         [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasTag ;
+                                                           owl:hasValue :WorkflowTag
+                                                         ]
+                                                       )
+                                  ] ;
+                  
+                  <http://purl.org/dc/elements/1.1/description> "concept that represents the size of the output of a plugin" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginOutputSizeInTriples
+
+:PluginOutputSizeInTriples rdf:type owl:Class ;
+                           
+                           rdfs:subClassOf :PluginOutputSize ;
+                           
+                           <http://purl.org/dc/elements/1.1/description> "the size of the output of a plugin represented in number of RDF triples" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginTotalExecutionTime
+
+:PluginTotalExecutionTime rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :Metric ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasDataValue ;
+                                            owl:allValuesFrom xsd:integer
+                                          ] ,
+                                          [ rdf:type owl:Class ;
+                                            owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :PluginTag
+                                                                 ]
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :QueryTag
+                                                                 ]
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :WorkflowTag
+                                                                 ]
+                                                               )
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasMeasurementUnit ;
+                                            owl:hasValue :Microsecond
+                                          ] ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "denotes the total exectution time of a plug-in inside the workflow" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ProcessTotalCPUTime
+
+:ProcessTotalCPUTime rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :MethodMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasTag ;
+                                       owl:hasValue :MethodTag
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMetricType ;
+                                       owl:allValuesFrom :Duration
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:allValuesFrom xsd:long
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMeasurementUnit ;
+                                       owl:hasValue :Microsecond
+                                     ] ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "Process Total CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesPerNamespacePerTimeInterval
+
+:QueriesPerNamespacePerTimeInterval rdf:type owl:Class ;
+                                    
+                                    rdfs:subClassOf :QueriesPerTimeInterval ,
+                                                    [ rdf:type owl:Restriction ;
+                                                      owl:onProperty :hasTag ;
+                                                      owl:hasValue :QueryTag
+                                                    ] ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/description> "denotes the number of queries that contained a given name space (PREFIX) and were received by the LarKC plat- form in a time interval." .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesPerTimeInterval
+
+:QueriesPerTimeInterval rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :PerTimeInterval ,
+                                        [ rdf:type owl:Class ;
+                                          owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                 owl:onProperty :hasTag ;
+                                                                 owl:hasValue :PlatformTag
+                                                               ]
+                                                               [ rdf:type owl:Restriction ;
+                                                                 owl:onProperty :hasTag ;
+                                                                 owl:hasValue :QueryTag
+                                                               ]
+                                                             )
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMetricType ;
+                                          owl:allValuesFrom :NumberOfEventPerUnitTime
+                                        ] ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "counts the number of queries that were received by the LarKC platform in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesWithExecutionTimeInRangePerInterval
+
+:QueriesWithExecutionTimeInRangePerInterval rdf:type owl:Class ;
+                                            
+                                            rdfs:subClassOf :QueriesPerTimeInterval ;
+                                            
+                                            <http://purl.org/dc/elements/1.1/description> "denotes the number of queries that have the query response time in the given interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Query
+
+:Query rdf:type owl:Class ;
+       
+       <http://purl.org/dc/elements/1.1/description> "concept that represents a SPARQL query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryCompletionStatus
+
+:QueryCompletionStatus rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :Metric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:someValuesFrom xsd:boolean
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasTag ;
+                                         owl:hasValue :QueryTag
+                                       ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryFailureRatePerTimeInterval
+
+:QueryFailureRatePerTimeInterval rdf:type owl:Class ;
+                                 
+                                 rdfs:subClassOf :QueriesPerTimeInterval .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryInvocation
+
+:QueryInvocation rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Metric ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMetricType ;
+                                   owl:allValuesFrom :Event
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasTag ;
+                                   owl:hasValue :QueryTag
+                                 ] ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "records the fact that a new query has been sent to the platform" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySize
+
+:QuerySize rdf:type owl:Class ;
+           
+           rdfs:subClassOf :Metric ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasDataValue ;
+                             owl:someValuesFrom xsd:integer
+                           ] ,
+                           [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasTag ;
+                             owl:hasValue :QueryTag
+                           ] ;
+           
+           <http://purl.org/dc/elements/1.1/description> "concept that represents the size of a query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySizeInBytes
+
+:QuerySizeInBytes rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :QuerySize ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMeasurementUnit ;
+                                    owl:hasValue :Byte
+                                  ] ;
+                  
+                  <http://purl.org/dc/elements/1.1/description> "the size of a query represented in bytes" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySizeInTriples
+
+:QuerySizeInTriples rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :QuerySize ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "the size of a query represented in terms of number of RDF triples" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySuccessRatePerTimeInterval
+
+:QuerySuccessRatePerTimeInterval rdf:type owl:Class ;
+                                 
+                                 rdfs:subClassOf :QueriesPerTimeInterval ;
+                                 
+                                 <http://purl.org/dc/elements/1.1/description> "The number of queries that finished with success" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryTotalResponseTime
+
+:QueryTotalResponseTime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :Metric ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMetricType ;
+                                          owl:allValuesFrom :Duration
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasTag ;
+                                          owl:hasValue :QueryTag
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMeasurementUnit ;
+                                          owl:hasValue :Microsecond
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasDataValue ;
+                                          owl:someValuesFrom xsd:integer
+                                        ] ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "denotes the time elapsed from when the query was sent to the platform until the final result is provided to the user" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Result
+
+:Result rdf:type owl:Class ;
+        
+        rdfs:subClassOf owl:Thing ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents the result of a SPARQL query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ResultSize
+
+:ResultSize rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Metric ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasTag ;
+                              owl:hasValue :QueryTag
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasDataValue ;
+                              owl:allValuesFrom xsd:integer
+                            ] ;
+            
+            <http://purl.org/dc/elements/1.1/description> "concept that represents the size of a result" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ResultSizeInBytes
+
+:ResultSizeInBytes rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :ResultSize ;
+                   
+                   <http://purl.org/dc/elements/1.1/description> "the size of a result represented in bytes" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ResultSizeInTriples
+
+:ResultSizeInTriples rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :ResultSize ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "the size of a result represented in terms of number of RDF triples" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Session
+
+:Session rdf:type owl:Class ;
+         
+         <http://purl.org/dc/elements/1.1/description> "Generic concept of a session" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Size
+
+:Size rdf:type owl:Class ;
+      
+      rdfs:subClassOf :MetricType ;
+      
+      <http://purl.org/dc/elements/1.1/description> "The size of the data structure" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SwapIn
+
+:SwapIn rdf:type owl:Class ;
+        
+        rdfs:subClassOf :SystemMetric ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasTag ;
+                          owl:hasValue :SystemTag
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasDataValue ;
+                          owl:allValuesFrom xsd:long
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasMetricType ;
+                          owl:allValuesFrom :Size
+                        ] ,
+                        [ rdf:type owl:Restriction ;
+                          owl:onProperty :hasMeasurementUnit ;
+                          owl:hasValue :Byte
+                        ] ;
+        
+        <http://purl.org/dc/elements/1.1/description> "Amount of memory swapped in from disk" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SwapOut
+
+:SwapOut rdf:type owl:Class ;
+         
+         rdfs:subClassOf :SystemMetric ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasTag ;
+                           owl:hasValue :SystemTag
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasDataValue ;
+                           owl:allValuesFrom xsd:long
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasMetricType ;
+                           owl:allValuesFrom :Size
+                         ] ,
+                         [ rdf:type owl:Restriction ;
+                           owl:onProperty :hasMeasurementUnit ;
+                           owl:hasValue :Byte
+                         ] ;
+         
+         <http://purl.org/dc/elements/1.1/description> "Amount of memory swapped to the disk" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#System
+
+:System rdf:type owl:Class ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents a system where the application is running (e.g. your personal computer)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemCPULoad
+
+:SystemCPULoad rdf:type owl:Class ;
+               
+               rdfs:subClassOf :SystemMetric ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMetricType ;
+                                 owl:allValuesFrom :CPULoad
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasDataValue ;
+                                 owl:allValuesFrom xsd:float
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasTag ;
+                                 owl:hasValue :SystemTag
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMeasurementUnit ;
+                                 owl:hasValue :Percent
+                               ] ;
+               
+               <http://purl.org/dc/elements/1.1/description> "Time spent running kernel code" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemCPUTime
+
+:SystemCPUTime rdf:type owl:Class ;
+               
+               rdfs:subClassOf :SystemMetric ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMeasurementUnit ;
+                                 owl:hasValue :Microsecond
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMetricType ;
+                                 owl:allValuesFrom :Duration
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasDataValue ;
+                                 owl:allValuesFrom xsd:float
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasTag ;
+                                 owl:hasValue :SystemTag
+                               ] ;
+               
+               <http://purl.org/dc/elements/1.1/description> "System CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemLoadAverage
+
+:SystemLoadAverage rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :SystemMetric ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasDataValue ;
+                                     owl:allValuesFrom xsd:long
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMetricType ;
+                                     owl:allValuesFrom :Size
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMeasurementUnit ;
+                                     owl:hasValue :Percent
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasTag ;
+                                     owl:hasValue :SystemTag
+                                   ] ;
+                   
+                   <http://purl.org/dc/elements/1.1/description> "The average system load" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemMetric
+
+:SystemMetric rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Metric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemOpenFileDescriptorCount
+
+:SystemOpenFileDescriptorCount rdf:type owl:Class ;
+                               
+                               rdfs:subClassOf :SystemMetric ,
+                                               [ rdf:type owl:Restriction ;
+                                                 owl:onProperty :hasTag ;
+                                                 owl:hasValue :SystemTag
+                                               ] ,
+                                               [ rdf:type owl:Restriction ;
+                                                 owl:onProperty :hasMeasurementUnit ;
+                                                 owl:hasValue :Byte
+                                               ] ,
+                                               [ rdf:type owl:Restriction ;
+                                                 owl:onProperty :hasMetricType ;
+                                                 owl:allValuesFrom :Size
+                                               ] ,
+                                               [ rdf:type owl:Restriction ;
+                                                 owl:onProperty :hasDataValue ;
+                                                 owl:allValuesFrom xsd:long
+                                               ] ;
+                               
+                               <http://purl.org/dc/elements/1.1/description> "System open file descriptor count" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Tag
+
+:Tag rdf:type owl:Class ;
+     
+     owl:equivalentClass [ rdf:type owl:Class ;
+                           owl:oneOf ( :WorkflowTag
+                                       :QueryTag
+                                       :PlatformTag
+                                       :NodeTag
+                                       :ThreadTag
+                                       :MethodTag
+                                       :PluginTag
+                                     )
+                         ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadBlockCount
+
+:ThreadBlockCount rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :MethodMetric ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasTag ;
+                                    owl:hasValue :MethodTag
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:allValuesFrom xsd:long
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMetricType ;
+                                    owl:allValuesFrom :Size
+                                  ] ;
+                  
+                  <http://purl.org/dc/elements/1.1/description> "The total number of times that the current thread executing this method entered the BLOCKED state (count)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadBlockTime
+
+:ThreadBlockTime rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :MethodMetric ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMeasurementUnit ;
+                                   owl:hasValue :Microsecond
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMetricType ;
+                                   owl:allValuesFrom :Duration
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasTag ;
+                                   owl:hasValue :MethodTag
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasDataValue ;
+                                   owl:allValuesFrom xsd:long
+                                 ] ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "Thread Block time" ,
+                                                               "Thread Wait time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadCount
+
+:ThreadCount rdf:type owl:Class ;
+             
+             rdfs:subClassOf :MethodMetric ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:long
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasTag ;
+                               owl:hasValue :MethodTag
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMetricType ;
+                               owl:allValuesFrom :Size
+                             ] ;
+             
+             <http://purl.org/dc/elements/1.1/description> "How many threads did this method invocation create (count)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadGccCount
+
+:ThreadGccCount rdf:type owl:Class ;
+                
+                rdfs:subClassOf :MethodMetric ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasMetricType ;
+                                  owl:allValuesFrom :Size
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasDataValue ;
+                                  owl:allValuesFrom xsd:long
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasTag ;
+                                  owl:hasValue :MethodTag
+                                ] ;
+                
+                <http://purl.org/dc/elements/1.1/description> "Total number of collections that have occurred while executing this method" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadGccTime
+
+:ThreadGccTime rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MethodMetric ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMeasurementUnit ;
+                                 owl:hasValue :Microsecond
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasTag ;
+                                 owl:hasValue :MethodTag
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMetricType ;
+                                 owl:allValuesFrom :Duration
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasDataValue ;
+                                 owl:allValuesFrom xsd:float
+                               ] ;
+               
+               <http://purl.org/dc/elements/1.1/description> "Thread Gcc time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadSystemCPUTime
+
+:ThreadSystemCPUTime rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :MethodMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMeasurementUnit ;
+                                       owl:hasValue :Microsecond
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMetricType ;
+                                       owl:allValuesFrom :Duration
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasTag ;
+                                       owl:hasValue :MethodTag
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:allValuesFrom xsd:long
+                                     ] ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "Thread System CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadTotalCPUTime
+
+:ThreadTotalCPUTime rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :MethodMetric ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasDataValue ;
+                                      owl:allValuesFrom xsd:long
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasMetricType ;
+                                      owl:allValuesFrom :Duration
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasMeasurementUnit ;
+                                      owl:hasValue :Microsecond
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasTag ;
+                                      owl:hasValue :MethodTag
+                                    ] ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "Thread Total CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadUserCPUTime
+
+:ThreadUserCPUTime rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :MethodMetric ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasTag ;
+                                     owl:hasValue :MethodTag
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasDataValue ;
+                                     owl:allValuesFrom xsd:long
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMetricType ;
+                                     owl:allValuesFrom :Duration
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMeasurementUnit ;
+                                     owl:hasValue :Microsecond
+                                   ] ;
+                   
+                   <http://purl.org/dc/elements/1.1/description> "Thread User CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadWaitCount
+
+:ThreadWaitCount rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :MethodMetric ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasTag ;
+                                   owl:hasValue :MethodTag
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasDataValue ;
+                                   owl:allValuesFrom xsd:long
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMetricType ;
+                                   owl:allValuesFrom :Size
+                                 ] ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "The number of times that the current thread executing this method has been in the WAITING or TIMED_WAITING state (count)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadWaitTime
+
+:ThreadWaitTime rdf:type owl:Class ;
+                
+                rdfs:subClassOf :MethodMetric ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasMetricType ;
+                                  owl:allValuesFrom :Duration
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasDataValue ;
+                                  owl:allValuesFrom xsd:long
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasMeasurementUnit ;
+                                  owl:hasValue :Microsecond
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasTag ;
+                                  owl:hasValue :MethodTag
+                                ] ;
+                
+                <http://purl.org/dc/elements/1.1/description> "the total accumulated time the current thread executing this method has been in the WAITING or TIMED_WAITING state (ms)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#TimeInterval
+
+:TimeInterval rdf:type owl:Class ;
+              
+              <http://purl.org/dc/elements/1.1/description> "represents a time interval between two moments in time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#TimePoint
+
+:TimePoint rdf:type owl:Class .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#TotalSystemFreeMemory
+
+:TotalSystemFreeMemory rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :SystemMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasTag ;
+                                         owl:hasValue :SystemTag
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMetricType ;
+                                         owl:allValuesFrom :Size
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMeasurementUnit ;
+                                         owl:hasValue :Byte
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
+                                       ] ;
+                       
+                       <http://purl.org/dc/elements/1.1/description> "Amount of physical memory available on the processing node" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#TotalSystemUsedMemory
+
+:TotalSystemUsedMemory rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :SystemMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasTag ;
+                                         owl:hasValue :SystemTag
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMetricType ;
+                                         owl:allValuesFrom :Size
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMeasurementUnit ;
+                                         owl:hasValue :Byte
+                                       ] ;
+                       
+                       <http://purl.org/dc/elements/1.1/description> "Amount of used physical memory used by the processing node" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#TotalSystemUsedSwap
+
+:TotalSystemUsedSwap rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :SystemMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMeasurementUnit ;
+                                       owl:hasValue :Byte
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasTag ;
+                                       owl:hasValue :SystemTag
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:allValuesFrom xsd:long
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMetricType ;
+                                       owl:allValuesFrom :Size
+                                     ] ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "Amount of total swap used by the system" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#UserCPULoad
+
+:UserCPULoad rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SystemMetric ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasTag ;
+                               owl:hasValue :SystemTag
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMetricType ;
+                               owl:allValuesFrom :CPULoad
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMeasurementUnit ;
+                               owl:hasValue :Percent
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:float
+                             ] ;
+             
+             <http://purl.org/dc/elements/1.1/description> "Time spent running non-kernel code" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#UserCPUTime
+
+:UserCPUTime rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SystemMetric ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMeasurementUnit ;
+                               owl:hasValue :Microsecond
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasTag ;
+                               owl:hasValue :SystemTag
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:float
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMetricType ;
+                               owl:allValuesFrom :Duration
+                             ] ;
+             
+             <http://purl.org/dc/elements/1.1/description> "User CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Variable
+
+:Variable rdf:type owl:Class ;
+          
+          <http://purl.org/dc/elements/1.1/description> "concept that represents a variable from a SPARQL query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WaitCPULoad
+
+:WaitCPULoad rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SystemMetric ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasTag ;
+                               owl:hasValue :SystemTag
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMeasurementUnit ;
+                               owl:hasValue :Percent
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:float
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMetricType ;
+                               owl:allValuesFrom :CPULoad
+                             ] ;
+             
+             <http://purl.org/dc/elements/1.1/description> "Wait CPU load" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WaitCPUTime
+
+:WaitCPUTime rdf:type owl:Class ;
+             
+             rdfs:subClassOf :SystemMetric ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasTag ;
+                               owl:hasValue :SystemTag
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMetricType ;
+                               owl:allValuesFrom :Duration
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMeasurementUnit ;
+                               owl:hasValue :Microsecond
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:float
+                             ] ;
+             
+             <http://purl.org/dc/elements/1.1/description> "Wait CPU time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WallClockTime
+
+:WallClockTime rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MethodMetric ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMeasurementUnit ;
+                                 owl:hasValue :Microsecond
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasMetricType ;
+                                 owl:allValuesFrom :Duration
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasTag ;
+                                 owl:hasValue :MethodTag
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasDataValue ;
+                                 owl:allValuesFrom xsd:long
+                               ] ;
+               
+               <http://purl.org/dc/elements/1.1/description> "Wall Clock time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Workflow
+
+:Workflow rdf:type owl:Class ;
+          
+          <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC workflow" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgDurationPerTimeInterval
+
+:WorkflowAvgDurationPerTimeInterval rdf:type owl:Class ;
+                                    
+                                    rdfs:subClassOf :WorkflowAvgPerTimeInterval ,
+                                                    [ rdf:type owl:Restriction ;
+                                                      owl:onProperty :hasMeasurementUnit ;
+                                                      owl:hasValue :Microsecond
+                                                    ] ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/description> "The average duration of a given work-flow in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgNodesPerTimeInterval
+
+:WorkflowAvgNodesPerTimeInterval rdf:type owl:Class ;
+                                 
+                                 rdfs:subClassOf :WorkflowAvgPerTimeInterval ;
+                                 
+                                 <http://purl.org/dc/elements/1.1/description> "The average number of nodes used by a given work-flow in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgPerTimeInterval
+
+:WorkflowAvgPerTimeInterval rdf:type owl:Class ;
+                            
+                            rdfs:subClassOf :PerTimeInterval ,
+                                            [ rdf:type owl:Class ;
+                                              owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                     owl:onProperty :hasTag ;
+                                                                     owl:hasValue :PlatformTag
+                                                                   ]
+                                                                   [ rdf:type owl:Restriction ;
+                                                                     owl:onProperty :hasTag ;
+                                                                     owl:hasValue :WorkflowTag
+                                                                   ]
+                                                                 )
+                                            ] ,
+                                            [ rdf:type owl:Restriction ;
+                                              owl:onProperty :hasMetricType ;
+                                              owl:allValuesFrom :AvgDimenssion
+                                            ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgThreadsPerTimeInterval
+
+:WorkflowAvgThreadsPerTimeInterval rdf:type owl:Class ;
+                                   
+                                   rdfs:subClassOf :WorkflowAvgPerTimeInterval ;
+                                   
+                                   <http://purl.org/dc/elements/1.1/description> "The average number of threads used by a given work-flow in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowCPULoad
+
+:WorkflowCPULoad rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Metric ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMetricType ;
+                                   owl:allValuesFrom :CPULoad
+                                 ] ,
+                                 [ rdf:type owl:Class ;
+                                   owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :QueryTag
+                                                        ]
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasTag ;
+                                                          owl:hasValue :WorkflowTag
+                                                        ]
+                                                      )
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMeasurementUnit ;
+                                   owl:hasValue :Percent
+                                 ] ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "represents the load of the CPU during the execution of the workflow" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowDuration
+
+:WorkflowDuration rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :Metric ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMetricType ;
+                                    owl:allValuesFrom :Duration
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:someValuesFrom xsd:integer
+                                  ] ,
+                                  [ rdf:type owl:Class ;
+                                    owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                    owl:onProperty :hasTag ;
+                                                    owl:hasValue :QueryTag
+                                                  ]
+                                                  [ rdf:type owl:Restriction ;
+                                                    owl:onProperty :hasTag ;
+                                                    owl:hasValue :WorkflowTag
+                                                  ]
+                                                )
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMeasurementUnit ;
+                                    owl:hasValue :Microsecond
+                                  ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowMemoryDim
+
+:WorkflowMemoryDim rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Metric ,
+                                   [ rdf:type owl:Class ;
+                                     owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasTag ;
+                                                            owl:hasValue :QueryTag
+                                                          ]
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasTag ;
+                                                            owl:hasValue :WorkflowTag
+                                                          ]
+                                                        )
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMetricType ;
+                                     owl:allValuesFrom :Size
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMeasurementUnit ;
+                                     owl:hasValue :Byte
+                                   ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowMemoryUsage
+
+:WorkflowMemoryUsage rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :Metric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMeasurementUnit ;
+                                       owl:hasValue :Percent
+                                     ] ,
+                                     [ rdf:type owl:Class ;
+                                       owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :hasTag ;
+                                                              owl:hasValue :QueryTag
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :hasTag ;
+                                                              owl:hasValue :WorkflowTag
+                                                            ]
+                                                          )
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:allValuesFrom xsd:integer
+                                     ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowsPerTimeInterval
+
+:WorkflowsPerTimeInterval rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :PerTimeInterval ,
+                                          [ rdf:type owl:Class ;
+                                            owl:intersectionOf ( [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :PlatformTag
+                                                                 ]
+                                                                 [ rdf:type owl:Restriction ;
+                                                                   owl:onProperty :hasTag ;
+                                                                   owl:hasValue :WorkflowTag
+                                                                 ]
+                                                               )
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasMetricType ;
+                                            owl:allValuesFrom :NumberOfEventPerUnitTime
+                                          ] ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "The number of work-flows of a given name that were started in a given time interval" .
+
+
+
+###  http://www.w3.org/2002/07/owl#Thing
+
+owl:Thing rdf:type owl:Class .
+
+
+
+
+
+#################################################################
+#
+#    Individuals
+#
+#################################################################
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Byte
+
+:Byte rdf:type :MeasurementUnit ,
+               owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MethodTag
+
+:MethodTag rdf:type :Tag ,
+                    owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Microsecond
+
+:Microsecond rdf:type :MeasurementUnit ,
+                      owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#NodeTag
+
+:NodeTag rdf:type :Tag ,
+                  owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Percent
+
+:Percent rdf:type :MeasurementUnit ,
+                  owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformTag
+
+:PlatformTag rdf:type :Tag ,
+                      owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginTag
+
+:PluginTag rdf:type :Tag ,
+                    owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryTag
+
+:QueryTag rdf:type :Tag ,
+                   owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemTag
+
+:SystemTag rdf:type :Tag ,
+                    owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ThreadTag
+
+:ThreadTag rdf:type :Tag ,
+                    owl:NamedIndividual .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowTag
+
+:WorkflowTag rdf:type :Tag ,
+                      owl:NamedIndividual .
+
+
+
+
+###  Generated by the OWL API (version 3.0.0.1451) http://owlapi.sourceforge.net
+
