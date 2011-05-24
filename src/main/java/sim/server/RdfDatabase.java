@@ -33,8 +33,6 @@ public class RdfDatabase implements MetricsVisitor {
 
 	private Model model;
 
-	boolean visited = false;
-	
 	private String simNS;
 	private String rdfNS;
 	private String xsdNS;
@@ -45,11 +43,20 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI hasDataValueURI;
 	private URI hasTimeStampURI;
 	
+	private URI hasMethodMetricURI;
 	private URI hasMethodNameURI;
+	private URI hasClassNameURI;
+	private URI hasExceptionURI;
+	private URI hasEndedWithErrorURI;
+	private URI hasBeginExecutionTimeURI;
+	private URI hasEndExecutionTimeURI;
+	
+	private URI hasContextURI;
 	
 	private URI longDatatypeURI;
 	private URI doubleDatatypeURI;
 	private URI dateTimeDatatypeURI;
+	private URI booleanDatatypeURI;
 	
 	public RdfDatabase() {
 	}
@@ -85,11 +92,20 @@ public class RdfDatabase implements MetricsVisitor {
 		hasDataValueURI = model.createURI(simNS + "hasDataValue");
 		hasTimeStampURI = model.createURI(simNS + "hasTimeStamp");
 		
+		hasMethodMetricURI = model.createURI(simNS + "hasMethodMetric");
 		hasMethodNameURI = model.createURI(simNS + "hasMethodName");
+		hasClassNameURI = model.createURI(simNS + "hasClassName");
+		hasExceptionURI = model.createURI(simNS + "hasException");
+		hasEndedWithErrorURI = model.createURI(simNS + "hasEndedWithError");
+		hasBeginExecutionTimeURI = model.createURI(simNS + "hasBeginExecutionTime");
+		hasEndExecutionTimeURI = model.createURI(simNS + "hasEndExecutionTime");
+		
+		hasContextURI = model.createURI(simNS + "hasContext");
 		
 		longDatatypeURI = model.createURI(xsdNS + "long");
 		doubleDatatypeURI = model.createURI(xsdNS + "double");
 		dateTimeDatatypeURI = model.createURI(xsdNS + "dateTime");
+		booleanDatatypeURI = model.createURI(xsdNS + "boolean");
 	}
 	
 	public void close() {
@@ -113,31 +129,50 @@ public class RdfDatabase implements MetricsVisitor {
 		return model.createDatatypeLiteral(RDFTool.dateTime2String(dateTime), dateTimeDatatypeURI);
 	}
 
+	private DatatypeLiteral getBooleanTypeURI(boolean value) {
+		return model.createDatatypeLiteral(String.valueOf(value), booleanDatatypeURI);
+	}
+
 	@Override
 	public void visit(MethodMetrics methodMetrics) {
-		visited = true;
-		
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		DatatypeLiteral dateTimeLiteral = getDateTimeTypeURI(methodMetrics.getCreationTime());
 		
 		URI idSystemURI = addSystem(methodMetrics.getSystemId(), statements);
 		URI idApplicationURI = addApplication(methodMetrics.getApplicationId(), statements);
-		
-		URI idURI = model.createURI(simNS + UUID.randomUUID().toString().replace("-", ""));
-		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "MethodMetric")));
-		statements.add(model.createStatement(idURI, hasTimeStampURI, dateTimeLiteral));
-		statements.add(model.createStatement(idSystemURI, hasSystemMetricURI, idURI));
-		statements.add(model.createStatement(idApplicationURI, hasSystemMetricURI, idURI));
-		statements.add(model.createStatement(idURI, hasMethodNameURI, model.createPlainLiteral(methodMetrics.getMethodName())));
 
+		URI idMethodURI = model.createURI(simNS + UUID.randomUUID().toString());
+		statements.add(model.createStatement(idMethodURI, typePredicateURI, model.createURI(simNS + "Method")));
+		statements.add(model.createStatement(idMethodURI, hasMethodNameURI, model.createPlainLiteral(methodMetrics.getMethodName())));
+		statements.add(model.createStatement(idMethodURI, hasClassNameURI, model.createPlainLiteral(methodMetrics.getClassName())));
+		if (methodMetrics.getException() != null) {
+			statements.add(model.createStatement(idMethodURI, hasExceptionURI, model.createPlainLiteral(methodMetrics.getException())));
+		}
+		statements.add(model.createStatement(idMethodURI, hasEndedWithErrorURI, getBooleanTypeURI(methodMetrics.endedWithError())));
+		statements.add(model.createStatement(idMethodURI, hasBeginExecutionTimeURI, getLongTypeURI(methodMetrics.getBeginExecutionTime())));
+		statements.add(model.createStatement(idMethodURI, hasEndExecutionTimeURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
+
+		URI idContextURI = model.createURI(simNS + UUID.randomUUID().toString());
+		statements.add(model.createStatement(idMethodURI, typePredicateURI, model.createURI(simNS + "Context")));
+
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "WallClockTime", getLongTypeURI(methodMetrics.getWallClockTime())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));
+		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));
 		
+		model.addAll(statements.iterator());
+		model.commit();
 	}
 	
 	@Override
 	public void visit(SystemMetrics systemMetrics) {
-		visited = true;
-		
 		List<Statement> statements = new ArrayList<Statement>();
 		
 		DatatypeLiteral dateTimeLiteral = getDateTimeTypeURI(systemMetrics.getCreationTime());
@@ -208,11 +243,25 @@ public class RdfDatabase implements MetricsVisitor {
 
 	private List<Statement> createSystemMetricStatements(URI idSystemURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
 		List<Statement> statements = new ArrayList<Statement>();
-		URI idURI = model.createURI(simNS + UUID.randomUUID().toString().replace("-", ""));
+		URI idURI = model.createURI(simNS + UUID.randomUUID().toString());
 		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "SystemLoadAverage")));
 		statements.add(model.createStatement(idURI, hasDataValueURI, value));
 		statements.add(model.createStatement(idURI, hasTimeStampURI, dateTimeLiteral));
 		statements.add(model.createStatement(idSystemURI, hasSystemMetricURI, idURI));
+		
+		return statements;
+	}
+
+	private List<Statement> createMethodMetricStatements(URI idSystemURI, URI idApplicationURI, URI idContextURI, URI idMethodURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
+		List<Statement> statements = new ArrayList<Statement>();
+		URI idURI = model.createURI(simNS + UUID.randomUUID().toString());
+		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + type)));
+		statements.add(model.createStatement(idURI, hasDataValueURI, value));
+		statements.add(model.createStatement(idURI, hasTimeStampURI, dateTimeLiteral));
+		statements.add(model.createStatement(idURI, hasContextURI, idContextURI));
+		statements.add(model.createStatement(idSystemURI, hasMethodMetricURI, idURI));
+		statements.add(model.createStatement(idApplicationURI, hasMethodMetricURI, idURI));
+		statements.add(model.createStatement(idMethodURI, hasMethodMetricURI, idURI));
 		
 		return statements;
 	}

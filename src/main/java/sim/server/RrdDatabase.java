@@ -9,6 +9,8 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.rrd4j.ConsolFun;
 import org.rrd4j.DsType;
@@ -37,7 +39,7 @@ public class RrdDatabase implements MetricsVisitor {
 	
 	private final String SYSTEM_METRICS_RRD = "./system_metrics.rrd";
 	
-	private final long RRD_START_TIME = Util.getTimestamp(new Date()) - 1;
+	private final long RRD_START_TIME = Util.getTimestamp(new Date()) - 60;
 	private final int RRD_STEP = 60; //the step time measured in seconds which is the interval between database updates
 	private final int RRD_HEARBEAT = 600; //Defines the minimum heartbeat, the maximum number of seconds that can go by before a DS value is considered unknown.
 	
@@ -61,12 +63,36 @@ public class RrdDatabase implements MetricsVisitor {
 	private final String DS_WAIT_CPU_TIME = "waitCPUTime";
 	private final String DS_IRQ_CPU_TIME = "irqCPUTime";
 	
-	private RrdDb rrdDb = null;
+	/*
+	private final String DS_METHOD_NAME = "methodName";
+	private final String DS_CLASS_NAME = "className";
+	private final String DS_EXCEPTION = "exception";
+	private final String DS_ENDED_WITH_ERROR = "endedWithError";
+	private final String DS_BEGIN_EXECUTION_TIME = "beginExecutionTime";
+	private final String DS_END_EXECUTION_TIME = "endExecutionTime";
+	*/
+	
+	private final String DS_WALL_CLOCK_TIME = "wallClockTime";
+	private final String DS_THREAD_USER_CPU_TIME = "threadUserCPUTime";
+	private final String DS_THREAD_SYSTEM_CPU_TIME = "threadSystemCPUTime";
+	private final String DS_THREAD_TOTAL_CPU_TIME = "threadTotalCPUTime";
+	private final String DS_THREAD_COUNT = "threadCount";
+	private final String DS_THREAD_BLOCK_COUNT = "threadBlockCount";
+	private final String DS_THREAD_WAIT_COUNT = "threadWaitCount";
+	private final String DS_THREAD_GCC_COUNT = "threadGccCount";
+	private final String DS_THREAD_GCC_TIME = "threadGccTime";
+	private final String DS_PROCESS_TOTAL_CPU_TIME = "processTotalCPUTime";
+	
+	private RrdDb systemMetricsRRD = null;
+	private Map<String, RrdDb> methodMetricsRRD = new HashMap<String, RrdDb>();
 	
 	public RrdDatabase() {		
 	}
 	
-	public void open() {
+	private void openSystemMetricDb() {
+		if (systemMetricsRRD != null && !systemMetricsRRD.isClosed()) {
+			return;
+		}
 		try {
 			if (!new File(SYSTEM_METRICS_RRD).exists()) {
 				RrdDef rrdDef = new RrdDef(SYSTEM_METRICS_RRD, RRD_START_TIME, RRD_STEP);
@@ -94,9 +120,9 @@ public class RrdDatabase implements MetricsVisitor {
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last hour, one record each minute
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24); //detail last day, one record each 10 minutes
 				
-				rrdDb = new RrdDb(rrdDef);
+				systemMetricsRRD = new RrdDb(rrdDef);
 			} else {
-				rrdDb = new RrdDb(SYSTEM_METRICS_RRD);
+				systemMetricsRRD = new RrdDb(SYSTEM_METRICS_RRD);
 			}
 		} catch (IOException e) {
 			logger.error("io exception", e);
@@ -104,22 +130,97 @@ public class RrdDatabase implements MetricsVisitor {
 		}
 	}
 
-	public void close() {
+	private void closeSystemMetricDb() {
 		try {
-			rrdDb.close();
+			systemMetricsRRD.close();
 		} catch (IOException e) {
 			logger.error("io exception", e);
 			throw new RuntimeException("io exception", e);
 		}
 	}
 
+	private String getMethodId(MethodMetrics methodMetric) {
+		return methodMetric.getMethodName() + "@" + methodMetric.getClassName();
+	}
+	
+	private RrdDb openMethodMetricDb(MethodMetrics methodMetric) {
+		String methodId = getMethodId(methodMetric);
+		RrdDb methodMetricRrd = methodMetricsRRD.get(methodId);
+		if (methodMetricRrd != null && !methodMetricRrd.isClosed()) {
+			return methodMetricRrd;
+		}
+		try {
+			String rrdDbPath = methodId + ".rrd";
+			if (!new File(rrdDbPath).exists()) {
+				RrdDef rrdDef = new RrdDef(rrdDbPath, RRD_START_TIME, RRD_STEP);
+				
+				rrdDef.addDatasource(DS_WALL_CLOCK_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_USER_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_SYSTEM_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_TOTAL_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_BLOCK_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_WAIT_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_GCC_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_GCC_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PROCESS_TOTAL_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last hour, one record each minute
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24); //detail last day, one record each 10 minutes
+				
+				methodMetricsRRD.put(methodId, new RrdDb(rrdDef));
+			} else {
+				methodMetricsRRD.put(methodId, new RrdDb(rrdDbPath));
+			}
+		} catch (IOException e) {
+			logger.error("io exception", e);
+			throw new RuntimeException("io exception", e);
+		}
+		return methodMetricsRRD.get(methodId);
+	}
+
+	private void closeMethodMetricDb(MethodMetrics methodMetric) {
+		String methodId = getMethodId(methodMetric);
+		RrdDb methodRrd = methodMetricsRRD.get(methodId);
+		if (methodRrd != null) {
+			if (!methodRrd.isClosed()) {
+				try {
+					methodRrd.close();
+				} catch (IOException e) {
+					logger.error("exception closing rrd database : " + methodId, e);
+					throw new RuntimeException("exception closing rrd database : " + methodId, e);
+				}
+			}
+			methodMetricsRRD.remove(methodId);
+		}
+	}
 	/* (non-Javadoc)
 	 * @see sim.data.MetricsVisitor#visit(sim.data.MethodMetrics)
 	 */
 	@Override
 	public void visit(MethodMetrics methodMetrics) {
-		// TODO Auto-generated method stub
-
+		RrdDb methodRrd = openMethodMetricDb(methodMetrics);
+		try {
+			Sample sample = methodRrd.createSample();
+			
+			sample.setTime(Util.getTimestamp(new Date(methodMetrics.getCreationTime())));
+			sample.setValue(DS_WALL_CLOCK_TIME, methodMetrics.getWallClockTime());
+			sample.setValue(DS_THREAD_USER_CPU_TIME, methodMetrics.getThreadUserCpuTime());
+			sample.setValue(DS_THREAD_SYSTEM_CPU_TIME, methodMetrics.getThreadSystemCpuTime());
+			sample.setValue(DS_THREAD_TOTAL_CPU_TIME, methodMetrics.getThreadTotalCpuTime());
+			sample.setValue(DS_THREAD_COUNT, methodMetrics.getThreadCount());
+			sample.setValue(DS_THREAD_BLOCK_COUNT, methodMetrics.getThreadBlockCount());
+			sample.setValue(DS_THREAD_WAIT_COUNT, methodMetrics.getThreadWaitCount());
+			sample.setValue(DS_THREAD_GCC_COUNT, methodMetrics.getThreadGccCount());
+			sample.setValue(DS_THREAD_GCC_TIME, methodMetrics.getThreadGccTime());
+			sample.setValue(DS_PROCESS_TOTAL_CPU_TIME, methodMetrics.getProcessTotalCpuTime());
+			
+			sample.update();
+		} catch (IOException e) {
+			logger.error("io exception", e);
+			throw new RuntimeException("io exception", e);
+		}
+		closeMethodMetricDb(methodMetrics);
 	}
 
 	/* (non-Javadoc)
@@ -127,8 +228,9 @@ public class RrdDatabase implements MetricsVisitor {
 	 */
 	@Override
 	public void visit(SystemMetrics systemMetrics) {
+		openSystemMetricDb();
 		try {
-			Sample sample = rrdDb.createSample();
+			Sample sample = systemMetricsRRD.createSample();
 			
 			sample.setTime(Util.getTimestamp(new Date(systemMetrics.getCreationTime())));
 			sample.setValue(DS_SYSTEM_LOAD_AVERAGE, systemMetrics.getSystemLoadAverage());
@@ -156,13 +258,14 @@ public class RrdDatabase implements MetricsVisitor {
 			logger.error("io exception", e);
 			throw new RuntimeException("io exception", e);
 		}
+		closeSystemMetricDb();
 	}
 	
 	public void fetchData() throws IOException {
 	    long start = Util.getTimestamp(2011, 4, 20, 17, 0);
 	    long end= Util.getTimestamp(2011, 4, 20, 18, 0);
         System.out.println("== Fetching data for the whole month");
-        FetchRequest request = rrdDb.createFetchRequest(ConsolFun.AVERAGE, start, end);
+        FetchRequest request = systemMetricsRRD.createFetchRequest(ConsolFun.AVERAGE, start, end);
         System.out.println(request.dump());
         logger.info(request.dump());
         FetchData fetchData = request.fetchData();

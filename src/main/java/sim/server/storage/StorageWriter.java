@@ -77,10 +77,8 @@ public class StorageWriter {
 				}
 				try {
 					rdfWriter.open();
-					rrdWriter.open();
 					sendMeasurements();
 					rdfWriter.close();
-					rrdWriter.close();
 				} catch (Exception e) {
 					logger.error("unknown error, ignore to heep thread running", e);
 				}
