@@ -154,7 +154,7 @@ public class RdfDatabase implements MetricsVisitor {
 		statements.add(model.createStatement(idMethodURI, hasEndExecutionTimeURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
 
 		URI idContextURI = model.createURI(simNS + UUID.randomUUID().toString());
-		statements.add(model.createStatement(idMethodURI, typePredicateURI, model.createURI(simNS + "Context")));
+		statements.add(model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + "Context")));
 
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "WallClockTime", getLongTypeURI(methodMetrics.getWallClockTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
@@ -244,7 +244,7 @@ public class RdfDatabase implements MetricsVisitor {
 	private List<Statement> createSystemMetricStatements(URI idSystemURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
 		List<Statement> statements = new ArrayList<Statement>();
 		URI idURI = model.createURI(simNS + UUID.randomUUID().toString());
-		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "SystemLoadAverage")));
+		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + type)));
 		statements.add(model.createStatement(idURI, hasDataValueURI, value));
 		statements.add(model.createStatement(idURI, hasTimeStampURI, dateTimeLiteral));
 		statements.add(model.createStatement(idSystemURI, hasSystemMetricURI, idURI));
