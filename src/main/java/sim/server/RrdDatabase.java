@@ -40,7 +40,8 @@ public class RrdDatabase implements MetricsVisitor {
 	private final String SYSTEM_METRICS_RRD = "./system_metrics.rrd";
 	
 	private final long RRD_START_TIME = Util.getTimestamp(new Date()) - 60;
-	private final int RRD_STEP = 60; //the step time measured in seconds which is the interval between database updates
+	private final int SYSTEM_RRD_STEP = 5; //the step time measured in seconds which is the interval between database updates
+	private final int METHOD_RRD_STEP = 60; //the step time measured in seconds which is the interval between database updates
 	private final int RRD_HEARBEAT = 600; //Defines the minimum heartbeat, the maximum number of seconds that can go by before a DS value is considered unknown.
 	
 	private final String DS_SYSTEM_LOAD_AVERAGE = "sysLoadAverage";
@@ -63,15 +64,6 @@ public class RrdDatabase implements MetricsVisitor {
 	private final String DS_WAIT_CPU_TIME = "waitCPUTime";
 	private final String DS_IRQ_CPU_TIME = "irqCPUTime";
 	
-	/*
-	private final String DS_METHOD_NAME = "methodName";
-	private final String DS_CLASS_NAME = "className";
-	private final String DS_EXCEPTION = "exception";
-	private final String DS_ENDED_WITH_ERROR = "endedWithError";
-	private final String DS_BEGIN_EXECUTION_TIME = "beginExecutionTime";
-	private final String DS_END_EXECUTION_TIME = "endExecutionTime";
-	*/
-	
 	private final String DS_WALL_CLOCK_TIME = "wallClockTime";
 	private final String DS_THREAD_USER_CPU_TIME = "threadUserCPUTime";
 	private final String DS_THREAD_SYSTEM_CPU_TIME = "threadSystemCPUTime";
@@ -86,6 +78,9 @@ public class RrdDatabase implements MetricsVisitor {
 	private RrdDb systemMetricsRRD = null;
 	private Map<String, RrdDb> methodMetricsRRD = new HashMap<String, RrdDb>();
 	
+	//used to store the last timestamp, for a context, inserted into method metrics database
+	private Map<String, Long> contextLastTimestamp = new HashMap<String, Long>();
+	
 	public RrdDatabase() {		
 	}
 	
@@ -95,7 +90,7 @@ public class RrdDatabase implements MetricsVisitor {
 		}
 		try {
 			if (!new File(SYSTEM_METRICS_RRD).exists()) {
-				RrdDef rrdDef = new RrdDef(SYSTEM_METRICS_RRD, RRD_START_TIME, RRD_STEP);
+				RrdDef rrdDef = new RrdDef(SYSTEM_METRICS_RRD, RRD_START_TIME, SYSTEM_RRD_STEP);
 				
 				rrdDef.addDatasource(DS_SYSTEM_LOAD_AVERAGE, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				rrdDef.addDatasource(DS_TOTAL_SYSTEM_FREE_MEMEORY, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
@@ -117,8 +112,8 @@ public class RrdDatabase implements MetricsVisitor {
 				rrdDef.addDatasource(DS_WAIT_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				rrdDef.addDatasource(DS_IRQ_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				
-				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last hour, one record each minute
-				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24); //detail last day, one record each 10 minutes
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 12 * 60); //detail last day, one record each 5 seconds
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 12 * 10, 6 * 24 * 7); //detail last week, one record each 10 minutes
 				
 				systemMetricsRRD = new RrdDb(rrdDef);
 			} else {
@@ -139,20 +134,20 @@ public class RrdDatabase implements MetricsVisitor {
 		}
 	}
 
-	private String getMethodId(MethodMetrics methodMetric) {
-		return methodMetric.getMethodName() + "@" + methodMetric.getClassName();
+	private String getDatabasePath(MethodMetrics methodMetric) {
+		return methodMetric.getSystemId().getId() + "_" + methodMetric.getApplicationId().getId() + "_" + methodMetric.getContext().getName();
 	}
 	
 	private RrdDb openMethodMetricDb(MethodMetrics methodMetric) {
-		String methodId = getMethodId(methodMetric);
-		RrdDb methodMetricRrd = methodMetricsRRD.get(methodId);
+		String dbPath = getDatabasePath(methodMetric);
+		RrdDb methodMetricRrd = methodMetricsRRD.get(dbPath);
 		if (methodMetricRrd != null && !methodMetricRrd.isClosed()) {
 			return methodMetricRrd;
 		}
 		try {
-			String rrdDbPath = methodId + ".rrd";
+			String rrdDbPath = dbPath + ".rrd";
 			if (!new File(rrdDbPath).exists()) {
-				RrdDef rrdDef = new RrdDef(rrdDbPath, RRD_START_TIME, RRD_STEP);
+				RrdDef rrdDef = new RrdDef(rrdDbPath, RRD_START_TIME, METHOD_RRD_STEP);
 				
 				rrdDef.addDatasource(DS_WALL_CLOCK_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				rrdDef.addDatasource(DS_THREAD_USER_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
@@ -165,22 +160,22 @@ public class RrdDatabase implements MetricsVisitor {
 				rrdDef.addDatasource(DS_THREAD_GCC_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				rrdDef.addDatasource(DS_PROCESS_TOTAL_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				
-				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last hour, one record each minute
-				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24); //detail last day, one record each 10 minutes
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last day, one record each 5 seconds
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24 * 7); //detail last week, one record each 10 minutes
 				
-				methodMetricsRRD.put(methodId, new RrdDb(rrdDef));
+				methodMetricsRRD.put(dbPath, new RrdDb(rrdDef));
 			} else {
-				methodMetricsRRD.put(methodId, new RrdDb(rrdDbPath));
+				methodMetricsRRD.put(dbPath, new RrdDb(rrdDbPath));
 			}
 		} catch (IOException e) {
 			logger.error("io exception", e);
 			throw new RuntimeException("io exception", e);
 		}
-		return methodMetricsRRD.get(methodId);
+		return methodMetricsRRD.get(dbPath);
 	}
 
 	private void closeMethodMetricDb(MethodMetrics methodMetric) {
-		String methodId = getMethodId(methodMetric);
+		String methodId = getDatabasePath(methodMetric);
 		RrdDb methodRrd = methodMetricsRRD.get(methodId);
 		if (methodRrd != null) {
 			if (!methodRrd.isClosed()) {
@@ -203,7 +198,15 @@ public class RrdDatabase implements MetricsVisitor {
 		try {
 			Sample sample = methodRrd.createSample();
 			
-			sample.setTime(Util.getTimestamp(new Date(methodMetrics.getCreationTime())));
+			long time = 0;
+			synchronized(methodMetrics.getContext().getName()) { //FIXME synchronize for system, application and context name
+				time = Util.getTimestamp(new Date(methodMetrics.getCreationTime()));
+				if (time == contextLastTimestamp.get(methodMetrics.getContext().getName())) {
+					time++;
+				}
+				contextLastTimestamp.put(methodMetrics.getContext().getName(), time);
+			}
+			sample.setTime(time);
 			sample.setValue(DS_WALL_CLOCK_TIME, methodMetrics.getWallClockTime());
 			sample.setValue(DS_THREAD_USER_CPU_TIME, methodMetrics.getThreadUserCpuTime());
 			sample.setValue(DS_THREAD_SYSTEM_CPU_TIME, methodMetrics.getThreadSystemCpuTime());

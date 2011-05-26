@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.Model;
@@ -20,6 +21,7 @@ import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.http.HTTPRepository;
 
 import sim.data.ApplicationId;
+import sim.data.Context;
 import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemId;
@@ -38,6 +40,7 @@ public class RdfDatabase implements MetricsVisitor {
 	private String xsdNS;
 	
 	private URI typePredicateURI;
+	private URI rdfLiURI;
 	private URI hasSystemMetricURI;
 	private URI hasNameURI;
 	private URI hasDataValueURI;
@@ -51,7 +54,9 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI hasBeginExecutionTimeURI;
 	private URI hasEndExecutionTimeURI;
 	
+	private URI hasParentContextURI;
 	private URI hasContextURI;
+	private URI hasMetricsURI;
 	
 	private URI longDatatypeURI;
 	private URI doubleDatatypeURI;
@@ -87,6 +92,7 @@ public class RdfDatabase implements MetricsVisitor {
 		}
 		
 		typePredicateURI = model.createURI(rdfNS + "type");
+		rdfLiURI = model.createURI(rdfNS + "li");
 		hasSystemMetricURI = model.createURI(simNS + "hasSystemMetric");
 		hasNameURI = model.createURI(simNS + "hasName");
 		hasDataValueURI = model.createURI(simNS + "hasDataValue");
@@ -100,7 +106,9 @@ public class RdfDatabase implements MetricsVisitor {
 		hasBeginExecutionTimeURI = model.createURI(simNS + "hasBeginExecutionTime");
 		hasEndExecutionTimeURI = model.createURI(simNS + "hasEndExecutionTime");
 		
+		hasParentContextURI = model.createURI(simNS + "hasParentContext");
 		hasContextURI = model.createURI(simNS + "hasContext");
+		hasMetricsURI = model.createURI(simNS + "hasMetrics");
 		
 		longDatatypeURI = model.createURI(xsdNS + "long");
 		doubleDatatypeURI = model.createURI(xsdNS + "double");
@@ -153,9 +161,9 @@ public class RdfDatabase implements MetricsVisitor {
 		statements.add(model.createStatement(idMethodURI, hasBeginExecutionTimeURI, getLongTypeURI(methodMetrics.getBeginExecutionTime())));
 		statements.add(model.createStatement(idMethodURI, hasEndExecutionTimeURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
 
-		URI idContextURI = model.createURI(simNS + UUID.randomUUID().toString());
-		statements.add(model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + "Context")));
-
+		Context context = methodMetrics.getContext();
+		URI idContextURI = addContext(context, statements);
+		
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "WallClockTime", getLongTypeURI(methodMetrics.getWallClockTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));
@@ -292,6 +300,31 @@ public class RdfDatabase implements MetricsVisitor {
 		applicationStatement.close();
 		
 		return idApplicationURI;
+	}
+
+	private URI addContext(Context context, List<Statement> statements) {
+		URI idContextURI = model.createURI(simNS + context.getId());
+		URI idBagURI = model.createURI(simNS + context.getId() + "-metrics");
+		
+		Statement contextStatement = model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + context.getName()));
+		ClosableIterator<Statement> systemStatement = model.findStatements(contextStatement);
+		if (!systemStatement.hasNext()) {
+			statements.add(model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + context.getName())));
+			if (context.getParent() != null) {
+				statements.add(model.createStatement(idContextURI, hasParentContextURI, model.createURI(simNS + context.getParent().getId())));
+			}
+			statements.add(model.createStatement(idBagURI, typePredicateURI, model.createURI(simNS + "Bag")));
+			statements.add(model.createStatement(idContextURI, hasMetricsURI, idBagURI));
+		}
+		systemStatement.close();
+		for (Entry<String, Object> entry : context.entrySet()) {
+			URI idBagValueURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idBagValueURI, typePredicateURI, model.createURI(simNS + entry.getKey())));
+			statements.add(model.createStatement(idBagValueURI, hasDataValueURI, model.createPlainLiteral(entry.getValue().toString())));
+			statements.add(model.createStatement(idBagURI, rdfLiURI, idBagValueURI));
+		}
+		
+		return idContextURI;
 	}
 
 }

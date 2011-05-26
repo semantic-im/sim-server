@@ -44,24 +44,38 @@ Method Metrics
 it has as id the name of the instance (resource id) and the name is the application name.
 	The :Method entity defines the method of the metric. It properties are defined using the this properties : :hasMethodName, :hasClassName, :hasException, 
 :endedWithError, :beginExecutionTime, :endExecutionTime 
-	:Context entity - description to follow ...
+	:Context entity is used to suggest into which context the metric was read. The context has a name and and id, the name will be used to set the type of the context 
+instance and the id to create the resource identifier. Also the context contains a map of key, values used to add additional parameters to context. The contexts can 
+be nested, this is achieved in rdf storage using the :hasParentContext property.
 	The possible metrics for a method are : :WallClockTime, :ThreadUserCPUTime, :ThreadSystemCPUTime, :ThreadTotalCPUTime, :ThreadCount, :ThreadBlockCount, 
 :ThreadWaitCount, :ThreadGccCount, :ThreadGccTime, :ProcessTotalCPUTime
 	The properties for each method metric are defined using : :hasDataValue, :hasTimeStamp, :hasContext
 	Following is an example of method metric :
 
+#System definition
 :dad42564-fca2-4200-ba57-196f0b8569bc	rdf:type				:System
 :dad42564-fca2-4200-ba57-196f0b8569bc	:hasName				"Linux i386 2.6.32-31-generic"
-	
+
+#Application definition	
 :be01d40d-444e-49d7-bf11-2a729515ec81	rdf:type				:Application	
-:be01d40d-444e-49d7-bf11-2a729515ec81	:hasName				"LarkC 2.5"	
+:be01d40d-444e-49d7-bf11-2a729515ec81	:hasName				"LarkC 2.5"
+
+#Method definition	
 :a91fc2e6-b7c8-4242-8d2f-548df3af9f74	rdf:type				:Method	
 :a91fc2e6-b7c8-4242-8d2f-548df3af9f74	:hasMethodName			"main"	
 :a91fc2e6-b7c8-4242-8d2f-548df3af9f74	:hasClassName			"eu.larkc.core.Larkc"	
 :a91fc2e6-b7c8-4242-8d2f-548df3af9f74	:hasEndedWithError		"false"^^xsd:boolean	
 :a91fc2e6-b7c8-4242-8d2f-548df3af9f74	:hasBeginExecutionTime	"1306264158415"^^xsd:long	
-:a91fc2e6-b7c8-4242-8d2f-548df3af9f74	:hasEndExecutionTime	"1306264183372"^^xsd:long	
-:88f7fa37-50e4-4591-980c-6fc134a284f0	rdf:type				:Context	
+:a91fc2e6-b7c8-4242-8d2f-548df3af9f74	:hasEndExecutionTime	"1306264183372"^^xsd:long
+
+#Context definition	
+:88f7fa37-50e4-4591-980c-6fc134a284f0	rdf:type				:WorkflowExecution
+:075950eb-9f0b-4124-83c1-f4dc80723623	rdf:type				:Bag
+:dce426b0-3d6d-4fb9-b814-80cfcf0841a1	rdf:type				:PluginInputSizeInBytes
+:dce426b0-3d6d-4fb9-b814-80cfcf0841a1	:hasDataValue			"1000"
+:075950eb-9f0b-4124-83c1-f4dc80723623	rdf:li					:dce426b0-3d6d-4fb9-b814-80cfcf0841a1
+
+#Metric definition
 :2193b041-3d8b-485a-8509-2cec0585a838	rdf:type				:WallClockTime	
 :2193b041-3d8b-485a-8509-2cec0585a838	:hasDataValue			"24957"^^xsd:long	
 :2193b041-3d8b-485a-8509-2cec0585a838	:hasTimeStamp			"2011-05-24T22:09:18"^^xsd:dateTime
@@ -95,8 +109,9 @@ create one archive value. The archive has 6*24 records that means we would store
 
 Method Metrics
 --------------
-	For each instrumented method a new rrd database is created. The name of the database is methodName@className.rrd and is located in the current folder.
-	We have to create one database for each method because in rrd only numeric values are possible to store and it would be irrelevant to store mixed metrics
+	For each system, application and context of an instrumented method a new rrd database is created. The name of the database is systemid_applicationid_contextid.rrd
+and is located in the current folder.
+	We have to create one database for each context because in rrd only numeric values are possible to store and it would be irrelevant to store mixed metrics
 for different methods in one database, one would not be able to filter them by method.
 	The database and the datasources properties are defined as for system metric for now. The same archives definitions are use for methods as for the system.
 	The datasource names for each method metric are : wallClockTime, threadUserCPUTime, threadSystemCPUTime, threadTotalCPUTime, threadCount, threadBlockCount, 
