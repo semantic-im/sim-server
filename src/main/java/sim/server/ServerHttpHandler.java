@@ -39,7 +39,7 @@ public class ServerHttpHandler implements HttpHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(ServerHttpHandler.class);
 	
-	private static final int MAX_METRICS_READ = 100;
+	private static final int MAX_METRICS_READ = 10000;
 
 	/*
 	 * (non-Javadoc)
