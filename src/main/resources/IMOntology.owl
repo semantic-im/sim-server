@@ -445,13 +445,13 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 
 
-###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasSystemOpenFileDescriptiorCount
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasSystemOpenFileDescriptorCount
 
-:hasSystemOpenFileDescriptiorCount rdf:type owl:ObjectProperty ;
+:hasSystemOpenFileDescriptorCount rdf:type owl:ObjectProperty ;
                                    
                                    rdfs:domain :SystemMetric ;
                                    
-                                   rdfs:range :SystemOpenFileDescriptiorCount ;
+                                   rdfs:range :SystemOpenFileDescriptorCount ;
                                    
                                    rdfs:subPropertyOf owl:topObjectProperty .
 
@@ -2182,13 +2182,6 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 :SystemMetric rdf:type owl:Class ;
               
               rdfs:subClassOf :Metric .
-
-
-
-###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemOpenFileDescriptiorCount
-
-:SystemOpenFileDescriptiorCount rdf:type owl:Class .
-
 
 
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#SystemOpenFileDescriptorCount
