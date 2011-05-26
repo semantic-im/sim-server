@@ -201,7 +201,7 @@ public class RrdDatabase implements MetricsVisitor {
 			long time = 0;
 			synchronized(methodMetrics.getContext().getName()) { //FIXME synchronize for system, application and context name
 				time = Util.getTimestamp(new Date(methodMetrics.getCreationTime()));
-				if (time == contextLastTimestamp.get(methodMetrics.getContext().getName())) {
+				if (contextLastTimestamp.containsKey(methodMetrics.getContext().getName()) && time == contextLastTimestamp.get(methodMetrics.getContext().getName())) {
 					time++;
 				}
 				contextLastTimestamp.put(methodMetrics.getContext().getName(), time);
