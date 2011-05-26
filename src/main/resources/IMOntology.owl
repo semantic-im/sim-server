@@ -1388,6 +1388,8 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 :Platform rdf:type owl:Class ;
           
+          rdfs:subClassOf :Context ;
+          
           <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC platform" .
 
 
@@ -1471,6 +1473,8 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#Plugin
 
 :Plugin rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Context ;
         
         <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC plugin" .
 
@@ -1842,6 +1846,8 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#Query
 
 :Query rdf:type owl:Class ;
+       
+       rdfs:subClassOf :Context ;
        
        <http://purl.org/dc/elements/1.1/description> "concept that represents a SPARQL query" .
 
@@ -2733,6 +2739,8 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 :Workflow rdf:type owl:Class ;
           
+          rdfs:subClassOf :Context ;
+          
           <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC workflow" .
 
 
@@ -2823,6 +2831,14 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowCreation
+
+:WorkflowCreation rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :Workflow .
+
+
+
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowDuration
 
 :WorkflowDuration rdf:type owl:Class ;
@@ -2851,6 +2867,14 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                                     owl:onProperty :hasMeasurementUnit ;
                                     owl:hasValue :Microsecond
                                   ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowExecution
+
+:WorkflowExecution rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Workflow .
 
 
 
