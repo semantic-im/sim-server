@@ -67,7 +67,7 @@ public class RdfDatabase implements MetricsVisitor {
 	}
 	
 	public void open() {
-		this.model = new RepositoryModel(new HTTPRepository("http://localhost:8080/openrdf-sesame", "sim"));
+		this.model = new RepositoryModel(new HTTPRepository("http://" + Main.storage_server_domain + ":" + Main.storage_server_port + "/openrdf-sesame", Main.storage_repository_id));
 		//this.model = RDF2Go.getModelFactory().createModel();
 		this.model.open();
 		this.model.setAutocommit(false);
@@ -77,6 +77,9 @@ public class RdfDatabase implements MetricsVisitor {
 			model.setNamespace("sim", "http://www.larkc.eu/ontologies/IMOntology.rdf#");
 			model.commit();
 			simNS = model.getNamespace("sim");
+			if (simNS == null) {
+				simNS = "http://www.larkc.eu/ontologies/IMOntology.rdf#"; //this is for OWLIM, the get returned null check http://www.mail-archive.com/owlim-discussion@ontotext.com/msg00772.html
+			}
 		}
 		rdfNS = model.getNamespace("rdf");
 		if (rdfNS == null) {

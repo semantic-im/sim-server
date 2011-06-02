@@ -34,7 +34,6 @@ public class ServerHttpThread implements Runnable {
 
 	private static final Logger logger = LoggerFactory.getLogger(ServerHttpThread.class);
 	
-	private static final int SERVER_PORT = 8099;
 	private static final String SERVER_PATH = "/server";
 	
 	public ServerHttpThread() {
@@ -46,7 +45,7 @@ public class ServerHttpThread implements Runnable {
 	@Override
 	public void run() {		
 		try {
-			HttpServer server = HttpServer.create(new InetSocketAddress(SERVER_PORT), 0);
+			HttpServer server = HttpServer.create(new InetSocketAddress(Main.server_port), 0);
 			server.createContext(SERVER_PATH, new ServerHttpHandler());
 			server.start();
 		} catch (IOException e) {
