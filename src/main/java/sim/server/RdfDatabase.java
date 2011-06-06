@@ -28,6 +28,7 @@ import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemId;
 import sim.data.SystemMetrics;
+import sim.server.util.SPARQLQueryContentAnalyzer;
 
 /**
  * @author valer
@@ -36,6 +37,8 @@ import sim.data.SystemMetrics;
 public class RdfDatabase implements MetricsVisitor {
 
 	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
+	
+	private static final String QUERY_CONTEXT = "QUERY_CONTEXT";
 	
 	private Model model;
 
@@ -66,6 +69,8 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI doubleDatatypeURI;
 	private URI dateTimeDatatypeURI;
 	private URI booleanDatatypeURI;
+	private URI integerDatatypeURI;
+	
 	
 	public RdfDatabase() {
 	}
@@ -148,6 +153,10 @@ public class RdfDatabase implements MetricsVisitor {
 		return model.createDatatypeLiteral(String.valueOf(value), booleanDatatypeURI);
 	}
 
+	private DatatypeLiteral getIntegerTypeURI(int value) {
+		return model.createDatatypeLiteral(String.valueOf(value), integerDatatypeURI);
+	}
+
 	@Override
 	public void visit(MethodMetrics methodMetrics) {
 		List<Statement> statements = new ArrayList<Statement>();
@@ -181,6 +190,29 @@ public class RdfDatabase implements MetricsVisitor {
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));
+		
+		/*	check if the context contains information about SPARQL query;
+		if that's the case the SPARQL query is parsed and method 
+		metrics statements are created for this query
+		 */
+	
+		if(context.containsKey(QUERY_CONTEXT)){
+			String query = context.get(QUERY_CONTEXT).toString();
+			SPARQLQueryContentAnalyzer sqa = new SPARQLQueryContentAnalyzer(query);
+			sqa.parseQuery();
+									
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryDataSetSourcesNb", getIntegerTypeURI(sqa.getQueryDataSetSourcesNb())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryNamespaceNb", getIntegerTypeURI(sqa.getQueryNamespaceNb())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryOperatorsNb", getIntegerTypeURI(sqa.getQueryOperatorsNb())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultLimitNb", getIntegerTypeURI(sqa.getQueryResultLimitNb())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultOffsetNb", getIntegerTypeURI(sqa.getQueryResultOffsetNb())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultOrderingNb", getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInBytes", getIntegerTypeURI(sqa.getQuerySizeInBytes())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInTriples", getIntegerTypeURI(sqa.getQuerySizeInTriples())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryVariablesNb", getIntegerTypeURI(sqa.getQueryVariablesNb())));
+			
+		}
+
 		
 		model.addAll(statements.iterator());
 		model.commit();
