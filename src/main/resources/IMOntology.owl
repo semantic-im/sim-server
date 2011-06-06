@@ -1205,6 +1205,14 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginExecution
+
+:PluginExecution rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Plugin .
+
+
+
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInputSize
 
 :PluginInputSize rdf:type owl:Class ;
