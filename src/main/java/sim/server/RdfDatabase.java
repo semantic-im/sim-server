@@ -19,6 +19,8 @@ import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.util.RDFTool;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.http.HTTPRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import sim.data.ApplicationId;
 import sim.data.Context;
@@ -33,6 +35,8 @@ import sim.data.SystemMetrics;
  */
 public class RdfDatabase implements MetricsVisitor {
 
+	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
+	
 	private Model model;
 
 	private String simNS;
@@ -269,7 +273,9 @@ public class RdfDatabase implements MetricsVisitor {
 		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + type)));
 		statements.add(model.createStatement(idURI, hasDataValueURI, value));
 		statements.add(model.createStatement(idURI, hasTimeStampURI, dateTimeLiteral));
-		statements.add(model.createStatement(idURI, hasContextURI, idContextURI));
+		if (idContextURI != null) {
+			statements.add(model.createStatement(idURI, hasContextURI, idContextURI));
+		}
 		statements.add(model.createStatement(idSystemURI, hasMethodMetricURI, idURI));
 		statements.add(model.createStatement(idApplicationURI, hasMethodMetricURI, idURI));
 		statements.add(model.createStatement(idMethodURI, hasMethodMetricURI, idURI));
@@ -306,15 +312,19 @@ public class RdfDatabase implements MetricsVisitor {
 	}
 
 	private URI addContext(Context context, List<Statement> statements) {
+		if (context == null) {
+			return null;
+		}
 		URI idContextURI = model.createURI(simNS + context.getId());
 		URI idBagURI = model.createURI(simNS + context.getId() + "-metrics");
 		
 		Statement contextStatement = model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + context.getName()));
 		ClosableIterator<Statement> systemStatement = model.findStatements(contextStatement);
 		if (!systemStatement.hasNext()) {
-			statements.add(model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + context.getName())));
+			statements.add(contextStatement);
 			if (context.getParent() != null) {
-				statements.add(model.createStatement(idContextURI, hasParentContextURI, model.createURI(simNS + context.getParent().getId())));
+				URI idParentContextURI = addContext(context.getParent(), statements);
+				statements.add(model.createStatement(idContextURI, hasParentContextURI, idParentContextURI));
 			}
 			statements.add(model.createStatement(idBagURI, typePredicateURI, model.createURI(simNS + "Bag")));
 			statements.add(model.createStatement(idContextURI, hasMetricsURI, idBagURI));

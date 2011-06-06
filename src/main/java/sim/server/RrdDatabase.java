@@ -135,7 +135,7 @@ public class RrdDatabase implements MetricsVisitor {
 	}
 
 	private String getDatabasePath(MethodMetrics methodMetric) {
-		return methodMetric.getSystemId().getId() + "_" + methodMetric.getApplicationId().getId() + "_" + methodMetric.getContext().getName();
+		return methodMetric.getSystemId().getId() + "_" + methodMetric.getApplicationId().getId() + (methodMetric.getContext() == null ? "" : "_" + methodMetric.getContext().getName());
 	}
 	
 	private RrdDb openMethodMetricDb(MethodMetrics methodMetric) {
@@ -199,9 +199,10 @@ public class RrdDatabase implements MetricsVisitor {
 			Sample sample = methodRrd.createSample();
 			
 			long time = 0;
-			synchronized(methodMetrics.getContext().getName()) { //FIXME synchronize for system, application and context name
+			Object obj = methodMetrics.getSystemId().getName() + "_" + methodMetrics.getApplicationId().getName() + (methodMetrics.getContext() == null ? "" : "_" + methodMetrics.getContext().getName());
+			synchronized(obj) {
 				time = Util.getTimestamp(new Date(methodMetrics.getCreationTime()));
-				String contextName = methodMetrics.getContext().getName();
+				String contextName = methodMetrics.getContext() == null ? "null" : methodMetrics.getContext().getName();
 				//logger.info("contextName: " + contextName);
 				//logger.info("timestamp: " + time);
 				long lastTimestamp = -1;
