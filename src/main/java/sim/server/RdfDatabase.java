@@ -207,7 +207,7 @@ public class RdfDatabase implements MetricsVisitor {
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultLimitNb", getIntegerTypeURI(sqa.getQueryResultLimitNb())));
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultOffsetNb", getIntegerTypeURI(sqa.getQueryResultOffsetNb())));
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultOrderingNb", getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInBytes", getIntegerTypeURI(sqa.getQuerySizeInBytes())));
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInCharacters", getIntegerTypeURI(sqa.getQuerySizeInCharacters())));
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInTriples", getIntegerTypeURI(sqa.getQuerySizeInTriples())));
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryVariablesNb", getIntegerTypeURI(sqa.getQueryVariablesNb())));	
 		}

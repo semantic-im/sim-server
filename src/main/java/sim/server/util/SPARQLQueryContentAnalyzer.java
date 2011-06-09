@@ -7,9 +7,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.openrdf.model.BNode;
+import org.openrdf.model.Statement;
+import org.openrdf.model.ValueFactory;
+import org.openrdf.model.impl.StatementImpl;
+import org.openrdf.model.impl.ValueFactoryImpl;
+
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.SortCondition;
+import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.syntax.Element;
@@ -17,7 +24,7 @@ import com.hp.hpl.jena.sparql.syntax.Element;
 public class SPARQLQueryContentAnalyzer {
 
 	private String QueryContent;
-	private int QuerySizeInBytes;
+	private int QuerySizeInCharacters;
 	private int QueryNamespaceNb;
 	private Set<String> QueryNamespaceKeys;
 	public Set<String> getQueryNamespaceValues() {
@@ -37,7 +44,7 @@ public class SPARQLQueryContentAnalyzer {
 
 	public SPARQLQueryContentAnalyzer(String QueryContent) {
 		this.QueryContent = QueryContent;
-		this.QuerySizeInBytes = 0;
+		this.QuerySizeInCharacters = 0;
 		this.QuerySizeInTriples = 0;
 	}
 
@@ -47,6 +54,10 @@ public class SPARQLQueryContentAnalyzer {
 
 		try {
 			Query query = QueryFactory.create(QueryContent);
+			
+			//set the QuerySizeInCharacters
+			this.QuerySizeInCharacters = QueryContent.length();
+			
 			parsePrefixInformation(query);
 
 			parseVariablesInformation(query);
@@ -63,7 +74,7 @@ public class SPARQLQueryContentAnalyzer {
 			ex.printStackTrace();
 		}
 	}
-
+	
 	public void parsePrefixInformation(Query query) throws Exception {
 		// gets the information related to the prefixes, i.e
 		// QueryDataSetSourcesNb and QueryDataSetSources
@@ -210,12 +221,10 @@ public class SPARQLQueryContentAnalyzer {
 		return QueryContent;
 	}
 
-	/**
-	 * @return the querySizeInBytes
-	 */
-	public int getQuerySizeInBytes() {
-		return QuerySizeInBytes;
+	public int getQuerySizeInCharacters() {
+		return QuerySizeInCharacters;
 	}
+
 
 	/**
 	 * @return the queryNamespaceNb

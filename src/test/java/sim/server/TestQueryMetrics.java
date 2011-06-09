@@ -59,7 +59,7 @@ public class TestQueryMetrics extends TestCase {
 		assertEquals(100, sqa.getQueryResultLimitNb());
 		assertEquals(0, sqa.getQueryResultOffsetNb());
 		assertEquals(1, sqa.getQueryResultOrderingNb());
-		assertEquals(0, sqa.getQuerySizeInBytes());
+		assertEquals(200, sqa.getQuerySizeInCharacters());
 		assertEquals(0, sqa.getQuerySizeInTriples());
 		assertEquals(2, sqa.getQueryVariablesNb());		
 	}
