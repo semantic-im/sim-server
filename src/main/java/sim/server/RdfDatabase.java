@@ -38,7 +38,7 @@ public class RdfDatabase implements MetricsVisitor {
 
 	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
 	
-	private static final String QUERY_CONTEXT = "QUERY_CONTEXT";
+	public static final String QUERY_CONTEXT = "QUERY_CONTEXT";
 	
 	private Model model;
 
@@ -209,8 +209,7 @@ public class RdfDatabase implements MetricsVisitor {
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultOrderingNb", getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInBytes", getIntegerTypeURI(sqa.getQuerySizeInBytes())));
 			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInTriples", getIntegerTypeURI(sqa.getQuerySizeInTriples())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryVariablesNb", getIntegerTypeURI(sqa.getQueryVariablesNb())));
-			
+			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryVariablesNb", getIntegerTypeURI(sqa.getQueryVariablesNb())));	
 		}
 
 		

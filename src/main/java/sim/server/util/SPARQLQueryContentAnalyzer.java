@@ -74,9 +74,6 @@ public class SPARQLQueryContentAnalyzer {
 
 		Map<String, String> prefixEquivalents = prefixMapping.getNsPrefixMap();
 
-		System.out.println("I have " + prefixEquivalents.size()
-				+ " prefixes and these are:");
-
 		// get only the prefixes that are used in the query;
 
 		Set<String> keySetTmp = prefixEquivalents.keySet();
@@ -88,14 +85,12 @@ public class SPARQLQueryContentAnalyzer {
 		// hence further parsing is needed to the the exact list of prefixes;
 
 		if (!query.isSelectType()) {
-			System.out.println("ONLY WORKS FOR SELECT QUERIES");
 			throw new Exception("NOT A SELECT Query!");
 		}
 		String QueryBody = query.toString().toLowerCase();
 
 		int selectIndex = QueryBody.indexOf("select");
 		if (selectIndex < 0) {
-			System.out.println("ONLY WORKS FOR SELECT QUERIES");
 			throw new Exception("NOT A SELECT Query!");
 		}
 
@@ -109,7 +104,6 @@ public class SPARQLQueryContentAnalyzer {
 			// Return the value to which this map maps the specified key.
 			String crtKey = it.next();
 			String crtValue = prefixEquivalents.get(crtKey);
-			System.out.println(crtKey + " - " + crtValue);
 			keyValueIndex = selectBody.indexOf(crtKey);
 			if (keyValueIndex > 0) {
 				keys.add(crtKey);
@@ -153,12 +147,7 @@ public class SPARQLQueryContentAnalyzer {
 		for (int i = 0; i < query.getResultVars().size(); i++)
 			variablesSet.add(query.getResultVars().get(i));
 
-		System.out.println("I have " + variablesSet.size()
-				+ " variables and these are:");
-		Iterator<String> itss = variablesSet.iterator();
-		while (itss.hasNext())
-			System.out.println(itss.next());
-
+	
 		this.QueryVariablesNb = variablesSet.size();
 	}
 
@@ -171,14 +160,6 @@ public class SPARQLQueryContentAnalyzer {
 
 		if (query.hasDatasetDescription()) {
 			List<String> graphUris = query.getGraphURIs();
-
-			System.out.println("I have " + graphUris.size()
-					+ " data sources and these are:");
-			for (int i = 0; i < graphUris.size(); i++)
-				System.out.println(graphUris.get(i));
-
-			System.out
-					.println("\n-----------------------------------------------------------\n");
 
 			this.QueryDataSetSourcesNb = graphUris.size();
 			this.QueryDataSetSources = graphUris;
