@@ -25,6 +25,7 @@ import org.rrd4j.graph.RrdGraphDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import sim.data.Context;
 import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemMetrics;
@@ -135,7 +136,7 @@ public class RrdDatabase implements MetricsVisitor {
 	}
 
 	private String getDatabasePath(MethodMetrics methodMetric) {
-		return methodMetric.getSystemId().getId() + "_" + methodMetric.getApplicationId().getId() + (methodMetric.getContext() == null ? "" : "_" + methodMetric.getContext().getName());
+		return methodMetric.getSystemId().getId() + "_" + methodMetric.getApplicationId().getId() + (methodMetric.getContextId() == null ? "" : "_" + methodMetric.getContextId());
 	}
 	
 	private RrdDb openMethodMetricDb(MethodMetrics methodMetric) {
@@ -199,21 +200,22 @@ public class RrdDatabase implements MetricsVisitor {
 			Sample sample = methodRrd.createSample();
 			
 			long time = 0;
-			Object obj = methodMetrics.getSystemId().getName() + "_" + methodMetrics.getApplicationId().getName() + (methodMetrics.getContext() == null ? "" : "_" + methodMetrics.getContext().getName());
+			Object obj = methodMetrics.getSystemId().getName() + "_" + methodMetrics.getApplicationId().getName() + (methodMetrics.getContextId() == null ? "" : "_" + methodMetrics.getContextId());
 			synchronized(obj) {
 				time = Util.getTimestamp(new Date(methodMetrics.getCreationTime()));
-				String contextName = methodMetrics.getContext() == null ? "null" : methodMetrics.getContext().getName();
-				//logger.info("contextName: " + contextName);
+				
+				String contextId = methodMetrics.getContextId() == null ? "null" : methodMetrics.getContextId();
+				//logger.info("contextId: " + contextId);
 				//logger.info("timestamp: " + time);
 				long lastTimestamp = -1;
-				if (contextLastTimestamp.containsKey(contextName)) {
-					lastTimestamp = contextLastTimestamp.get(contextName);
+				if (contextLastTimestamp.containsKey(contextId)) {
+					lastTimestamp = contextLastTimestamp.get(contextId);
 				}
 				//logger.info("lastTimestamp: " + lastTimestamp);
-				if (contextLastTimestamp.containsKey(contextName) && time <= lastTimestamp) {
+				if (contextLastTimestamp.containsKey(contextId) && time <= lastTimestamp) {
 					time = lastTimestamp + 1;
 				}
-				contextLastTimestamp.put(contextName, time);
+				contextLastTimestamp.put(contextId, time);
 			}
 			sample.setTime(time);
 			sample.setValue(DS_WALL_CLOCK_TIME, methodMetrics.getWallClockTime());
@@ -320,5 +322,11 @@ public class RrdDatabase implements MetricsVisitor {
 		//rrdDatabase.open();
 		rrdDatabase.createGraph();
 		//rrdDatabase.fetchData();
+	}
+
+	@Override
+	public void visit(Context context) {
+		// TODO Auto-generated method stub
+		
 	}
 }

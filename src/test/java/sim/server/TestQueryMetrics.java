@@ -65,20 +65,11 @@ public class TestQueryMetrics extends TestCase {
 	}
 	
 	public void testQueryMetrics(){				
-		String className = "sim.test.TestQueryMetrics";
-		String methodName = "TestQueryMetrics";
-		
-		//create a new MethodMetric for the given className, methodName and application
-		MethodMetricsImpl methodMetrics = new MethodMetricsImpl(new ApplicationId("1", "App 1"), className, methodName);
-		
-		//set the system id of the MethodMetric
-		methodMetrics.setSystemId(new SystemId("sysID", "sysName"));
 		
 		//add into the context information about the query
-		Context context = Context.build("", "", null);
+		Context context = Context.create("", "", null);
 		context.put(RdfDatabase.QUERY_CONTEXT, query);
-		methodMetrics.setContext(context);
-			
+
 		//setup the RdfDatabase and connect
 		RdfDatabase rdfDatabase = new RdfDatabase();
 		Main.storage_server_domain = "localhost";
@@ -86,13 +77,11 @@ public class TestQueryMetrics extends TestCase {
 		Main.storage_repository_id = "sim";
 		
 		rdfDatabase.open();
-		
-		//process the MethodMetric; as the context is set to QueryContext metrics related 
-		//to query will be extracted from the query content and will be stored in the repository
-		rdfDatabase.visit(methodMetrics);
-		
+		//process Context; as the context is set to QueryContext metrics related 
+		//to query will be extracted from the query content and will be stored in 
+		//the repository
+		rdfDatabase.visit(context);
 		rdfDatabase.close();
-		
 	}	
 	
 }

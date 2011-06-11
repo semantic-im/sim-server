@@ -30,6 +30,7 @@ import sim.data.SystemId;
 import sim.data.SystemMetrics;
 import sim.server.util.SPARQLQueryContentAnalyzer;
 
+
 /**
  * @author valer
  *
@@ -176,10 +177,9 @@ public class RdfDatabase implements MetricsVisitor {
 		statements.add(model.createStatement(idMethodURI, hasEndedWithErrorURI, getBooleanTypeURI(methodMetrics.endedWithError())));
 		statements.add(model.createStatement(idMethodURI, hasBeginExecutionTimeURI, getLongTypeURI(methodMetrics.getBeginExecutionTime())));
 		statements.add(model.createStatement(idMethodURI, hasEndExecutionTimeURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
-
-		Context context = methodMetrics.getContext();
-		URI idContextURI = addContext(context, statements);
 		
+		URI idContextURI = model.createURI(simNS + methodMetrics.getContextId());
+
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "WallClockTime", getLongTypeURI(methodMetrics.getWallClockTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));
@@ -190,29 +190,7 @@ public class RdfDatabase implements MetricsVisitor {
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "ProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));
-		
-		/*	check if the context contains information about SPARQL query;
-		if that's the case the SPARQL query is parsed and method 
-		metrics statements are created for this query
-		 */
-	
-		if(context.containsKey(QUERY_CONTEXT)){
-			String query = context.get(QUERY_CONTEXT).toString();
-			SPARQLQueryContentAnalyzer sqa = new SPARQLQueryContentAnalyzer(query);
-			sqa.parseQuery();
-									
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryDataSetSourcesNb", getIntegerTypeURI(sqa.getQueryDataSetSourcesNb())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryNamespaceNb", getIntegerTypeURI(sqa.getQueryNamespaceNb())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryOperatorsNb", getIntegerTypeURI(sqa.getQueryOperatorsNb())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultLimitNb", getIntegerTypeURI(sqa.getQueryResultLimitNb())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultOffsetNb", getIntegerTypeURI(sqa.getQueryResultOffsetNb())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryResultOrderingNb", getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInCharacters", getIntegerTypeURI(sqa.getQuerySizeInCharacters())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QuerySizeInTriples", getIntegerTypeURI(sqa.getQuerySizeInTriples())));
-			statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodURI, dateTimeLiteral, "QueryVariablesNb", getIntegerTypeURI(sqa.getQueryVariablesNb())));	
-		}
-
-		
+				
 		model.addAll(statements.iterator());
 		model.commit();
 	}
@@ -368,7 +346,70 @@ public class RdfDatabase implements MetricsVisitor {
 			statements.add(model.createStatement(idBagURI, rdfLiURI, idBagValueURI));
 		}
 		
+
+		/*	check if the context contains information about SPARQL query;
+		if that's the case the SPARQL query is parsed and method 
+		metrics statements are created for this query
+		 */
+	
+		if(context.containsKey(QUERY_CONTEXT)){
+			String query = context.get(QUERY_CONTEXT).toString();
+			SPARQLQueryContentAnalyzer sqa = new SPARQLQueryContentAnalyzer(query);
+			sqa.parseQuery();
+
+			URI idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryDataSetSourcesNb")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryDataSetSourcesNb())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+
+			idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryNamespaceNb")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryNamespaceNb())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+
+			idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryOperatorsNb")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryOperatorsNb())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+
+			idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultLimitNb")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultLimitNb())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+		
+			idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOffsetNb")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOffsetNb())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+		
+			idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOrderingNb")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+									
+			idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QuerySizeInCharacters")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQuerySizeInCharacters())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+
+			idURI = model.createURI(simNS + UUID.randomUUID().toString());
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryVariablesNb")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryVariablesNb())));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+		}
+		
 		return idContextURI;
+	}
+
+	@Override
+	public void visit(Context context) {
+		
+		List<Statement> statements = new ArrayList<Statement>();	
+		addContext(context, statements);
+				
+		model.addAll(statements.iterator());
+		model.commit();
+		
 	}
 
 }
