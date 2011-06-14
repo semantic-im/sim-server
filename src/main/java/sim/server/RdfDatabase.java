@@ -71,8 +71,16 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI dateTimeDatatypeURI;
 	private URI booleanDatatypeURI;
 	private URI integerDatatypeURI;
+
+	private URI hasMethodExecutionURI;
+	private URI isMethodExecutionOfURI;
+	private URI hasMeasurementURI;
+	private URI isMeasurementOfURI;
+	private URI includesURI;
 	
 	
+
+
 	public RdfDatabase() {
 	}
 	
@@ -127,6 +135,13 @@ public class RdfDatabase implements MetricsVisitor {
 		doubleDatatypeURI = model.createURI(xsdNS + "double");
 		dateTimeDatatypeURI = model.createURI(xsdNS + "dateTime");
 		booleanDatatypeURI = model.createURI(xsdNS + "boolean");
+		
+		hasMethodExecutionURI = model.createURI(simNS + "hasMethodExecution");
+		isMethodExecutionOfURI = model.createURI(simNS + "isMethodExecutionOf");
+		hasMeasurementURI = model.createURI(simNS + "hasMeasurement");
+		isMeasurementOfURI = model.createURI(simNS + "isMeasurementOf");
+		includesURI = model.createURI(simNS + "includes");
+	
 	}
 	
 	public void close() {
@@ -165,12 +180,12 @@ public class RdfDatabase implements MetricsVisitor {
 		DatatypeLiteral dateTimeLiteral = getDateTimeTypeURI(methodMetrics.getCreationTime());
 		
 		URI idSystemURI = addSystem(methodMetrics.getSystemId(), statements);
-		URI idApplicationURI = addApplication(methodMetrics.getApplicationId(), statements);
+		URI idApplicationURI = addApplication(methodMetrics.getMethod().getApplicationId(), statements);
 
-		URI idMethodURI = model.createURI(simNS + UUID.randomUUID().toString());
+		URI idMethodURI = model.createURI(simNS + methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName());
 		statements.add(model.createStatement(idMethodURI, typePredicateURI, model.createURI(simNS + "Method")));
-		statements.add(model.createStatement(idMethodURI, hasMethodNameURI, model.createPlainLiteral(methodMetrics.getMethodName())));
-		statements.add(model.createStatement(idMethodURI, hasClassNameURI, model.createPlainLiteral(methodMetrics.getClassName())));
+		statements.add(model.createStatement(idMethodURI, hasMethodNameURI, model.createPlainLiteral(methodMetrics.getMethod().getMethodName())));
+		statements.add(model.createStatement(idMethodURI, hasClassNameURI, model.createPlainLiteral(methodMetrics.getMethod().getClassName())));
 		if (methodMetrics.getException() != null) {
 			statements.add(model.createStatement(idMethodURI, hasExceptionURI, model.createPlainLiteral(methodMetrics.getException())));
 		}

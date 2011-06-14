@@ -26,6 +26,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sim.data.Context;
+import sim.data.Method;
 import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemMetrics;
@@ -135,8 +136,8 @@ public class RrdDatabase implements MetricsVisitor {
 		}
 	}
 
-	private String getDatabasePath(MethodMetrics methodMetric) {
-		return methodMetric.getSystemId().getId() + "_" + methodMetric.getApplicationId().getId() + (methodMetric.getContextId() == null ? "" : "_" + methodMetric.getContextId());
+	private String getDatabasePath(MethodMetrics methodMetric) {		
+		return methodMetric.getSystemId().getId() + "_" + methodMetric.getMethod().getApplicationId().getId() + (methodMetric.getContextId() == null ? "" : "_" + methodMetric.getContextId());
 	}
 	
 	private RrdDb openMethodMetricDb(MethodMetrics methodMetric) {
@@ -200,7 +201,7 @@ public class RrdDatabase implements MetricsVisitor {
 			Sample sample = methodRrd.createSample();
 			
 			long time = 0;
-			Object obj = methodMetrics.getSystemId().getName() + "_" + methodMetrics.getApplicationId().getName() + (methodMetrics.getContextId() == null ? "" : "_" + methodMetrics.getContextId());
+			Object obj = methodMetrics.getSystemId().getName() + "_" + methodMetrics.getMethod().getApplicationId().getName() + (methodMetrics.getContextId() == null ? "" : "_" + methodMetrics.getContextId());
 			synchronized(obj) {
 				time = Util.getTimestamp(new Date(methodMetrics.getCreationTime()));
 				
