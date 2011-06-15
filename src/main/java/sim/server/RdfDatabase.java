@@ -390,47 +390,56 @@ public class RdfDatabase implements MetricsVisitor {
 		if(context.containsKey(QUERY_CONTENT)){
 			String query = context.get(QUERY_CONTENT).toString();
 			SPARQLQueryContentAnalyzer sqa = new SPARQLQueryContentAnalyzer(query);
-			sqa.parseQuery();
-
-			URI idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryDataSetSourcesNb")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryDataSetSourcesNb())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
-
-			idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryNamespaceNb")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryNamespaceNb())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
-
-			idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryOperatorsNb")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryOperatorsNb())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
-
-			idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultLimitNb")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultLimitNb())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
-		
-			idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOffsetNb")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOffsetNb())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
-		
-			idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOrderingNb")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
-									
-			idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QuerySizeInCharacters")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQuerySizeInCharacters())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
-
-			idURI = generateURI();
-			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryVariablesNb")));
-			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryVariablesNb())));
-			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+			if (sqa.parseQuery()) {
+	
+				URI idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryDataSetSourcesNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryDataSetSourcesNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+	
+				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryNamespaceNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryNamespaceNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+	
+				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryOperatorsNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryOperatorsNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+	
+				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultLimitNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultLimitNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+			
+				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOffsetNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOffsetNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+			
+				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOrderingNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+										
+				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QuerySizeInCharacters")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQuerySizeInCharacters())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+	
+				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryVariablesNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryVariablesNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+			}
 		}
 		
 		return idContextURI;
