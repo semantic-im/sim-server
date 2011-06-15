@@ -1092,6 +1092,13 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
           <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC platform" .
 
 
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformStart
+
+:PlatformStart rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Platform .
+
+
 
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformCPULoad
 
