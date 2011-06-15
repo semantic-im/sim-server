@@ -79,7 +79,7 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI isMeasurementOfURI;
 	private URI includesURI;
 	
-	private HashMap<String, String> methodsURIs;
+	private static final HashMap<String, URI> methodsURIs = new HashMap<String, URI>();
 
 
 	public RdfDatabase() {
@@ -142,9 +142,6 @@ public class RdfDatabase implements MetricsVisitor {
 		hasMeasurementURI = model.createURI(simNS + "hasMeasurement");
 		isMeasurementOfURI = model.createURI(simNS + "isMeasurementOf");
 		includesURI = model.createURI(simNS + "includes");
-		
-		methodsURIs = new HashMap<String, String>();
-	
 	}
 	
 	public void close() {
@@ -187,12 +184,13 @@ public class RdfDatabase implements MetricsVisitor {
 
 		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName();
 		
-		if(!methodsURIs.containsKey(methodID)){		
-			URI idMethodURI = model.createURI(simNS + methodID);			
+		URI idMethodURI = methodsURIs.get(methodID);
+		if(idMethodURI == null){		
+			idMethodURI = model.createURI(simNS + methodID);			
 			statements.add(model.createStatement(idMethodURI, typePredicateURI, model.createURI(simNS + "Method")));
 			statements.add(model.createStatement(idMethodURI, hasMethodNameURI, model.createPlainLiteral(methodMetrics.getMethod().getMethodName())));
 			statements.add(model.createStatement(idMethodURI, hasClassNameURI, model.createPlainLiteral(methodMetrics.getMethod().getClassName())));
-			methodsURIs.put(methodID,methodID);
+			methodsURIs.put(methodID, idMethodURI);
 		}
 		
 		URI idMethodMetricsURI = generateURI();
