@@ -68,7 +68,7 @@ public class TestQueryMetrics extends TestCase {
 		
 		//add into the context information about the query
 		Context context = Context.create("", "", null);
-		context.put(RdfDatabase.QUERY_CONTEXT, query);
+		context.put(RdfDatabase.QUERY_CONTENT, query);
 
 		//setup the RdfDatabase and connect
 		RdfDatabase rdfDatabase = new RdfDatabase();

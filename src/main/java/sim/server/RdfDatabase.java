@@ -40,7 +40,7 @@ public class RdfDatabase implements MetricsVisitor {
 
 	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
 	
-	public static final String QUERY_CONTEXT = "QUERY_CONTEXT";
+	public static final String QUERY_CONTENT = "queryContent";
 	
 	private Model model;
 
@@ -386,8 +386,8 @@ public class RdfDatabase implements MetricsVisitor {
 		metrics statements are created for this query
 		 */
 	
-		if(context.containsKey(QUERY_CONTEXT)){
-			String query = context.get(QUERY_CONTEXT).toString();
+		if(context.containsKey(QUERY_CONTENT)){
+			String query = context.get(QUERY_CONTENT).toString();
 			SPARQLQueryContentAnalyzer sqa = new SPARQLQueryContentAnalyzer(query);
 			sqa.parseQuery();
 
