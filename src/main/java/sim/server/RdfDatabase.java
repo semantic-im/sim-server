@@ -145,6 +145,7 @@ public class RdfDatabase implements MetricsVisitor {
 		doubleDatatypeURI = model.createURI(xsdNS + "double");
 		dateTimeDatatypeURI = model.createURI(xsdNS + "dateTime");
 		booleanDatatypeURI = model.createURI(xsdNS + "boolean");
+		integerDatatypeURI = model.createURI(xsdNS + "int");
 		
 		hasMethodExecutionURI = model.createURI(simNS + "hasMethodExecution");
 		isMethodExecutionOfURI = model.createURI(simNS + "isMethodExecutionOf");
