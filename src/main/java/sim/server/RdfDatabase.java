@@ -79,11 +79,17 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI isMeasurementOfURI;
 	private URI includesURI;
 	
-	private URI methodType;
-	private URI methodExecutionType;
+	private URI methodTypeURI;
+	private URI methodExecutionTypeURI;
 	
-	private static final HashMap<String, URI> methodsURIs = new HashMap<String, URI>();
-
+	private URI systemTypeURI;
+	private URI applicationTypeURI;
+	
+	private URI bagTypeURI;
+	
+	private static final HashMap<String, URI> methodURICache = new HashMap<String, URI>();
+	private static final HashMap<String, URI> systemURICache = new HashMap<String, URI>();
+	private static final HashMap<String, URI> applicationURICache = new HashMap<String, URI>();
 
 	public RdfDatabase() {
 	}
@@ -146,8 +152,13 @@ public class RdfDatabase implements MetricsVisitor {
 		isMeasurementOfURI = model.createURI(simNS + "isMeasurementOf");
 		includesURI = model.createURI(simNS + "includes");
 		
-		methodType = model.createURI(simNS + "Method");
-		methodExecutionType = model.createURI(simNS + "MethodExecution");
+		methodTypeURI = model.createURI(simNS + "Method");
+		methodExecutionTypeURI = model.createURI(simNS + "MethodExecution");
+		
+		systemTypeURI = model.createURI(simNS + "System");
+		applicationTypeURI = model.createURI(simNS + "Application");
+		
+		bagTypeURI = model.createURI(simNS + "Bag");
 	}
 	
 	public void close() {
@@ -190,28 +201,30 @@ public class RdfDatabase implements MetricsVisitor {
 
 		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName();
 		
-		URI idMethodURI = methodsURIs.get(methodID);
+		URI idMethodURI = methodURICache.get(methodID);
 		if(idMethodURI == null){		
 			idMethodURI = model.createURI(simNS + methodID);			
-			statements.add(model.createStatement(idMethodURI, typePredicateURI, methodType));
+			statements.add(model.createStatement(idMethodURI, typePredicateURI, methodTypeURI));
 			statements.add(model.createStatement(idMethodURI, hasMethodNameURI, model.createPlainLiteral(methodMetrics.getMethod().getMethodName())));
 			statements.add(model.createStatement(idMethodURI, hasClassNameURI, model.createPlainLiteral(methodMetrics.getMethod().getClassName())));
-			methodsURIs.put(methodID, idMethodURI);
+			methodURICache.put(methodID, idMethodURI);
 		}
 		
 		URI idMethodMetricsURI = generateURI();
-		statements.add(model.createStatement(idMethodMetricsURI, typePredicateURI, methodExecutionType));
+		statements.add(model.createStatement(idMethodMetricsURI, typePredicateURI, methodExecutionTypeURI));
 		statements.add(model.createStatement(idMethodMetricsURI, isMethodExecutionOfURI, idMethodURI));
-		
-		
+		statements.add(model.createStatement(idMethodMetricsURI, hasBeginExecutionTimeURI, getLongTypeURI(methodMetrics.getBeginExecutionTime())));
+		statements.add(model.createStatement(idMethodMetricsURI, hasEndExecutionTimeURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
+		statements.add(model.createStatement(idMethodMetricsURI, hasEndedWithErrorURI, getBooleanTypeURI(methodMetrics.endedWithError())));
 		if (methodMetrics.getException() != null) {
 			statements.add(model.createStatement(idMethodMetricsURI, hasExceptionURI, model.createPlainLiteral(methodMetrics.getException())));
 		}
-		statements.add(model.createStatement(idMethodMetricsURI, hasEndedWithErrorURI, getBooleanTypeURI(methodMetrics.endedWithError())));
-		statements.add(model.createStatement(idMethodMetricsURI, hasBeginExecutionTimeURI, getLongTypeURI(methodMetrics.getBeginExecutionTime())));
-		statements.add(model.createStatement(idMethodMetricsURI, hasEndExecutionTimeURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
 		
-		URI idContextURI = model.createURI(simNS + methodMetrics.getContextId());
+		URI idContextURI;
+		if (methodMetrics.getContextId() == null)
+			idContextURI = null;
+		else
+			idContextURI = model.createURI(simNS + methodMetrics.getContextId());
 
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodMetricsURI, dateTimeLiteral, "WallClockTime", getLongTypeURI(methodMetrics.getWallClockTime())));
 		statements.addAll(createMethodMetricStatements(idSystemURI, idApplicationURI, idContextURI, idMethodMetricsURI, dateTimeLiteral, "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
@@ -327,29 +340,22 @@ public class RdfDatabase implements MetricsVisitor {
 
 	private URI addSystem(SystemId systemId, List<Statement> statements) {
 		//System metric
-		URI idSystemURI = model.createURI(simNS + systemId.getId());
-		Statement systemTypeStatement = model.createStatement(idSystemURI, typePredicateURI, model.createURI(simNS + "System"));
-		ClosableIterator<Statement> systemStatement = model.findStatements(systemTypeStatement);
-		if (!systemStatement.hasNext()) {
-			statements.add(model.createStatement(idSystemURI, typePredicateURI, model.createURI(simNS + "System")));
+		URI idSystemURI = systemURICache.get(systemId.getId());
+		if (idSystemURI == null) {
+			idSystemURI = model.createURI(simNS + systemId.getId());
+			statements.add(model.createStatement(idSystemURI, typePredicateURI, systemTypeURI));
 			statements.add(model.createStatement(idSystemURI, hasNameURI, getStringTypeURI(systemId.getName())));
 		}
-		systemStatement.close();
-		
 		return idSystemURI;
 	}
 
 	private URI addApplication(ApplicationId applicationId, List<Statement> statements) {
-		//System metric
-		URI idApplicationURI = model.createURI(simNS + applicationId.getId());
-		Statement applicationTypeStatement = model.createStatement(idApplicationURI, typePredicateURI, model.createURI(simNS + "Application"));
-		ClosableIterator<Statement> applicationStatement = model.findStatements(applicationTypeStatement);
-		if (!applicationStatement.hasNext()) {
-			statements.add(model.createStatement(idApplicationURI, typePredicateURI, model.createURI(simNS + "Application")));
+		URI idApplicationURI = applicationURICache.get(applicationId.getId());
+		if (idApplicationURI == null) {
+			idApplicationURI = model.createURI(simNS + applicationId.getId());
+			statements.add(model.createStatement(idApplicationURI, typePredicateURI, applicationTypeURI));
 			statements.add(model.createStatement(idApplicationURI, hasNameURI, getStringTypeURI(applicationId.getName())));
 		}
-		applicationStatement.close();
-		
 		return idApplicationURI;
 	}
 
@@ -358,20 +364,15 @@ public class RdfDatabase implements MetricsVisitor {
 			return null;
 		}
 		URI idContextURI = model.createURI(simNS + context.getId());
-		URI idBagURI = model.createURI(simNS + context.getId() + "-metrics");
-		
-		Statement contextStatement = model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + context.getName()));
-		ClosableIterator<Statement> systemStatement = model.findStatements(contextStatement);
-		if (!systemStatement.hasNext()) {
-			statements.add(contextStatement);
-			if (context.getParent() != null) {
-				URI idParentContextURI = addContext(context.getParent(), statements);
-				statements.add(model.createStatement(idContextURI, hasParentContextURI, idParentContextURI));
-			}
-			statements.add(model.createStatement(idBagURI, typePredicateURI, model.createURI(simNS + "Bag")));
-			statements.add(model.createStatement(idContextURI, hasMetricsURI, idBagURI));
+		statements.add(model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + context.getName())));
+		if (context.getParent() != null) {
+			URI idParentContextURI = model.createURI(simNS + context.getParent().getId());
+			statements.add(model.createStatement(idContextURI, hasParentContextURI, idParentContextURI));
 		}
-		systemStatement.close();
+		URI idBagURI = model.createURI(simNS + context.getId() + "-metrics");
+		statements.add(model.createStatement(idBagURI, typePredicateURI, bagTypeURI));
+		statements.add(model.createStatement(idContextURI, hasMetricsURI, idBagURI));
+
 		for (Entry<String, Object> entry : context.entrySet()) {
 			URI idBagValueURI = generateURI();
 			statements.add(model.createStatement(idBagValueURI, typePredicateURI, model.createURI(simNS + entry.getKey())));
