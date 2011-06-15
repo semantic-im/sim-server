@@ -79,6 +79,9 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI isMeasurementOfURI;
 	private URI includesURI;
 	
+	private URI methodType;
+	private URI methodExecutionType;
+	
 	private static final HashMap<String, URI> methodsURIs = new HashMap<String, URI>();
 
 
@@ -142,6 +145,9 @@ public class RdfDatabase implements MetricsVisitor {
 		hasMeasurementURI = model.createURI(simNS + "hasMeasurement");
 		isMeasurementOfURI = model.createURI(simNS + "isMeasurementOf");
 		includesURI = model.createURI(simNS + "includes");
+		
+		methodType = model.createURI(simNS + "Method");
+		methodExecutionType = model.createURI(simNS + "MethodExecution");
 	}
 	
 	public void close() {
@@ -187,13 +193,16 @@ public class RdfDatabase implements MetricsVisitor {
 		URI idMethodURI = methodsURIs.get(methodID);
 		if(idMethodURI == null){		
 			idMethodURI = model.createURI(simNS + methodID);			
-			statements.add(model.createStatement(idMethodURI, typePredicateURI, model.createURI(simNS + "Method")));
+			statements.add(model.createStatement(idMethodURI, typePredicateURI, methodType));
 			statements.add(model.createStatement(idMethodURI, hasMethodNameURI, model.createPlainLiteral(methodMetrics.getMethod().getMethodName())));
 			statements.add(model.createStatement(idMethodURI, hasClassNameURI, model.createPlainLiteral(methodMetrics.getMethod().getClassName())));
 			methodsURIs.put(methodID, idMethodURI);
 		}
 		
 		URI idMethodMetricsURI = generateURI();
+		statements.add(model.createStatement(idMethodMetricsURI, typePredicateURI, methodExecutionType));
+		statements.add(model.createStatement(idMethodMetricsURI, isMethodExecutionOfURI, idMethodURI));
+		
 		
 		if (methodMetrics.getException() != null) {
 			statements.add(model.createStatement(idMethodMetricsURI, hasExceptionURI, model.createPlainLiteral(methodMetrics.getException())));
