@@ -1,62 +1,55 @@
 package sim.server.util;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.openrdf.model.BNode;
-import org.openrdf.model.Statement;
-import org.openrdf.model.ValueFactory;
-import org.openrdf.model.impl.StatementImpl;
-import org.openrdf.model.impl.ValueFactoryImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.SortCondition;
-import com.hp.hpl.jena.query.Syntax;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Var;
 import com.hp.hpl.jena.sparql.syntax.Element;
 
 public class SPARQLQueryContentAnalyzer {
+	private static final Logger log = LoggerFactory.getLogger(SPARQLQueryContentAnalyzer.class);
 
-	private String QueryContent;
-	private int QuerySizeInCharacters;
-	private int QueryNamespaceNb;
-	private Set<String> QueryNamespaceKeys;
-	public Set<String> getQueryNamespaceValues() {
-		return QueryNamespaceValues;
-	}
+	private String queryContent;
+	private int querySizeInCharacters;
+	private int queryNamespaceNb;
+	private Set<String> queryNamespaceKeys;
+	
 
-
-	private Set<String> QueryNamespaceValues;
-	private int QueryVariablesNb;
-	private int QueryDataSetSourcesNb;
-	private List<String> QueryDataSetSources;
-	private int QueryOperatorsNb;
-	private int QueryResultOrderingNb;
-	private int QueryResultLimitNb;
-	private int QueryResultOffsetNb;
-	private int QuerySizeInTriples;
+	private Set<String> queryNamespaceValues;
+	private int queryVariablesNb;
+	private int queryDataSetSourcesNb;
+	private List<String> queryDataSetSources;
+	private int queryOperatorsNb;
+	private int queryResultOrderingNb;
+	private int queryResultLimitNb;
+	private int queryResultOffsetNb;
+	private int querySizeInTriples;
 
 	public SPARQLQueryContentAnalyzer(String QueryContent) {
-		this.QueryContent = QueryContent;
-		this.QuerySizeInCharacters = 0;
-		this.QuerySizeInTriples = 0;
+		this.queryContent = QueryContent;
+		this.querySizeInCharacters = 0;
+		this.querySizeInTriples = 0;
 	}
 
 
-	public void parseQuery() {
+	public boolean parseQuery() {
 		// parses the QueryContent and fills up all the fields in this class
 
 		try {
-			Query query = QueryFactory.create(QueryContent);
+			Query query = QueryFactory.create(queryContent);
 			
 			//set the QuerySizeInCharacters
-			this.QuerySizeInCharacters = QueryContent.length();
+			this.querySizeInCharacters = queryContent.length();
 			
 			parsePrefixInformation(query);
 
@@ -69,9 +62,12 @@ public class SPARQLQueryContentAnalyzer {
 			parseLimitStatement(query);
 
 			parseOffsetStatement(query);
+			
+			return true;
 
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (Exception e) {
+			log.error("error parsing query {}", queryContent, e);
+			return false;
 		}
 	}
 	
@@ -88,7 +84,6 @@ public class SPARQLQueryContentAnalyzer {
 		// get only the prefixes that are used in the query;
 
 		Set<String> keySetTmp = prefixEquivalents.keySet();
-		Collection<String> entrySetTmp = prefixEquivalents.values();
 
 		// find what keys are used in the query;
 		// some prefixes may appear in the prefix declaration but they are not
@@ -108,8 +103,8 @@ public class SPARQLQueryContentAnalyzer {
 		String selectBody = QueryBody.substring(selectIndex);
 		Iterator<String> it = keySetTmp.iterator();
 		int keyValueIndex = -1;
-		Set<String> keys = new HashSet();
-		Set<String> values = new HashSet();
+		Set<String> keys = new HashSet<String>();
+		Set<String> values = new HashSet<String>();
 
 		while (it.hasNext()) {
 			// Return the value to which this map maps the specified key.
@@ -127,9 +122,9 @@ public class SPARQLQueryContentAnalyzer {
 				}
 			}
 		}
-		this.QueryNamespaceNb = keys.size();
-		this.QueryNamespaceKeys = keys;
-		this.QueryNamespaceValues = values;
+		this.queryNamespaceNb = keys.size();
+		this.queryNamespaceKeys = keys;
+		this.queryNamespaceValues = values;
 	}
 
 	public void parseVariablesInformation(Query query) {
@@ -159,7 +154,7 @@ public class SPARQLQueryContentAnalyzer {
 			variablesSet.add(query.getResultVars().get(i));
 
 	
-		this.QueryVariablesNb = variablesSet.size();
+		this.queryVariablesNb = variablesSet.size();
 	}
 
 	public void parseDataSetSourcesInformation(Query query) {
@@ -172,8 +167,8 @@ public class SPARQLQueryContentAnalyzer {
 		if (query.hasDatasetDescription()) {
 			List<String> graphUris = query.getGraphURIs();
 
-			this.QueryDataSetSourcesNb = graphUris.size();
-			this.QueryDataSetSources = graphUris;
+			this.queryDataSetSourcesNb = graphUris.size();
+			this.queryDataSetSources = graphUris;
 		}
 	}
 
@@ -187,7 +182,7 @@ public class SPARQLQueryContentAnalyzer {
 		if (query.hasOrderBy()) {
 			List<SortCondition> orderByFields = query.getOrderBy();
 			
-			this.QueryResultOrderingNb = orderByFields.size();
+			this.queryResultOrderingNb = orderByFields.size();
 		}
 	}
 
@@ -198,7 +193,7 @@ public class SPARQLQueryContentAnalyzer {
 		if (query.hasLimit()) {
 			long limit = query.getLimit();
 
-			this.QueryResultLimitNb = (int) limit;
+			this.queryResultLimitNb = (int) limit;
 		}
 	}
 
@@ -209,7 +204,7 @@ public class SPARQLQueryContentAnalyzer {
 		if (query.hasOffset()) {
 			long offset = query.getOffset();
 
-			this.QueryResultOffsetNb = (int) offset;
+			this.queryResultOffsetNb = (int) offset;
 		}
 	}
 
@@ -218,11 +213,11 @@ public class SPARQLQueryContentAnalyzer {
 	 * @return the queryContent
 	 */
 	public String getQueryContent() {
-		return QueryContent;
+		return queryContent;
 	}
 
 	public int getQuerySizeInCharacters() {
-		return QuerySizeInCharacters;
+		return querySizeInCharacters;
 	}
 
 
@@ -230,42 +225,42 @@ public class SPARQLQueryContentAnalyzer {
 	 * @return the queryNamespaceNb
 	 */
 	public int getQueryNamespaceNb() {
-		return QueryNamespaceNb;
+		return queryNamespaceNb;
 	}
 
 	/**
 	 * @return the queryVariablesNb
 	 */
 	public int getQueryVariablesNb() {
-		return QueryVariablesNb;
+		return queryVariablesNb;
 	}
 
 	/**
 	 * @return the queryDataSetSourcesNb
 	 */
 	public int getQueryDataSetSourcesNb() {
-		return QueryDataSetSourcesNb;
+		return queryDataSetSourcesNb;
 	}
 
 	/**
 	 * @return the queryDataSetSources
 	 */
 	public List<String> getQueryDataSetSources() {
-		return QueryDataSetSources;
+		return queryDataSetSources;
 	}
 
 	/**
 	 * @return the queryOperatorsNb
 	 */
 	public int getQueryOperatorsNb() {
-		return QueryOperatorsNb;
+		return queryOperatorsNb;
 	}
 
 	/**
 	 * @return the queryResultOrderingNb
 	 */
 	public int getQueryResultOrderingNb() {
-		return QueryResultOrderingNb;
+		return queryResultOrderingNb;
 	}
 
 
@@ -273,21 +268,21 @@ public class SPARQLQueryContentAnalyzer {
 	 * @return the queryResultLimitNb
 	 */
 	public int getQueryResultLimitNb() {
-		return QueryResultLimitNb;
+		return queryResultLimitNb;
 	}
 
 	/**
 	 * @return the queryResultOffsetNb
 	 */
 	public int getQueryResultOffsetNb() {
-		return QueryResultOffsetNb;
+		return queryResultOffsetNb;
 	}
 	
 	/**
 	 * @return the querySizeInTriples
 	 */
 	public int getQuerySizeInTriples() {
-		return QuerySizeInTriples;
+		return querySizeInTriples;
 	}
 
 
@@ -295,7 +290,12 @@ public class SPARQLQueryContentAnalyzer {
 	 * @return the queryNamespaceKeys
 	 */
 	public Set<String> getQueryNamespaceKeys() {
-		return QueryNamespaceKeys;
+		return queryNamespaceKeys;
 	}
+
+	public Set<String> getQueryNamespaceValues() {
+		return queryNamespaceValues;
+	}
+
 
 }
