@@ -40,7 +40,7 @@ public class RdfDatabase implements MetricsVisitor {
 
 	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
 	
-	public static final String QUERY_CONTENT = "queryContent";
+	public static final String QUERY_CONTENT = "QueryContent";
 	
 	private Model model;
 
