@@ -368,8 +368,8 @@ public class RdfDatabase implements MetricsVisitor {
 		}
 		URI idContextURI = model.createURI(simNS + context.getId());
 		statements.add(model.createStatement(idContextURI, typePredicateURI, model.createURI(simNS + context.getName())));
-		if (context.getParent() != null) {
-			URI idParentContextURI = model.createURI(simNS + context.getParent().getId());
+		if (context.getParentContextId() != null) {
+			URI idParentContextURI = model.createURI(simNS + context.getParentContextId());
 			statements.add(model.createStatement(idContextURI, hasParentContextURI, idParentContextURI));
 		}
 		URI idBagURI = model.createURI(simNS + context.getId() + "-metrics");
