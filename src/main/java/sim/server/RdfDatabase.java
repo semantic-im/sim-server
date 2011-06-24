@@ -200,7 +200,7 @@ public class RdfDatabase implements MetricsVisitor {
 		URI idSystemURI = addSystem(methodMetrics.getSystemId(), statements);
 		URI idApplicationURI = addApplication(methodMetrics.getMethod().getApplicationId(), statements);
 
-		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName();
+		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName().replace("<init>", "new");
 		
 		URI idMethodURI = methodURICache.get(methodID);
 		if(idMethodURI == null){		
