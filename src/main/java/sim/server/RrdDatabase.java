@@ -30,6 +30,7 @@ import sim.data.Method;
 import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemMetrics;
+import sim.server.compund.data.CompoundMetric;
 
 /**
  * @author valer
@@ -327,7 +328,8 @@ public class RrdDatabase implements MetricsVisitor {
 
 	@Override
 	public void visit(Context context) {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub	
 		
 	}
+	
 }

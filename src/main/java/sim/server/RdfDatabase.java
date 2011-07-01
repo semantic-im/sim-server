@@ -12,11 +12,17 @@ import java.util.Map.Entry;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.Model;
+import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.Statement;
+import org.ontoware.rdf2go.model.TriplePattern;
 import org.ontoware.rdf2go.model.node.DatatypeLiteral;
 import org.ontoware.rdf2go.model.node.Node;
+import org.ontoware.rdf2go.model.node.NodeOrVariable;
 import org.ontoware.rdf2go.model.node.PlainLiteral;
+import org.ontoware.rdf2go.model.node.ResourceOrVariable;
 import org.ontoware.rdf2go.model.node.URI;
+import org.ontoware.rdf2go.model.node.UriOrVariable;
+import org.ontoware.rdf2go.model.node.Variable;
 import org.ontoware.rdf2go.util.RDFTool;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.http.HTTPRepository;
@@ -29,6 +35,8 @@ import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemId;
 import sim.data.SystemMetrics;
+import sim.server.compund.data.CompoundMetric;
+import sim.server.compund.data.Metric;
 import sim.server.util.SPARQLQueryContentAnalyzer;
 
 
@@ -46,6 +54,7 @@ public class RdfDatabase implements MetricsVisitor {
 
 	private String simNS;
 	private String rdfNS;
+	private String rdfsNS;	
 	private String xsdNS;
 	
 	private URI typePredicateURI;
@@ -115,6 +124,13 @@ public class RdfDatabase implements MetricsVisitor {
 			model.commit();
 			rdfNS = model.getNamespace("rdf");
 		}
+		rdfsNS = model.getNamespace("rdfs");
+		if (rdfsNS == null) {
+			model.setNamespace("rdfs", "http://www.w3.org/2000/01/rdf-schema#");
+			model.commit();
+			rdfsNS = model.getNamespace("rdfs");
+		}
+
 		xsdNS = model.getNamespace("xsd");
 		if (xsdNS == null) {
 			model.setNamespace("xsd", "http://www.w3.org/2001/XMLSchema#");
@@ -452,11 +468,52 @@ public class RdfDatabase implements MetricsVisitor {
 		List<Statement> statements = new ArrayList<Statement>();	
 		addContext(context, statements);
 		model.addAll(statements.iterator());
-		model.commit();	
+		model.commit();			
 	}
-	
+
 	private URI generateURI(){
 		return model.createURI(simNS + UUID.randomUUID().toString());
 	}
+	
+	public QueryResultTable sparqlSelect(String queryString){
+		return model.sparqlSelect(queryString);
+	}
 
+	public URI createURI(String uriString){
+		return model.createURI(simNS + uriString);
+	}
+
+	public String getSimNS() {
+		return simNS;
+	}
+
+	public String getRdfNS() {
+		return rdfNS;
+	}
+
+	public String getRdfsNS() {
+		return rdfsNS;
+	}
+
+	public String getXsdNS() {
+		return xsdNS;
+	}
+	
+	public void visit(CompoundMetric compoundMetric) {
+		List<Statement> statements = new ArrayList<Statement>();
+				
+		URI idCompoundMetricURI = generateURI();
+		compoundMetric.setId(idCompoundMetricURI);
+		
+		statements.add(model.createStatement(idCompoundMetricURI, typePredicateURI, compoundMetric.getType()));
+		for(Metric m : compoundMetric.getConstituentMetrics()){
+			statements.add(model.createStatement(idCompoundMetricURI, includesURI, m.getId()));
+		}		
+		statements.add(model.createStatement(idCompoundMetricURI, hasDataValueURI, getDoubleTypeURI(new Double(compoundMetric.getValue()).doubleValue())));
+		
+		model.addAll(statements.iterator());
+		model.commit();
+	}
+
+	
 }
