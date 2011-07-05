@@ -15,40 +15,32 @@
  */ 
 package sim.server;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.ontoware.rdf2go.model.node.URI;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
-
 import junit.framework.TestCase;
-import sim.server.compund.CompundMetricsGenerator;
-import sim.server.data.CompoundMetric;
-import sim.server.data.Metric;
-import sim.server.data.MetricImpl;
+import sim.server.atomic.AtomicMetricsGenerator;
 
 /**
  * ioantoma 
  */
 
-public class TestCompoundMetrics extends TestCase {
+public class TestAtomicMetrics extends TestCase {
 	
-	private CompundMetricsGenerator cmg; 
+	private AtomicMetricsGenerator amg; 
 
-	public TestCompoundMetrics() {
+	public TestAtomicMetrics() {
 		RdfDatabase rdfDatabase = new RdfDatabase();
 		Main.storage_server_domain = "localhost";
 		Main.storage_server_port  = 8080;
 		Main.storage_repository_id = "sim";
 
-		cmg = new CompundMetricsGenerator(rdfDatabase);
+		amg = new AtomicMetricsGenerator(rdfDatabase);
 	}
 	
-	public void testCountCompuntMetrics(){				
-		assertEquals(9,cmg.countCompoundMetrics());		
+	public void testCountAtomicMetrics(){				
+		assertEquals(40,amg.countAtomicMetrics());		
 	}	
-	
-	public void testGenerateCompoundMetric(){
+
+/*
+	public void testGenerateAtomicMetric(){
 		URI uri = new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesInvocation");
 		Metric m1 = new MetricImpl(uri);
 		Metric m2 = new MetricImpl(uri);
@@ -63,7 +55,7 @@ public class TestCompoundMetrics extends TestCase {
 		metrics.add(m4);
 		metrics.add(m5);
 		
-		CompoundMetric cm1 = cmg.generateCompundMetric(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesPerTimeInterval"), metrics);
+		Metric cm1 = cmg.generateCompundMetric(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesPerTimeInterval"), metrics);
 				
 		assertEquals(new Double(5.0).doubleValue(),cm1.getValue());
 		
@@ -90,7 +82,6 @@ public class TestCompoundMetrics extends TestCase {
 		CompoundMetric cm2 = cmg.generateCompundMetric(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgDurationPerTimeInterval"), metrics);
 		assertEquals(new Double(1100.0).doubleValue(),cm2.getValue());
 	}
-	
-	
+*/	
 	
 }

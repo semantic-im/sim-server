@@ -26,11 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sim.data.Context;
-import sim.data.Method;
 import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemMetrics;
-import sim.server.compund.data.CompoundMetric;
 
 /**
  * @author valer

@@ -1,4 +1,4 @@
-package sim.server.compund.data;
+package sim.server.data;
 
 import org.ontoware.rdf2go.model.node.URI;
 
@@ -19,6 +19,7 @@ public class MetricImpl implements Metric{
 	private URI type;
 	private double value;
 	private long creationTime;
+	private String methodId;
 
 	public MetricImpl(URI type){
 		this.type = type;
@@ -29,11 +30,6 @@ public class MetricImpl implements Metric{
 	@Override
 	public double getValue() {
 		return value;
-	}
-
-	@Override
-	public void accept(MetricsVisitor visitor) {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -59,6 +55,16 @@ public class MetricImpl implements Metric{
 	@Override
 	public void setId(URI id) {
 		this.id = id;
+	}
+
+	@Override
+	public String getMethodId() {
+		return methodId;
+	}
+
+	@Override
+	public void setMethodId(String methodId) {
+		this.methodId = methodId;	
 	}
 	
 }

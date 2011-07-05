@@ -314,9 +314,7 @@ rdfs:comment rdf:type owl:AnnotationProperty .
                           
                           <http://purl.org/dc/elements/1.1/description> "specifies the completion status of a query" ;
                           
-                          rdfs:domain :Query ;
-                          
-                          rdfs:range :QueryCompletionStatus .
+                          rdfs:domain :Query .
 
 
 
@@ -326,9 +324,7 @@ rdfs:comment rdf:type owl:AnnotationProperty .
               
               <http://purl.org/dc/elements/1.1/description> "specifies the size of a query" ;
               
-              rdfs:domain :Query ;
-              
-              rdfs:range :QuerySize .
+              rdfs:domain :Query .
 
 
 
@@ -564,6 +560,16 @@ owl:topObjectProperty rdf:type owl:ObjectProperty .
                  rdfs:domain :Error ;
                  
                  rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMethodId
+
+:hasMethodId rdf:type owl:DatatypeProperty ;
+             
+             rdfs:domain :AtomicMetric ;
+             
+             rdfs:range xsd:string .
 
 
 
@@ -816,6 +822,14 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#AtomicMetric
+
+:AtomicMetric rdf:type owl:Class ;
+              
+              rdfs:subClassOf :Metric .
+
+
+
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#Average
 
 :Average rdf:type owl:Class ;
@@ -1000,12 +1014,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
             
             rdfs:subClassOf :SystemMetric ,
                             [ rdf:type owl:Restriction ;
-                              owl:onProperty :hasMeasurementUnit ;
-                              owl:hasValue :Microsecond
-                            ] ,
-                            [ rdf:type owl:Restriction ;
                               owl:onProperty :hasDataValue ;
                               owl:allValuesFrom xsd:float
+                            ] ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasMeasurementUnit ;
+                              owl:hasValue :Microsecond
                             ] ;
             
             <http://purl.org/dc/elements/1.1/description> "Irq CPU time" .
@@ -1133,12 +1147,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                        
                        rdfs:subClassOf :Metric ,
                                        [ rdf:type owl:Restriction ;
-                                         owl:onProperty :hasDataValue ;
-                                         owl:allValuesFrom xsd:long
-                                       ] ,
-                                       [ rdf:type owl:Restriction ;
                                          owl:onProperty :hasMeasurementUnit ;
                                          owl:hasValue :Microsecond
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
                                        ] ;
                        
                        <http://purl.org/dc/elements/1.1/description> "the time elapsed since the platform was started until its execution has ended" .
@@ -1191,6 +1205,22 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginBeginExecutionTime
+
+:PluginBeginExecutionTime rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :AtomicMetric ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasMethodId ;
+                                            owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasDataValue ;
+                                            owl:allValuesFrom xsd:long
+                                          ] .
+
+
+
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginDataLayerAccessDim
 
 :PluginDataLayerAccessDim rdf:type owl:Class ;
@@ -1198,6 +1228,38 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                           rdfs:subClassOf :Metric ;
                           
                           <http://purl.org/dc/elements/1.1/description> "the size in BYTES of the returned data after an access to the data layer, during the execution of the plug-in" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginEndExecutionTime
+
+:PluginEndExecutionTime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :AtomicMetric ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMethodId ;
+                                          owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasDataValue ;
+                                          owl:allValuesFrom xsd:long
+                                        ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginErrorStatus
+
+:PluginErrorStatus rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :AtomicMetric ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasDataValue ;
+                                     owl:allValuesFrom xsd:boolean
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMethodId ;
+                                     owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                   ] .
 
 
 
@@ -1325,21 +1387,213 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginProcessTotalCPUTime
+
+:PluginProcessTotalCPUTime rdf:type owl:Class ;
+                           
+                           rdfs:subClassOf :AtomicMetric ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty :hasMethodId ;
+                                             owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                           ] ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty :hasDataValue ;
+                                             owl:allValuesFrom xsd:long
+                                           ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadBlockCount
+
+:PluginThreadBlockCount rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :AtomicMetric ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMethodId ;
+                                          owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasDataValue ;
+                                          owl:allValuesFrom xsd:long
+                                        ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadBlockTime
+
+:PluginThreadBlockTime rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :AtomicMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMethodId ;
+                                         owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
+                                       ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadCount
+
+:PluginThreadCount rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :AtomicMetric ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasDataValue ;
+                                     owl:allValuesFrom xsd:long
+                                   ] ,
+                                   [ rdf:type owl:Restriction ;
+                                     owl:onProperty :hasMethodId ;
+                                     owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                   ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadGccCount
+
+:PluginThreadGccCount rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :AtomicMetric ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasMethodId ;
+                                        owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                      ] ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasDataValue ;
+                                        owl:allValuesFrom xsd:long
+                                      ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadGccTime
+
+:PluginThreadGccTime rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :AtomicMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMethodId ;
+                                       owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:allValuesFrom xsd:long
+                                     ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadSystemCPUTime
+
+:PluginThreadSystemCPUTime rdf:type owl:Class ;
+                           
+                           rdfs:subClassOf :AtomicMetric ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty :hasMethodId ;
+                                             owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                           ] ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty :hasDataValue ;
+                                             owl:allValuesFrom xsd:long
+                                           ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadTotalCPUTime
+
+:PluginThreadTotalCPUTime rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :AtomicMetric ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasMethodId ;
+                                            owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasDataValue ;
+                                            owl:allValuesFrom xsd:long
+                                          ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadUserCPUTime
+
+:PluginThreadUserCPUTime rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :AtomicMetric ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasMethodId ;
+                                           owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                         ] ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasDataValue ;
+                                           owl:allValuesFrom xsd:long
+                                         ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadWaitCount
+
+:PluginThreadWaitCount rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :AtomicMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMethodId ;
+                                         owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                       ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginThreadWaitTime
+
+:PluginThreadWaitTime rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :AtomicMetric ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasDataValue ;
+                                        owl:allValuesFrom xsd:long
+                                      ] ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasMethodId ;
+                                        owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                      ] .
+
+
+
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginTotalExecutionTime
 
 :PluginTotalExecutionTime rdf:type owl:Class ;
                           
                           rdfs:subClassOf :Metric ,
                                           [ rdf:type owl:Restriction ;
-                                            owl:onProperty :hasDataValue ;
-                                            owl:allValuesFrom xsd:integer
-                                          ] ,
-                                          [ rdf:type owl:Restriction ;
                                             owl:onProperty :hasMeasurementUnit ;
                                             owl:hasValue :Microsecond
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasDataValue ;
+                                            owl:allValuesFrom xsd:integer
                                           ] ;
                           
                           <http://purl.org/dc/elements/1.1/description> "denotes the total exectution time of a plug-in inside the workflow" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginTotalResponseTime
+
+:PluginTotalResponseTime rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :AtomicMetric ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasMethodId ;
+                                           owl:hasValue "eu.larkc.plugin.Plugin.invoke"
+                                         ] ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasDataValue ;
+                                           owl:allValuesFrom xsd:long
+                                         ] .
 
 
 
@@ -1349,12 +1603,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                      
                      rdfs:subClassOf :MethodMetric ,
                                      [ rdf:type owl:Restriction ;
-                                       owl:onProperty :hasMeasurementUnit ;
-                                       owl:hasValue :Microsecond
-                                     ] ,
-                                     [ rdf:type owl:Restriction ;
                                        owl:onProperty :hasDataValue ;
                                        owl:allValuesFrom xsd:long
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMeasurementUnit ;
+                                       owl:hasValue :Microsecond
                                      ] ;
                      
                      <http://purl.org/dc/elements/1.1/description> "Process Total CPU time" .
@@ -1410,15 +1664,85 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
-###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryCompletionStatus
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryBeginExecutionTime
 
-:QueryCompletionStatus rdf:type owl:Class ;
+:QueryBeginExecutionTime rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :AtomicMetric ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasMethodId ;
+                                           owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                         ] ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasDataValue ;
+                                           owl:someValuesFrom xsd:long
+                                         ] ;
+                         
+                         <http://purl.org/dc/elements/1.1/description> "the begin execution time of a query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryContent
+
+:QueryContent rdf:type owl:Class ;
+              
+              rdfs:subClassOf :AtomicMetric ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :hasDataValue ;
+                                owl:allValuesFrom xsd:string
+                              ] ,
+                              [ rdf:type owl:Restriction ;
+                                owl:onProperty :hasMethodId ;
+                                owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                              ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryDataSetSourcesNb
+
+:QueryDataSetSourcesNb rdf:type owl:Class ;
                        
-                       rdfs:subClassOf :Metric ,
+                       rdfs:subClassOf :AtomicMetric ,
                                        [ rdf:type owl:Restriction ;
                                          owl:onProperty :hasDataValue ;
-                                         owl:someValuesFrom xsd:boolean
+                                         owl:someValuesFrom xsd:integer
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMethodId ;
+                                         owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
                                        ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryEndExecutionTime
+
+:QueryEndExecutionTime rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :AtomicMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:someValuesFrom xsd:long
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMethodId ;
+                                         owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                       ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryErrorStatus
+
+:QueryErrorStatus rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :AtomicMetric ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMethodId ;
+                                    owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:someValuesFrom xsd:boolean
+                                  ] .
 
 
 
@@ -1427,11 +1751,6 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 :QueryFailureRatePerTimeInterval rdf:type owl:Class ;
                                  
                                  rdfs:subClassOf :PerTimeInterval ,
-                                                 [ rdf:type owl:Restriction ;
-                                                   owl:onProperty :includes ;
-                                                   owl:onClass :QueryCompletionStatus ;
-                                                   owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger
-                                                 ] ,
                                                  [ rdf:type owl:Restriction ;
                                                    owl:onProperty :hasAggregationFunction ;
                                                    owl:allValuesFrom :Count
@@ -1451,41 +1770,133 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
-###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySize
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryNamespaceNb
 
-:QuerySize rdf:type owl:Class ;
-           
-           rdfs:subClassOf :Metric ,
-                           [ rdf:type owl:Restriction ;
-                             owl:onProperty :hasDataValue ;
-                             owl:someValuesFrom xsd:integer
-                           ] ;
-           
-           <http://purl.org/dc/elements/1.1/description> "concept that represents the size of a query" .
-
-
-
-###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySizeInBytes
-
-:QuerySizeInBytes rdf:type owl:Class ;
+:QueryNamespaceNb rdf:type owl:Class ;
                   
-                  rdfs:subClassOf :QuerySize ,
+                  rdfs:subClassOf :AtomicMetric ,
                                   [ rdf:type owl:Restriction ;
-                                    owl:onProperty :hasMeasurementUnit ;
-                                    owl:hasValue :Byte
-                                  ] ;
+                                    owl:onProperty :hasMethodId ;
+                                    owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:someValuesFrom xsd:integer
+                                  ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryOperatorsNb
+
+:QueryOperatorsNb rdf:type owl:Class ;
                   
-                  <http://purl.org/dc/elements/1.1/description> "the size of a query represented in bytes" .
+                  rdfs:subClassOf :AtomicMetric ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMethodId ;
+                                    owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:someValuesFrom xsd:integer
+                                  ] .
 
 
 
-###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySizeInTriples
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryProcessTotalCPUTime
 
-:QuerySizeInTriples rdf:type owl:Class ;
+:QueryProcessTotalCPUTime rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :AtomicMetric ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasDataValue ;
+                                            owl:someValuesFrom xsd:long
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasMethodId ;
+                                            owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                          ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryResultLimitNb
+
+:QueryResultLimitNb rdf:type owl:Class ;
                     
-                    rdfs:subClassOf :QuerySize ;
-                    
-                    <http://purl.org/dc/elements/1.1/description> "the size of a query represented in terms of number of RDF triples" .
+                    rdfs:subClassOf :AtomicMetric ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasMethodId ;
+                                      owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasDataValue ;
+                                      owl:someValuesFrom xsd:integer
+                                    ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryResultOffsetNb
+
+:QueryResultOffsetNb rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :AtomicMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:someValuesFrom xsd:integer
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMethodId ;
+                                       owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                     ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryResultOrderingNb
+
+:QueryResultOrderingNb rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :AtomicMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMethodId ;
+                                         owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:someValuesFrom xsd:integer
+                                       ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryResultSizeInCharacters
+
+:QueryResultSizeInCharacters rdf:type owl:Class ;
+                             
+                             rdfs:subClassOf :AtomicMetric ,
+                                             [ rdf:type owl:Restriction ;
+                                               owl:onProperty :hasMethodId ;
+                                               owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                             ] ,
+                                             [ rdf:type owl:Restriction ;
+                                               owl:onProperty :hasDataValue ;
+                                               owl:someValuesFrom xsd:integer
+                                             ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySizeInCharacters
+
+:QuerySizeInCharacters rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :AtomicMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMethodId ;
+                                         owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:someValuesFrom xsd:integer
+                                       ] ;
+                       
+                       <http://purl.org/dc/elements/1.1/description> "the size of a query represented in characters" .
 
 
 
@@ -1497,14 +1908,169 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                                                  [ rdf:type owl:Restriction ;
                                                    owl:onProperty :hasAggregationFunction ;
                                                    owl:allValuesFrom :Count
-                                                 ] ,
-                                                 [ rdf:type owl:Restriction ;
-                                                   owl:onProperty :includes ;
-                                                   owl:onClass :QueryCompletionStatus ;
-                                                   owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger
                                                  ] ;
                                  
                                  <http://purl.org/dc/elements/1.1/description> "The number of queries that finished with success" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadBlockCount
+
+:QueryThreadBlockCount rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :AtomicMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasMethodId ;
+                                         owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:someValuesFrom xsd:long
+                                       ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadBlockTime
+
+:QueryThreadBlockTime rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :AtomicMetric ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasDataValue ;
+                                        owl:someValuesFrom xsd:long
+                                      ] ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasMethodId ;
+                                        owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                      ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadCount
+
+:QueryThreadCount rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :AtomicMetric ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:someValuesFrom xsd:long
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMethodId ;
+                                    owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                  ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadGccCount
+
+:QueryThreadGccCount rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :AtomicMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMethodId ;
+                                       owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:someValuesFrom xsd:long
+                                     ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadGccTime
+
+:QueryThreadGccTime rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :AtomicMetric ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasDataValue ;
+                                      owl:someValuesFrom xsd:long
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasMethodId ;
+                                      owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                    ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadSystemCPUTime
+
+:QueryThreadSystemCPUTime rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :AtomicMetric ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasMethodId ;
+                                            owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasDataValue ;
+                                            owl:someValuesFrom xsd:long
+                                          ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadTotalCPUTime
+
+:QueryThreadTotalCPUTime rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :AtomicMetric ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasMethodId ;
+                                           owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                         ] ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasDataValue ;
+                                           owl:someValuesFrom xsd:long
+                                         ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadUserCPUTime
+
+:QueryThreadUserCPUTime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :AtomicMetric ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasDataValue ;
+                                          owl:someValuesFrom xsd:long
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMethodId ;
+                                          owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                        ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadWaitCount
+
+:QueryThreadWaitCount rdf:type owl:Class ;
+                      
+                      rdfs:subClassOf :AtomicMetric ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasDataValue ;
+                                        owl:someValuesFrom xsd:long
+                                      ] ,
+                                      [ rdf:type owl:Restriction ;
+                                        owl:onProperty :hasMethodId ;
+                                        owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                      ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryThreadWaitTime
+
+:QueryThreadWaitTime rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :AtomicMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:someValuesFrom xsd:long
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasMethodId ;
+                                       owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                     ] .
 
 
 
@@ -1512,17 +2078,37 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 :QueryTotalResponseTime rdf:type owl:Class ;
                         
-                        rdfs:subClassOf :Metric ,
+                        rdfs:subClassOf :AtomicMetric ,
                                         [ rdf:type owl:Restriction ;
-                                          owl:onProperty :hasMeasurementUnit ;
-                                          owl:hasValue :Microsecond
+                                          owl:onProperty :hasMethodId ;
+                                          owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
                                         ] ,
                                         [ rdf:type owl:Restriction ;
                                           owl:onProperty :hasDataValue ;
-                                          owl:someValuesFrom xsd:integer
+                                          owl:someValuesFrom xsd:long
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasMeasurementUnit ;
+                                          owl:hasValue :Microsecond
                                         ] ;
                         
                         <http://purl.org/dc/elements/1.1/description> "denotes the time elapsed from when the query was sent to the platform until the final result is provided to the user" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryVariablesNb
+
+:QueryVariablesNb rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :AtomicMetric ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasMethodId ;
+                                    owl:hasValue "eu.larkc.core.endpoint.sparql.SparqlHandler.handle"
+                                  ] ,
+                                  [ rdf:type owl:Restriction ;
+                                    owl:onProperty :hasDataValue ;
+                                    owl:someValuesFrom xsd:integer
+                                  ] .
 
 
 
@@ -1646,12 +2232,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                
                rdfs:subClassOf :SystemMetric ,
                                [ rdf:type owl:Restriction ;
-                                 owl:onProperty :hasDataValue ;
-                                 owl:allValuesFrom xsd:float
-                               ] ,
-                               [ rdf:type owl:Restriction ;
                                  owl:onProperty :hasMeasurementUnit ;
                                  owl:hasValue :Percent
+                               ] ,
+                               [ rdf:type owl:Restriction ;
+                                 owl:onProperty :hasDataValue ;
+                                 owl:allValuesFrom xsd:float
                                ] ;
                
                <http://purl.org/dc/elements/1.1/description> "Time spent running kernel code" .
@@ -1708,12 +2294,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                                
                                rdfs:subClassOf :SystemMetric ,
                                                [ rdf:type owl:Restriction ;
-                                                 owl:onProperty :hasDataValue ;
-                                                 owl:allValuesFrom xsd:long
-                                               ] ,
-                                               [ rdf:type owl:Restriction ;
                                                  owl:onProperty :hasMeasurementUnit ;
                                                  owl:hasValue :Byte
+                                               ] ,
+                                               [ rdf:type owl:Restriction ;
+                                                 owl:onProperty :hasDataValue ;
+                                                 owl:allValuesFrom xsd:long
                                                ] ;
                                
                                <http://purl.org/dc/elements/1.1/description> "System open file descriptor count" .
@@ -1726,12 +2312,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                      
                      rdfs:subClassOf :Metric ,
                                      [ rdf:type owl:Restriction ;
-                                       owl:onProperty :hasDataValue ;
-                                       owl:allValuesFrom xsd:long
-                                     ] ,
-                                     [ rdf:type owl:Restriction ;
                                        owl:onProperty :hasMeasurementUnit ;
                                        owl:hasValue :Byte
+                                     ] ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:allValuesFrom xsd:long
                                      ] ;
                      
                      <http://purl.org/dc/elements/1.1/description> "Amount of swap space used on node" .
@@ -1758,12 +2344,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                  
                  rdfs:subClassOf :MethodMetric ,
                                  [ rdf:type owl:Restriction ;
-                                   owl:onProperty :hasMeasurementUnit ;
-                                   owl:hasValue :Microsecond
-                                 ] ,
-                                 [ rdf:type owl:Restriction ;
                                    owl:onProperty :hasDataValue ;
                                    owl:allValuesFrom xsd:long
+                                 ] ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasMeasurementUnit ;
+                                   owl:hasValue :Microsecond
                                  ] ;
                  
                  <http://purl.org/dc/elements/1.1/description> "Thread Block time" ,
@@ -1841,12 +2427,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                     
                     rdfs:subClassOf :MethodMetric ,
                                     [ rdf:type owl:Restriction ;
-                                      owl:onProperty :hasDataValue ;
-                                      owl:allValuesFrom xsd:long
-                                    ] ,
-                                    [ rdf:type owl:Restriction ;
                                       owl:onProperty :hasMeasurementUnit ;
                                       owl:hasValue :Microsecond
+                                    ] ,
+                                    [ rdf:type owl:Restriction ;
+                                      owl:onProperty :hasDataValue ;
+                                      owl:allValuesFrom xsd:long
                                     ] ;
                     
                     <http://purl.org/dc/elements/1.1/description> "Thread Total CPU time" .
@@ -1891,12 +2477,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                 
                 rdfs:subClassOf :MethodMetric ,
                                 [ rdf:type owl:Restriction ;
-                                  owl:onProperty :hasMeasurementUnit ;
-                                  owl:hasValue :Microsecond
-                                ] ,
-                                [ rdf:type owl:Restriction ;
                                   owl:onProperty :hasDataValue ;
                                   owl:allValuesFrom xsd:long
+                                ] ,
+                                [ rdf:type owl:Restriction ;
+                                  owl:onProperty :hasMeasurementUnit ;
+                                  owl:hasValue :Microsecond
                                 ] ;
                 
                 <http://purl.org/dc/elements/1.1/description> "the total accumulated time the current thread executing this method has been in the WAITING or TIMED_WAITING state (ms)" .
@@ -1923,12 +2509,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
                        
                        rdfs:subClassOf :SystemMetric ,
                                        [ rdf:type owl:Restriction ;
-                                         owl:onProperty :hasDataValue ;
-                                         owl:allValuesFrom xsd:long
-                                       ] ,
-                                       [ rdf:type owl:Restriction ;
                                          owl:onProperty :hasMeasurementUnit ;
                                          owl:hasValue :Byte
+                                       ] ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
                                        ] ;
                        
                        <http://purl.org/dc/elements/1.1/description> "Amount of physical memory available on the processing node" .
@@ -1977,12 +2563,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
              
              rdfs:subClassOf :SystemMetric ,
                              [ rdf:type owl:Restriction ;
-                               owl:onProperty :hasDataValue ;
-                               owl:allValuesFrom xsd:float
-                             ] ,
-                             [ rdf:type owl:Restriction ;
                                owl:onProperty :hasMeasurementUnit ;
                                owl:hasValue :Percent
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasDataValue ;
+                               owl:allValuesFrom xsd:float
                              ] ;
              
              <http://purl.org/dc/elements/1.1/description> "Time spent running non-kernel code" .
@@ -1995,12 +2581,12 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
              
              rdfs:subClassOf :SystemMetric ,
                              [ rdf:type owl:Restriction ;
-                               owl:onProperty :hasMeasurementUnit ;
-                               owl:hasValue :Microsecond
-                             ] ,
-                             [ rdf:type owl:Restriction ;
                                owl:onProperty :hasDataValue ;
                                owl:allValuesFrom xsd:float
+                             ] ,
+                             [ rdf:type owl:Restriction ;
+                               owl:onProperty :hasMeasurementUnit ;
+                               owl:hasValue :Microsecond
                              ] ;
              
              <http://purl.org/dc/elements/1.1/description> "User CPU time" .
@@ -2212,19 +2798,322 @@ owl:topDataProperty rdf:type owl:DatatypeProperty .
 
 
 
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowNumberOfPlugins
+
+:WorkflowNumberOfPlugins rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :AtomicMetric ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasDataValue ;
+                                           owl:allValuesFrom xsd:integer
+                                         ] ,
+                                         [ rdf:type owl:Class ;
+                                           owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasMethodId ;
+                                                           owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                         ]
+                                                         [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasMethodId ;
+                                                           owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                         ]
+                                                       )
+                                         ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowProcessTotalCPUTime
+
+:WorkflowProcessTotalCPUTime rdf:type owl:Class ;
+                             
+                             rdfs:subClassOf :AtomicMetric ,
+                                             [ rdf:type owl:Restriction ;
+                                               owl:onProperty :hasDataValue ;
+                                               owl:allValuesFrom xsd:long
+                                             ] ,
+                                             [ rdf:type owl:Class ;
+                                               owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                               owl:onProperty :hasMethodId ;
+                                                               owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                             ]
+                                                             [ rdf:type owl:Restriction ;
+                                                               owl:onProperty :hasMethodId ;
+                                                               owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                             ]
+                                                           )
+                                             ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadBlockCount
+
+:WorkflowThreadBlockCount rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :AtomicMetric ,
+                                          [ rdf:type owl:Class ;
+                                            owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasMethodId ;
+                                                            owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                          ]
+                                                          [ rdf:type owl:Restriction ;
+                                                            owl:onProperty :hasMethodId ;
+                                                            owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                          ]
+                                                        )
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasDataValue ;
+                                            owl:allValuesFrom xsd:long
+                                          ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadBlockTime
+
+:WorkflowThreadBlockTime rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :AtomicMetric ,
+                                         [ rdf:type owl:Class ;
+                                           owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasMethodId ;
+                                                           owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                         ]
+                                                         [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasMethodId ;
+                                                           owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                         ]
+                                                       )
+                                         ] ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasDataValue ;
+                                           owl:allValuesFrom xsd:long
+                                         ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadCount
+
+:WorkflowThreadCount rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :AtomicMetric ,
+                                     [ rdf:type owl:Restriction ;
+                                       owl:onProperty :hasDataValue ;
+                                       owl:allValuesFrom xsd:long
+                                     ] ,
+                                     [ rdf:type owl:Class ;
+                                       owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                       owl:onProperty :hasMethodId ;
+                                                       owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                     ]
+                                                     [ rdf:type owl:Restriction ;
+                                                       owl:onProperty :hasMethodId ;
+                                                       owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                     ]
+                                                   )
+                                     ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadGccCount
+
+:WorkflowThreadGccCount rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :AtomicMetric ,
+                                        [ rdf:type owl:Class ;
+                                          owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasMethodId ;
+                                                          owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                        ]
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasMethodId ;
+                                                          owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                        ]
+                                                      )
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasDataValue ;
+                                          owl:allValuesFrom xsd:long
+                                        ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadGccTime
+
+:WorkflowThreadGccTime rdf:type owl:Class ;
+                       
+                       rdfs:subClassOf :AtomicMetric ,
+                                       [ rdf:type owl:Restriction ;
+                                         owl:onProperty :hasDataValue ;
+                                         owl:allValuesFrom xsd:long
+                                       ] ,
+                                       [ rdf:type owl:Class ;
+                                         owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasMethodId ;
+                                                         owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                       ]
+                                                       [ rdf:type owl:Restriction ;
+                                                         owl:onProperty :hasMethodId ;
+                                                         owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                       ]
+                                                     )
+                                       ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadSystemCPUTime
+
+:WorkflowThreadSystemCPUTime rdf:type owl:Class ;
+                             
+                             rdfs:subClassOf :AtomicMetric ,
+                                             [ rdf:type owl:Restriction ;
+                                               owl:onProperty :hasDataValue ;
+                                               owl:allValuesFrom xsd:long
+                                             ] ,
+                                             [ rdf:type owl:Class ;
+                                               owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                               owl:onProperty :hasMethodId ;
+                                                               owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                             ]
+                                                             [ rdf:type owl:Restriction ;
+                                                               owl:onProperty :hasMethodId ;
+                                                               owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                             ]
+                                                           )
+                                             ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadTotalCPUTime
+
+:WorkflowThreadTotalCPUTime rdf:type owl:Class ;
+                            
+                            rdfs:subClassOf :AtomicMetric ,
+                                            [ rdf:type owl:Class ;
+                                              owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :hasMethodId ;
+                                                              owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                            ]
+                                                            [ rdf:type owl:Restriction ;
+                                                              owl:onProperty :hasMethodId ;
+                                                              owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                            ]
+                                                          )
+                                            ] ,
+                                            [ rdf:type owl:Restriction ;
+                                              owl:onProperty :hasDataValue ;
+                                              owl:allValuesFrom xsd:long
+                                            ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadUserCPUTime
+
+:WorkflowThreadUserCPUTime rdf:type owl:Class ;
+                           
+                           rdfs:subClassOf :AtomicMetric ,
+                                           [ rdf:type owl:Class ;
+                                             owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasMethodId ;
+                                                             owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                           ]
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasMethodId ;
+                                                             owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                           ]
+                                                         )
+                                           ] ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty :hasDataValue ;
+                                             owl:allValuesFrom xsd:long
+                                           ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadWaitCount
+
+:WorkflowThreadWaitCount rdf:type owl:Class ;
+                         
+                         rdfs:subClassOf :AtomicMetric ,
+                                         [ rdf:type owl:Class ;
+                                           owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasMethodId ;
+                                                           owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                         ]
+                                                         [ rdf:type owl:Restriction ;
+                                                           owl:onProperty :hasMethodId ;
+                                                           owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                         ]
+                                                       )
+                                         ] ,
+                                         [ rdf:type owl:Restriction ;
+                                           owl:onProperty :hasDataValue ;
+                                           owl:allValuesFrom xsd:long
+                                         ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowThreadWaitTime
+
+:WorkflowThreadWaitTime rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :AtomicMetric ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasDataValue ;
+                                          owl:allValuesFrom xsd:long
+                                        ] ,
+                                        [ rdf:type owl:Class ;
+                                          owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasMethodId ;
+                                                          owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                        ]
+                                                        [ rdf:type owl:Restriction ;
+                                                          owl:onProperty :hasMethodId ;
+                                                          owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                        ]
+                                                      )
+                                        ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowTotalResponseTime
+
+:WorkflowTotalResponseTime rdf:type owl:Class ;
+                           
+                           rdfs:subClassOf :AtomicMetric ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty :hasMeasurementUnit ;
+                                             owl:hasValue :Microsecond
+                                           ] ,
+                                           [ rdf:type owl:Class ;
+                                             owl:unionOf ( [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasMethodId ;
+                                                             owl:hasValue "eu.larkc.core.executor.Executor.execute"
+                                                           ]
+                                                           [ rdf:type owl:Restriction ;
+                                                             owl:onProperty :hasMethodId ;
+                                                             owl:hasValue "eu.larkc.core.executor.Executor.getNextResults"
+                                                           ]
+                                                         )
+                                           ] ,
+                                           [ rdf:type owl:Restriction ;
+                                             owl:onProperty :hasDataValue ;
+                                             owl:allValuesFrom xsd:long
+                                           ] .
+
+
+
 ###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowsPerTimeInterval
 
 :WorkflowsPerTimeInterval rdf:type owl:Class ;
                           
                           rdfs:subClassOf :PerTimeInterval ,
                                           [ rdf:type owl:Restriction ;
-                                            owl:onProperty :hasAggregationFunction ;
-                                            owl:allValuesFrom :Count
-                                          ] ,
-                                          [ rdf:type owl:Restriction ;
                                             owl:onProperty :includes ;
                                             owl:onClass :WorkflowInvocation ;
                                             owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasAggregationFunction ;
+                                            owl:allValuesFrom :Count
                                           ] ;
                           
                           <http://purl.org/dc/elements/1.1/description> "The number of work-flows of a given name that were started in a given time interval" .

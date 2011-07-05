@@ -8,12 +8,10 @@ import org.ontoware.rdf2go.model.QueryRow;
 import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
-
-import sim.data.Metrics;
 import sim.server.RdfDatabase;
-import sim.server.compund.data.CompoundMetric;
-import sim.server.compund.data.CompoundMetricImpl;
-import sim.server.compund.data.Metric;
+import sim.server.data.CompoundMetric;
+import sim.server.data.CompoundMetricImpl;
+import sim.server.data.Metric;
 
 
 public class CompundMetricsGenerator {

@@ -1,11 +1,10 @@
-package sim.server.compund.data;
+package sim.server.data;
 
 import java.util.HashSet;
 import java.util.Set;
 
 import org.ontoware.rdf2go.model.node.URI;
-
-import sim.data.MetricsVisitor;
+import sim.server.RdfDatabase;
 
 /**
  * Implementation for {@link CompundMetric}.
@@ -24,18 +23,20 @@ public class CompoundMetricImpl implements CompoundMetric{
 	private URI aggregationFunction;
 	private Set<Metric> constituentMetrics;
 	
+	private long creationTime;
+	
 	public CompoundMetricImpl(URI type, URI aggregationFunction) {
 		this.type = type;
 		this.aggregationFunction = aggregationFunction;
 		this.constituentMetrics = new HashSet<Metric>();
 		this.value = 0;
+		this.creationTime = System.currentTimeMillis();
 	}
 	
 	
 	@Override
 	public long getCreationTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return creationTime;
 	}
 	
 	@Override
@@ -45,7 +46,6 @@ public class CompoundMetricImpl implements CompoundMetric{
 	
 	@Override
 	public URI getType() {
-		// TODO Auto-generated method stub
 		return type;
 	} 
 
@@ -67,9 +67,8 @@ public class CompoundMetricImpl implements CompoundMetric{
 		return value;
 	}	
 	
-	@Override
-	public void accept(MetricsVisitor visitor) {
-		// TODO Auto-generated method stub	
+	public void accept(RdfDatabase visitor) {
+		visitor.visit(this);
 	}
 
 
@@ -89,5 +88,18 @@ public class CompoundMetricImpl implements CompoundMetric{
 	public void setId(URI id) {
 		this.id= id;
 	}
-		
+
+
+	@Override
+	public String getMethodId() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void setMethodId(String methodId) {
+		// TODO Auto-generated method stub
+	}
+
 }

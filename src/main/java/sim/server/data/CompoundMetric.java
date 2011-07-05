@@ -1,8 +1,8 @@
-package sim.server.compund.data;
+package sim.server.data;
 
 import org.ontoware.rdf2go.model.node.URI;
 
-import sim.data.Metrics;
+import sim.data.MetricsVisitor;
 
 import java.util.Set;
 
@@ -37,5 +37,4 @@ public interface CompoundMetric extends Metric{
 	 * */
 	public void addConstituentMetric(Metric metric);
 	
-
 }
