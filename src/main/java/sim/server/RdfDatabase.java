@@ -43,7 +43,6 @@ public class RdfDatabase implements MetricsVisitor {
 	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
 	
 	public static final String QUERY_CONTENT = "QueryContent";
-	public static final String WORKFLOW_ID = "WorkflowId";
 	public static final String NUMBER_OF_PLUGINS = "NumberOfPlugin";
 	
 	private Model model;
@@ -95,23 +94,7 @@ public class RdfDatabase implements MetricsVisitor {
 	private static final HashMap<String, URI> methodURICache = new HashMap<String, URI>();
 	private static final HashMap<String, URI> systemURICache = new HashMap<String, URI>();
 	private static final HashMap<String, URI> applicationURICache = new HashMap<String, URI>();
-	
-	private URI pluginBeginExecutionTimeURI;
-	private URI pluginEndExecutionTimeURI;
-	private URI pluginErrorStatusURI;
-	private URI pluginTotalResponseTimeURI;
-	private URI pluginThreadUserCPUTimeURI;
-	private URI pluginThreadSystemCPUTimeURI;
-	private URI pluginThreadTotalCPUTimeURI;
-	private URI pluginThreadCountURI;
-	private URI pluginThreadBlockCountURI;
-	private URI pluginThreadBlockTimeURI;
-	private URI pluginThreadWaitCountURI;
-	private URI pluginThreadWaitTimeURI;
-	private URI pluginThreadGccCountURI;
-	private URI pluginThreadGccTimeURI;
-	private URI pluginProcessTotalCPUTimeURI;
-	
+		
 	public RdfDatabase() {
 	}
 	
@@ -187,22 +170,6 @@ public class RdfDatabase implements MetricsVisitor {
 		applicationTypeURI = model.createURI(simNS + "Application");
 		
 		bagTypeURI = model.createURI(simNS + "Bag");
-
-		pluginBeginExecutionTimeURI = model.createURI(simNS + "PluginBeginExecutionTime");
-		pluginEndExecutionTimeURI = model.createURI(simNS + "PluginEndExecutionTime");
-		pluginErrorStatusURI = model.createURI(simNS + "PluginErrorStatus");
-		pluginTotalResponseTimeURI = model.createURI(simNS + "PluginTotalResponseTime");
-		pluginThreadUserCPUTimeURI = model.createURI(simNS + "PluginThreadUserCPUTime");
-		pluginThreadSystemCPUTimeURI = model.createURI(simNS + "PluginThreadSystemCPUTime");
-		pluginThreadTotalCPUTimeURI = model.createURI(simNS + "PluginThreadTotalCPUTime");
-		pluginThreadCountURI = model.createURI(simNS + "PluginThreadCount");
-		pluginThreadBlockCountURI = model.createURI(simNS + "PluginThreadBlockCount");
-		pluginThreadBlockTimeURI = model.createURI(simNS + "PluginThreadBlockTime");
-		pluginThreadWaitCountURI = model.createURI(simNS + "PluginThreadWaitCount");
-		pluginThreadWaitTimeURI = model.createURI(simNS + "PluginThreadWaitTime");
-		pluginThreadGccCountURI = model.createURI(simNS + "PluginThreadGccCount");
-		pluginThreadGccTimeURI = model.createURI(simNS + "PluginThreadGccTime");
-		pluginProcessTotalCPUTimeURI = model.createURI(simNS + "PluginProcessTotalCPUTime");
 	}
 	
 	public void close() {
@@ -453,7 +420,6 @@ public class RdfDatabase implements MetricsVisitor {
 		if that's the case the SPARQL query is parsed and query atomic metrics
 		are created for this query
 		 */
-	
 		if(context.containsKey(QUERY_CONTENT)){
 			String query = context.get(QUERY_CONTENT).toString();
 			SPARQLQueryContentAnalyzer sqa = new SPARQLQueryContentAnalyzer(query);
@@ -509,6 +475,20 @@ public class RdfDatabase implements MetricsVisitor {
 			}
 		}
 		
+		/*	check if the context contains information about number of plugins
+		    in a workflow and if that's the case create workflow number of plugins 
+		    atomic metric
+		 */
+		if(context.containsKey(NUMBER_OF_PLUGINS)){
+			int numberOfPlugins = new Integer(context.get(NUMBER_OF_PLUGINS).toString()).intValue();
+
+			URI idURI = generateURI();
+			statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "WorkflowNumerOfPlugins")));
+			statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(numberOfPlugins)));
+			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+			statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));			
+		}
+
 		return idContextURI;
 	}
 
