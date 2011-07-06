@@ -17,7 +17,6 @@ import org.ontoware.rdf2go.model.node.DatatypeLiteral;
 import org.ontoware.rdf2go.model.node.Node;
 import org.ontoware.rdf2go.model.node.PlainLiteral;
 import org.ontoware.rdf2go.model.node.URI;
-import org.ontoware.rdf2go.model.node.impl.URIImpl;
 import org.ontoware.rdf2go.util.RDFTool;
 import org.openrdf.rdf2go.RepositoryModel;
 import org.openrdf.repository.http.HTTPRepository;
@@ -30,7 +29,6 @@ import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
 import sim.data.SystemId;
 import sim.data.SystemMetrics;
-import sim.server.atomic.AtomicMetricsGenerator;
 import sim.server.data.CompoundMetric;
 import sim.server.data.Metric;
 import sim.server.util.SPARQLQueryContentAnalyzer;
@@ -45,6 +43,8 @@ public class RdfDatabase implements MetricsVisitor {
 	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
 	
 	public static final String QUERY_CONTENT = "QueryContent";
+	public static final String WORKFLOW_ID = "WorkflowId";
+	public static final String NUMBER_OF_PLUGINS = "NumberOfPlugin";
 	
 	private Model model;
 
@@ -96,35 +96,6 @@ public class RdfDatabase implements MetricsVisitor {
 	private static final HashMap<String, URI> systemURICache = new HashMap<String, URI>();
 	private static final HashMap<String, URI> applicationURICache = new HashMap<String, URI>();
 	
-	private URI queryBeginExecutionTimeURI;
-	private URI queryEndExecutionTimeURI;
-	private URI queryErrorStatusURI;
-	private URI queryTotalResponseTimeURI;
-	private URI queryThreadUserCPUTimeURI;
-	private URI queryThreadSystemCPUTimeURI;
-	private URI queryThreadTotalCPUTimeURI;
-	private URI queryThreadCountURI;
-	private URI queryThreadBlockCountURI;
-	private URI queryThreadBlockTimeURI;
-	private URI queryThreadWaitCountURI;
-	private URI queryThreadWaitTimeURI;
-	private URI queryThreadGccCountURI;
-	private URI queryThreadGccTimeURI;
-	private URI queryProcessTotalCPUTimeURI;
-	
-	private URI workflowTotalResponseTimeURI;
-	private URI workflowThreadUserCPUTimeURI;
-	private URI workflowThreadSystemCPUTimeURI;
-	private URI workflowThreadTotalCPUTimeURI;
-	private URI workflowThreadCountURI;
-	private URI workflowThreadBlockCountURI;
-	private URI workflowThreadBlockTimeURI;
-	private URI workflowThreadWaitCountURI;
-	private URI workflowThreadWaitTimeURI;
-	private URI workflowThreadGccCountURI;
-	private URI workflowThreadGccTimeURI;
-	private URI workflowProcessTotalCPUTimeURI;
-
 	private URI pluginBeginExecutionTimeURI;
 	private URI pluginEndExecutionTimeURI;
 	private URI pluginErrorStatusURI;
@@ -216,38 +187,7 @@ public class RdfDatabase implements MetricsVisitor {
 		applicationTypeURI = model.createURI(simNS + "Application");
 		
 		bagTypeURI = model.createURI(simNS + "Bag");
-		
-		queryBeginExecutionTimeURI = model.createURI(simNS + "QueryBeginExecutionTime");
-		queryEndExecutionTimeURI = model.createURI(simNS + "QueryEndExecutionTime");	
-		queryErrorStatusURI = model.createURI(simNS + "QueryErrorStatus");
-		
-		
-		queryTotalResponseTimeURI = model.createURI(simNS + "QueryTotalResponseTime");
-		queryThreadUserCPUTimeURI = model.createURI(simNS + "QueryThreadUserCPUTime");
-		queryThreadSystemCPUTimeURI = model.createURI(simNS + "QueryThreadSystemCPUTime");
-		queryThreadTotalCPUTimeURI = model.createURI(simNS + "QueryThreadTotalCPUTime");
-		queryThreadCountURI = model.createURI(simNS + "QueryThreadCount");
-		queryThreadBlockCountURI = model.createURI(simNS + "QueryThreadBlockCount");
-		queryThreadBlockTimeURI = model.createURI(simNS + "QueryThreadBlockTime");
-		queryThreadWaitCountURI = model.createURI(simNS + "QueryThreadWaitCount");
-		queryThreadWaitTimeURI = model.createURI(simNS + "QueryThreadWaitTime");
-		queryThreadGccCountURI = model.createURI(simNS + "QueryThreadGccCount");
-		queryThreadGccTimeURI = model.createURI(simNS + "QueryThreadGccTime");
-		queryProcessTotalCPUTimeURI = model.createURI(simNS + "QueryProcessTotalCPUTime");
 
-		workflowTotalResponseTimeURI = model.createURI(simNS + "WorkflowTotalResponseTime");
-		workflowThreadUserCPUTimeURI = model.createURI(simNS + "WorkflowThreadUserCPUTime");
-		workflowThreadSystemCPUTimeURI = model.createURI(simNS + "WorkflowThreadSystemCPUTime");
-		workflowThreadTotalCPUTimeURI = model.createURI(simNS + "WorkflowThreadTotalCPUTime");
-		workflowThreadCountURI = model.createURI(simNS + "WorkflowThreadCount");
-		workflowThreadBlockCountURI = model.createURI(simNS + "WorkflowThreadBlockCount");
-		workflowThreadBlockTimeURI = model.createURI(simNS + "WorkflowThreadBlockTime");
-		workflowThreadWaitCountURI = model.createURI(simNS + "WorkflowThreadWaitCount");
-		workflowThreadWaitTimeURI = model.createURI(simNS + "WorkflowThreadWaitTime");
-		workflowThreadGccCountURI = model.createURI(simNS + "WorkflowThreadGccCount");
-		workflowThreadGccTimeURI = model.createURI(simNS + "WorkflowThreadGccTime");
-		workflowProcessTotalCPUTimeURI = model.createURI(simNS + "WorkflowProcessTotalCPUTime");
-		
 		pluginBeginExecutionTimeURI = model.createURI(simNS + "PluginBeginExecutionTime");
 		pluginEndExecutionTimeURI = model.createURI(simNS + "PluginEndExecutionTime");
 		pluginErrorStatusURI = model.createURI(simNS + "PluginErrorStatus");
@@ -348,7 +288,7 @@ public class RdfDatabase implements MetricsVisitor {
 		 * if the method execution is the method execution of specific methods that correspond to
 		 * atomic metrics than the corresponding atomic metrics are written in the RDF storage
 		 */
-		List<Statement> atomicMetricsStatements = processMetric(methodMetrics);
+		List<Statement> atomicMetricsStatements = processMetric(methodMetrics,idContextURI,dateTimeLiteral);
 		if(atomicMetricsStatements.size()>0)		
 			statements.addAll(atomicMetricsStatements);
 
@@ -453,6 +393,19 @@ public class RdfDatabase implements MetricsVisitor {
 		return statements;
 	}
 
+	private List<Statement> createAtomicMetricStatements(URI idContextURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
+		List<Statement> statements = new ArrayList<Statement>();
+		URI idURI = generateURI();
+		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + type)));
+		statements.add(model.createStatement(idURI, hasDataValueURI, value));
+		statements.add(model.createStatement(idURI, hasTimeStampURI, dateTimeLiteral));
+		if (idContextURI != null) {
+			statements.add(model.createStatement(idURI, hasContextURI, idContextURI));
+		}
+		return statements;
+	}
+
+	
 	private URI addSystem(SystemId systemId, List<Statement> statements) {
 		//System metric
 		URI idSystemURI = systemURICache.get(systemId.getId());
@@ -497,8 +450,8 @@ public class RdfDatabase implements MetricsVisitor {
 		
 
 		/*	check if the context contains information about SPARQL query;
-		if that's the case the SPARQL query is parsed and method 
-		metrics statements are created for this query
+		if that's the case the SPARQL query is parsed and query atomic metrics
+		are created for this query
 		 */
 	
 		if(context.containsKey(QUERY_CONTENT)){
@@ -612,108 +565,47 @@ public class RdfDatabase implements MetricsVisitor {
 	}
 
 	
-	private List<Statement> processMetric(MethodMetrics methodMetrics){
+	private List<Statement> processMetric(MethodMetrics methodMetrics, URI idContextURI, DatatypeLiteral dateTimeLiteral){
 		
 		List<Statement> statements = new ArrayList<Statement>();
 		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName().replace("<init>", "new");
-		DatatypeLiteral dateTimeLiteral = getDateTimeTypeURI(methodMetrics.getCreationTime());
 
 		/**
 		 * if the method execution is the method execution of 
 		 * eu.larkc.core.endpoint.sparql.SparqlHandler.handle
 		 * we write query related atomic metrics
 		 */		
-		if(methodID.equals("eu.larkc.core.endpoint.sparql.SparqlHandler.handle")){
-						
+		if(methodID.equals("eu.larkc.core.endpoint.sparql.SparqlHandler.handle")){					
 			//write an instance of QueryBeginExecutionTime
-			URI id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryBeginExecutionTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getBeginExecutionTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-			
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryBeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime()));						
 			//write an instance of QueryEndExecutionTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryEndExecutionTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime()));
 			//write an instance of QueryErrorStatus
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryErrorStatusURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getBooleanTypeURI(methodMetrics.endedWithError())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError()));
 			//write an instance of QueryTotalResponseTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryTotalResponseTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getWallClockTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-			
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));			
 			//write an instance of QueryThreadUserCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadUserCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-			
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));			
 			//write an instance of QueryThreadSystemCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadSystemCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));			
 			//write an instance of QueryThreadTotalCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadTotalCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime()));			
 			//write an instance of QueryThreadCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadCount", getLongTypeURI(methodMetrics.getThreadCount()));			
 			//write an instance of QueryThreadBlockCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadBlockCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadBlockCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount()));			
 			//write an instance of QueryThreadBlockTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadBlockTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadBlockTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime()));			
 			//write an instance of QueryThreadWaitCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadWaitCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadWaitCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount()));			
 			//write an instance of QueryThreadWaitTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadWaitTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadWaitTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime()));			
 			//write an instance of QueryThreadGccCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadGccCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadGccCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount()));			
 			//write an instance of QueryThreadGccTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryThreadGccTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadGccTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime()));			
 			//write an instance of QueryProcessTotalCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, queryProcessTotalCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime()));			
 		}
 		
 		/**
@@ -721,85 +613,31 @@ public class RdfDatabase implements MetricsVisitor {
 		 * eu.larkc.core.executor.Executor.execute
 		 * we write workflow related atomic metrics
 		 */		
-		if(methodID.equals("eu.larkc.core.executor.Executor.execute") || methodID.equals("eu.larkc.core.executor.Executor.getNextResults")){
-		
+		if(methodID.equals("eu.larkc.core.executor.Executor.execute") || methodID.equals("eu.larkc.core.executor.Executor.getNextResults")){	
 			//write an instance of WorkflowTotalResponseTime
-			URI id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowTotalResponseTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getWallClockTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));			
 			//write an instance of WorkflowThreadUserCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadUserCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-			
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));						
 			//write an instance of WorkflowThreadSystemCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadSystemCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));			
 			//write an instance of WorkflowThreadTotalCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadTotalCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime()));			
 			//write an instance of WorkflowThreadCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadCount", getLongTypeURI(methodMetrics.getThreadCount()));			
 			//write an instance of WorkflowThreadBlockCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadBlockCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadBlockCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount()));			
 			//write an instance of WorkflowThreadBlockTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadBlockTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadBlockTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime()));			
 			//write an instance of WorkflowThreadWaitCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadWaitCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadWaitCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount()));			
 			//write an instance of WorkflowThreadWaitTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadWaitTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadWaitTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime()));			
 			//write an instance of WorkflowThreadGccCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadGccCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadGccCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
-			//write an instance of WorkflowThreadGccCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadGccCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadGccCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount()));			
 			//write an instance of WorkflowThreadGccTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowThreadGccTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadGccTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime()));			
 			//write an instance of WorkflowProcessTotalCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, workflowProcessTotalCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime()));			
 		}
 		
 		/**
@@ -807,97 +645,37 @@ public class RdfDatabase implements MetricsVisitor {
 		 * eu.larkc.plugin.Plugin.invoke
 		 * we write plugin related atomic metrics
 		 */		
-		if(methodID.equals("eu.larkc.plugin.Plugin.invoke")){
-			
+		if(methodID.equals("eu.larkc.plugin.Plugin.invoke")){		
 			//write an instance of PluginBeginExecutionTime
-			URI id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginBeginExecutionTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getBeginExecutionTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-			
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginBeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime()));			
 			//write an instance of PluingEndExecutionTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginEndExecutionTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getEndExecutionTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime()));			
 			//write an instance of PluingErrorStatus
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginErrorStatusURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getBooleanTypeURI(methodMetrics.endedWithError())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError()));			
 			//write an instance of PluingTotalResponseTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginTotalResponseTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getWallClockTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-			
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));						
 			//write an instance of PluingThreadUserCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadUserCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadUserCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-			
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));						
 			//write an instance of PluingThreadSystemCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadSystemCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));						
 			//write an instance of PluingThreadTotalCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadTotalCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime()));						
 			//write an instance of PluingThreadCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadCount", getLongTypeURI(methodMetrics.getThreadCount()));						
 			//write an instance of PluingThreadBlockCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadBlockCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadBlockCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount()));						
 			//write an instance of PluingThreadBlockTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadBlockTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadBlockTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime()));						
 			//write an instance of PluingThreadWaitCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadWaitCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadWaitCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount()));						
 			//write an instance of PluingThreadWaitTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadWaitTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadWaitTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime()));						
 			//write an instance of PluingThreadGccCount
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadGccCountURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadGccCount())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount()));						
 			//write an instance of PluingThreadGccTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginThreadGccTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getThreadGccTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
-
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime()));						
 			//write an instance of PluingProcessTotalCPUTime
-			id = generateURI();
-			statements.add(model.createStatement(id, typePredicateURI, pluginProcessTotalCPUTimeURI));
-			statements.add(model.createStatement(id, hasDataValueURI, getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));
-			statements.add(model.createStatement(id, hasTimeStampURI, dateTimeLiteral));
+			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime()));						
 		}
 		return statements;
 	}
