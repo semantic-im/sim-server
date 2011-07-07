@@ -28,6 +28,7 @@ import sim.data.ApplicationId;
 import sim.data.Context;
 import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
+import sim.data.PlatformMetrics;
 import sim.data.SystemId;
 import sim.data.SystemMetrics;
 import sim.server.data.CompoundMetric;
@@ -553,6 +554,11 @@ public class RdfDatabase implements MetricsVisitor {
 		
 		model.addAll(statements.iterator());
 		model.commit();
+	}
+	
+	@Override
+	public void visit(PlatformMetrics pm) {
+		// TODO implementation for generating rdf statements for PlatformMetrics
 	}
 
 	

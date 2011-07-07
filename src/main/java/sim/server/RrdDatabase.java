@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import sim.data.Context;
 import sim.data.MethodMetrics;
 import sim.data.MetricsVisitor;
+import sim.data.PlatformMetrics;
 import sim.data.SystemMetrics;
 
 /**
@@ -328,6 +329,11 @@ public class RrdDatabase implements MetricsVisitor {
 	public void visit(Context context) {
 		// TODO Auto-generated method stub	
 		
+	}
+	
+	@Override
+	public void visit(PlatformMetrics pm) {
+		// TODO implementation for generating rdf statements for PlatformMetrics
 	}
 	
 }
