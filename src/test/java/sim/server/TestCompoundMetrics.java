@@ -45,7 +45,7 @@ public class TestCompoundMetrics extends TestCase {
 	}
 	
 	public void testCountCompuntMetrics(){				
-		assertEquals(9,cmg.countCompoundMetrics());		
+		assertEquals(10,cmg.countCompoundMetrics());		
 	}	
 	
 	public void testGenerateCompoundMetric(){
@@ -67,7 +67,7 @@ public class TestCompoundMetrics extends TestCase {
 				
 		assertEquals(new Double(5.0).doubleValue(),cm1.getValue());
 		
-		uri = new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowDuration");
+		uri = new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowTotalResponseTime");
 		m1 = new MetricImpl(uri);
 		m1.setValue(1000);
 		m2 = new MetricImpl(uri);
