@@ -3,6 +3,7 @@
  */
 package sim.server;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -188,6 +189,16 @@ public class RdfDatabase implements MetricsVisitor {
 		return model.createDatatypeLiteral(String.valueOf(value), doubleDatatypeURI);
 	}
 
+	public long getDateTimeLong(DatatypeLiteral datatypeLiteral){
+		long result = 0;
+		try {
+			result = RDFTool.string2Date(datatypeLiteral.getValue()).getTime();
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}		
+		return result;
+	}
+	
 	private DatatypeLiteral getDateTimeTypeURI(long dateTimeLong) {
 		Date dateTime = new Date(dateTimeLong);
 		return model.createDatatypeLiteral(RDFTool.dateTime2String(dateTime), dateTimeDatatypeURI);
@@ -659,5 +670,9 @@ public class RdfDatabase implements MetricsVisitor {
 		}
 		return statements;
 	}
-	
+
+	public Model getModel() {
+		return model;
+	}
+
 }

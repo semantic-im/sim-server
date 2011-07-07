@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryRow;
+import org.ontoware.rdf2go.model.node.DatatypeLiteral;
 import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.model.node.impl.URIImpl;
 
@@ -90,5 +91,189 @@ public class CompundMetricsGenerator {
 		
 		return compoundMetric;
 	}
-			
+	
+	/**
+	 * Counts the number of queries that were received in a given time interval
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @return a compound metric of type QueriesPerTimeInterval given the start and end time of the interval
+	 */
+	public CompoundMetric generateQueriesPerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime){
+		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
+		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+				
+		String queryString = queryPrefixes +
+		"Select ?QueryMethodExecutionInstance "+
+		"Where { "+
+	            "?QueryMethodExecutionInstance rdf:type sim:MethodExecution ."+
+	            "?QueryMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.endpoint.sparql.SparqlHandler.handle ."+
+	            "?QueryMethodExecutionInstance sim:hasBeginExecutionTime ?QueryBeginExecutionTime ."+
+	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTimeLong +" && " + "?QueryBeginExecutionTime <= "+ endDateTimeLong + ")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int count = 0;
+		while(cr.hasNext()){
+			cr.next(); count++;
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesPerTimeInterval"), COUNT);
+		result.setValue(count);
+		return result;
+	}
+
+	/**
+	 * Counts the number of queries that finished with success
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @return a compound metric of type QuerySuccessRatePerTimeInterval given the start and end time of the interval
+	 */
+	public CompoundMetric generateQueriesSuccessRatePerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime){
+		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
+		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+				
+		String queryString = queryPrefixes +
+		"Select ?QueryMethodExecutionInstance "+
+		"Where { "+
+	            "?QueryMethodExecutionInstance rdf:type sim:MethodExecution ."+
+	            "?QueryMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.endpoint.sparql.SparqlHandler.handle ."+
+	            "?QueryMethodExecutionInstance sim:hasBeginExecutionTime ?QueryBeginExecutionTime ."+
+	            "?QueryMethodExecutionInstance sim:hasEndedWithError ?QueryErrorStatus ."+
+	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTimeLong +" && " + "?QueryBeginExecutionTime <= "+ endDateTimeLong + 
+	   	              " && xsd:boolean(?QueryErrorStatus) = \"true\"^^xsd:boolean)."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int count = 0;
+		while(cr.hasNext()){
+			cr.next(); count++;
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySuccessRatePerTimeInterval"), COUNT);
+		result.setValue(count);
+		return result;
+	}
+
+	/**
+	 * Counts the number of queries that finished with failure
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @return a compound metric of type QueryFailureRatePerTimeInterval given the start and end time of the interval
+	 */
+	public CompoundMetric generateQueriesFailureRatePerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime){
+		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
+		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+				
+		String queryString = queryPrefixes +
+		"Select ?QueryMethodExecutionInstance "+
+		"Where { "+
+	            "?QueryMethodExecutionInstance rdf:type sim:MethodExecution ."+
+	            "?QueryMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.endpoint.sparql.SparqlHandler.handle ."+
+	            "?QueryMethodExecutionInstance sim:hasBeginExecutionTime ?QueryBeginExecutionTime ."+
+	            "?QueryMethodExecutionInstance sim:hasEndedWithError ?QueryErrorStatus ."+
+	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTimeLong +" && " + "?QueryBeginExecutionTime <= "+ endDateTimeLong + 
+	   	              " && xsd:boolean(?QueryErrorStatus) = \"flase\"^^xsd:boolean)."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int count = 0;
+		while(cr.hasNext()){
+			cr.next(); count++;
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#QueryFailureRatePerTimeInterval"), COUNT);
+		result.setValue(count);
+		return result;
+	}
+	
+	/**
+	 * Counts the number of work-flows of a given name (id) that were started in a given time interval
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @return a compound metric of type WorkflowsPerTimeInterval given the start and end time of the interval
+	 */
+	public CompoundMetric generateWorkflowsPerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime, String workflowID){
+		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
+		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+				
+		String queryString = queryPrefixes +
+		"Select ?WorkflowMethodExecutionInstance "+
+		"Where { "+
+	            "?WorkflowMethodExecutionInstance rdf:type sim:MethodExecution ."+
+	            "{?WorkflowMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.executor.Executor.execute .} union "+
+	            "{?WorkflowMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.executor.Executor.getNextResults .} "+	            
+	            "?WorkflowMethodExecutionInstance sim:hasMethodMetric ?WorkflowWallClockTimeInstance . "+
+	            "?WorkflowWallClockTimeInstance rdf:type sim:WallClockTime . "+
+	            				
+	            "?WorkflowWallClockTimeInstance sim:hasContext ?WorkflowContextInstance . "+
+	            "?WorkflowContextInstance rdf:type sim:WorkflowExecution . "+
+	    		"?WorkflowContextInstance sim:hasMetrics ?WorkflowContextInstanceMetrics . "+
+	    		"?WorkflowContextInstanceMetrics rdf:li ?WorkflowIdInstance . "+    						
+	            "?WorkflowIdInstance rdf:type sim:WorkflowId . "+
+				"?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
+	            
+	            "?WorkflowMethodExecutionInstance sim:hasBeginExecutionTime ?WorkflowBeginExecutionTime ."+
+	   	              "FILTER(?WorkflowBeginExecutionTime >= "+ startDateTimeLong +" && " + "?WorkflowBeginExecutionTime <= "+ endDateTimeLong +
+	   	              		" && ?WorkflowId = "+ workflowID +")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int count = 0;
+		while(cr.hasNext()){
+			cr.next(); count++;
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowsPerTimeInterval"), COUNT);
+		result.setValue(count);
+		return result;
+	}
+
+
+	/**
+	 * Counts the number of work-flows of a given name (id) that were started in a given time interval
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @return a compound metric of type WorkflowAvgDurationPerTimeInterval given the start and end time of the interval
+	 */
+	public CompoundMetric generateWorkflowAvgDurationPerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime, String workflowID){
+		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
+		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+				
+		String queryString = queryPrefixes +
+		"Select ?WorkflowTotalResponseTime "+
+		"Where { "+
+	            "?WorkflowMethodExecutionInstance rdf:type sim:MethodExecution ."+
+	            "{?WorkflowMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.executor.Executor.execute .} union "+
+	            "{?WorkflowMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.executor.Executor.getNextResults .} "+	            
+	            "?WorkflowMethodExecutionInstance sim:hasMethodMetric ?WorkflowWallClockTimeInstance . "+
+	            "?WorkflowWallClockTimeInstance rdf:type sim:WallClockTime . "+
+	            "?WorkflowWallClockTimeInstance sim:hasDataValue ?WorkflowTotalResponseTime . "+
+
+	            				
+	            "?WorkflowWallClockTimeInstance sim:hasContext ?WorkflowContextInstance . "+
+	            "?WorkflowContextInstance rdf:type sim:WorkflowExecution . "+
+	    		"?WorkflowContextInstance sim:hasMetrics ?WorkflowContextInstanceMetrics . "+
+	    		"?WorkflowContextInstanceMetrics rdf:li ?WorkflowIdInstance . "+    						
+	            "?WorkflowIdInstance rdf:type sim:WorkflowId . "+
+				"?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
+	            
+	            "?WorkflowMethodExecutionInstance sim:hasBeginExecutionTime ?WorkflowBeginExecutionTime ."+
+	   	              "FILTER(?WorkflowBeginExecutionTime >= "+ startDateTimeLong +" && " + "?WorkflowBeginExecutionTime <= "+ endDateTimeLong +
+	   	              		" && ?WorkflowId = "+ workflowID +")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		double avg = 0; 	
+		int count = 0;
+		while(cr.hasNext()){
+			QueryRow qr = cr.next();
+			count++;
+			avg += new Double(qr.getValue("WorkflowTotalResponseTime").toString());			
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgDurationPerTimeInterval"), AVERAGE);
+		result.setValue(avg/count);
+		return result;
+	}
+
 }
