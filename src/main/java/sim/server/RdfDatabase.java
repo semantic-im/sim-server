@@ -91,6 +91,8 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI systemTypeURI;
 	private URI applicationTypeURI;
 	
+	private URI hasPlatformMetricURI;
+	
 	private URI bagTypeURI;
 	
 	private static final HashMap<String, URI> methodURICache = new HashMap<String, URI>();
@@ -170,6 +172,8 @@ public class RdfDatabase implements MetricsVisitor {
 		
 		systemTypeURI = model.createURI(simNS + "System");
 		applicationTypeURI = model.createURI(simNS + "Application");
+		
+		hasMethodMetricURI = model.createURI(simNS + "hasPlatformMetric");
 		
 		bagTypeURI = model.createURI(simNS + "Bag");
 	}
@@ -384,7 +388,19 @@ public class RdfDatabase implements MetricsVisitor {
 		return statements;
 	}
 
-	
+
+	private List<Statement> createPlatformMetricStatements(URI idSystemURI, URI idApplicationURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
+		List<Statement> statements = new ArrayList<Statement>();
+		URI idURI = generateURI();
+		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + type)));
+		statements.add(model.createStatement(idURI, hasDataValueURI, value));
+		statements.add(model.createStatement(idURI, hasTimeStampURI, dateTimeLiteral));
+		statements.add(model.createStatement(idSystemURI, hasPlatformMetricURI, idURI));
+		statements.add(model.createStatement(idApplicationURI, hasPlatformMetricURI, idURI));
+		
+		return statements;
+	}
+
 	private URI addSystem(SystemId systemId, List<Statement> statements) {
 		//System metric
 		URI idSystemURI = systemURICache.get(systemId.getId());
@@ -558,7 +574,28 @@ public class RdfDatabase implements MetricsVisitor {
 	
 	@Override
 	public void visit(PlatformMetrics pm) {
-		// TODO implementation for generating rdf statements for PlatformMetrics
+		List<Statement> statements = new ArrayList<Statement>();
+
+		DatatypeLiteral dateTimeLiteral = getDateTimeTypeURI(pm.getCreationTime());
+		
+		URI idSystemURI = addSystem(pm.getSystemId(), statements);
+		URI idApplicationURI = addApplication(pm.getApplicationId(), statements);
+		
+		pm.getAvgCpuUsage();
+		pm.getCpuTime();
+		pm.getCpuUsage();
+		pm.getGccCount();
+		pm.getGccTime();
+		pm.getUptime();
+		pm.getUsedMemory();
+
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "AvgCPUUsage", getDoubleTypeURI(pm.getAvgCpuUsage())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "CPUTime", getLongTypeURI(pm.getCpuTime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "CPUUsage", getDoubleTypeURI(pm.getCpuUsage())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "GccCount", getLongTypeURI(pm.getCpuTime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "GccTime", getLongTypeURI(pm.getCpuTime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "Uptime", getLongTypeURI(pm.getCpuTime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "UsedMemory", getLongTypeURI(pm.getCpuTime())));
 	}
 
 	

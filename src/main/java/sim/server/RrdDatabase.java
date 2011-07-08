@@ -76,9 +76,18 @@ public class RrdDatabase implements MetricsVisitor {
 	private final String DS_THREAD_GCC_COUNT = "threadGccCount";
 	private final String DS_THREAD_GCC_TIME = "threadGccTime";
 	private final String DS_PROCESS_TOTAL_CPU_TIME = "processTotalCPUTime";
-	
+
+	private final String DS_AVG_CPU_USAGE = "avgCpuUsage";
+	private final String DS_CPU_USAGE = "cpuUsage";
+	private final String DS_CPU_TIME = "cpuTime";
+	private final String DS_GCC_COUNT = "gccCount";
+	private final String DS_GCC_TIME = "gccTime";
+	private final String DS_UPTIME = "upTime";
+	private final String DS_USED_MEMORY = "usedMemory";
+
 	private RrdDb systemMetricsRRD = null;
 	private Map<String, RrdDb> methodMetricsRRD = new HashMap<String, RrdDb>();
+	private Map<String, RrdDb> platformMetricsRRD = new HashMap<String, RrdDb>();
 	
 	//used to store the last timestamp, for a context, inserted into method metrics database
 	private Map<String, Long> contextLastTimestamp = new HashMap<String, Long>();
@@ -139,7 +148,8 @@ public class RrdDatabase implements MetricsVisitor {
 	private String getDatabasePath(MethodMetrics methodMetric) {		
 		return methodMetric.getSystemId().getId() + "_" + methodMetric.getMethod().getApplicationId().getId() + (methodMetric.getContextId() == null ? "" : "_" + methodMetric.getContextId());
 	}
-	
+
+
 	private RrdDb openMethodMetricDb(MethodMetrics methodMetric) {
 		String dbPath = getDatabasePath(methodMetric);
 		RrdDb methodMetricRrd = methodMetricsRRD.get(dbPath);
@@ -331,9 +341,79 @@ public class RrdDatabase implements MetricsVisitor {
 		
 	}
 	
+	
+	private RrdDb openPlatformMetricDb(PlatformMetrics pm) {
+		String dbPath = pm.getSystemId().getId() + "_" + pm.getApplicationId().getId();
+		RrdDb methodMetricRrd = methodMetricsRRD.get(dbPath);
+		if (methodMetricRrd != null && !methodMetricRrd.isClosed()) {
+			return methodMetricRrd;
+		}
+		try {
+			String rrdDbPath = dbPath + ".rrd";
+			if (!new File(rrdDbPath).exists()) {
+				RrdDef rrdDef = new RrdDef(rrdDbPath, RRD_START_TIME, METHOD_RRD_STEP);
+				
+				rrdDef.addDatasource(DS_WALL_CLOCK_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_USER_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_SYSTEM_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_TOTAL_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_BLOCK_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_WAIT_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_GCC_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREAD_GCC_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PROCESS_TOTAL_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last day, one record each 5 seconds
+				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24 * 7); //detail last week, one record each 10 minutes
+				
+				methodMetricsRRD.put(dbPath, new RrdDb(rrdDef));
+			} else {
+				methodMetricsRRD.put(dbPath, new RrdDb(rrdDbPath));
+			}
+		} catch (IOException e) {
+			logger.error("io exception", e);
+			throw new RuntimeException("io exception", e);
+		}
+		return methodMetricsRRD.get(dbPath);
+	}
+
+	private void closePlatformMetricDb(PlatformMetrics pm) {
+		String platformId = pm.getSystemId().getId() + "_" + pm.getApplicationId().getId();
+		RrdDb platformRrd = methodMetricsRRD.get(platformId);
+		if (platformRrd != null) {
+			if (!platformRrd.isClosed()) {
+				try {
+					platformRrd.close();
+				} catch (IOException e) {
+					logger.error("exception closing rrd database : " + platformRrd, e);
+					throw new RuntimeException("exception closing rrd database : " + platformRrd, e);
+				}
+			}
+			platformMetricsRRD.remove(platformId);
+		}
+	}
+	
 	@Override
 	public void visit(PlatformMetrics pm) {
-		// TODO implementation for generating rdf statements for PlatformMetrics
+		RrdDb methodRrd = openPlatformMetricDb(pm);
+		try {
+			Sample sample = methodRrd.createSample();
+			sample.setTime(Util.getTimestamp(new Date(pm.getCreationTime())));
+			sample.setValue(DS_AVG_CPU_USAGE, pm.getAvgCpuUsage());
+			sample.setValue(DS_CPU_USAGE, pm.getCpuUsage());
+			sample.setValue(DS_CPU_TIME, pm.getCpuTime());
+			sample.setValue(DS_GCC_COUNT, pm.getGccCount());
+			sample.setValue(DS_GCC_TIME, pm.getGccTime());
+			sample.setValue(DS_UPTIME, pm.getUptime());
+			sample.setValue(DS_USED_MEMORY, pm.getUsedMemory());
+			
+			sample.update();
+		} catch (IOException e) {
+			logger.error("io exception", e);
+			throw new RuntimeException("io exception", e);
+		}
+		closePlatformMetricDb(pm);
 	}
 	
 }
