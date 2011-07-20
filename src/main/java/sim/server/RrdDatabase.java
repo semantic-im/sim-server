@@ -43,6 +43,7 @@ public class RrdDatabase implements MetricsVisitor {
 	
 	private final long RRD_START_TIME = Util.getTimestamp(new Date()) - 60;
 	private final int SYSTEM_RRD_STEP = 5; //the step time measured in seconds which is the interval between database updates
+	private final int PLATFORM_RRD_STEP = 5; //the step time measured in seconds which is the interval between database updates
 	private final int METHOD_RRD_STEP = 60; //the step time measured in seconds which is the interval between database updates
 	private final int RRD_HEARBEAT = 600; //Defines the minimum heartbeat, the maximum number of seconds that can go by before a DS value is considered unknown.
 	
@@ -341,46 +342,46 @@ public class RrdDatabase implements MetricsVisitor {
 		
 	}
 	
+	private String getDatabasePath(PlatformMetrics pm) {		
+		return "platform_" + pm.getSystemId().getId() + "_" + pm.getApplicationId().getId();
+	}
 	
 	private RrdDb openPlatformMetricDb(PlatformMetrics pm) {
-		String dbPath = pm.getSystemId().getId() + "_" + pm.getApplicationId().getId();
-		RrdDb methodMetricRrd = methodMetricsRRD.get(dbPath);
-		if (methodMetricRrd != null && !methodMetricRrd.isClosed()) {
-			return methodMetricRrd;
+		String dbPath = getDatabasePath(pm);
+		RrdDb platformMetricRrd = platformMetricsRRD.get(dbPath);
+		if (platformMetricRrd != null && !platformMetricRrd.isClosed()) {
+			return platformMetricRrd;
 		}
 		try {
 			String rrdDbPath = dbPath + ".rrd";
 			if (!new File(rrdDbPath).exists()) {
-				RrdDef rrdDef = new RrdDef(rrdDbPath, RRD_START_TIME, METHOD_RRD_STEP);
+				RrdDef rrdDef = new RrdDef(rrdDbPath, RRD_START_TIME, PLATFORM_RRD_STEP);
 				
-				rrdDef.addDatasource(DS_WALL_CLOCK_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_USER_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_SYSTEM_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_TOTAL_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_BLOCK_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_WAIT_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_GCC_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_THREAD_GCC_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_PROCESS_TOTAL_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_AVG_CPU_USAGE, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_CPU_USAGE, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_CPU_TIME, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_GCC_COUNT, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_GCC_TIME, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_UPTIME, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_USED_MEMORY, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last day, one record each 5 seconds
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24 * 7); //detail last week, one record each 10 minutes
 				
-				methodMetricsRRD.put(dbPath, new RrdDb(rrdDef));
+				platformMetricsRRD.put(dbPath, new RrdDb(rrdDef));
 			} else {
-				methodMetricsRRD.put(dbPath, new RrdDb(rrdDbPath));
+				platformMetricsRRD.put(dbPath, new RrdDb(rrdDbPath));
 			}
 		} catch (IOException e) {
 			logger.error("io exception", e);
 			throw new RuntimeException("io exception", e);
 		}
-		return methodMetricsRRD.get(dbPath);
+		return platformMetricsRRD.get(dbPath);
 	}
 
 	private void closePlatformMetricDb(PlatformMetrics pm) {
-		String platformId = pm.getSystemId().getId() + "_" + pm.getApplicationId().getId();
-		RrdDb platformRrd = methodMetricsRRD.get(platformId);
+		String platformId = getDatabasePath(pm);
+		RrdDb platformRrd = platformMetricsRRD.get(platformId);
 		if (platformRrd != null) {
 			if (!platformRrd.isClosed()) {
 				try {
@@ -396,9 +397,9 @@ public class RrdDatabase implements MetricsVisitor {
 	
 	@Override
 	public void visit(PlatformMetrics pm) {
-		RrdDb methodRrd = openPlatformMetricDb(pm);
+		RrdDb platformRrd = openPlatformMetricDb(pm);
 		try {
-			Sample sample = methodRrd.createSample();
+			Sample sample = platformRrd.createSample();
 			sample.setTime(Util.getTimestamp(new Date(pm.getCreationTime())));
 			sample.setValue(DS_AVG_CPU_USAGE, pm.getAvgCpuUsage());
 			sample.setValue(DS_CPU_USAGE, pm.getCpuUsage());
