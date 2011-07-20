@@ -173,7 +173,7 @@ public class RdfDatabase implements MetricsVisitor {
 		systemTypeURI = model.createURI(simNS + "System");
 		applicationTypeURI = model.createURI(simNS + "Application");
 		
-		hasMethodMetricURI = model.createURI(simNS + "hasPlatformMetric");
+		hasPlatformMetricURI = model.createURI(simNS + "hasPlatformMetric");
 		
 		bagTypeURI = model.createURI(simNS + "Bag");
 	}
