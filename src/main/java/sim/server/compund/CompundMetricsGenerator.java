@@ -717,7 +717,7 @@ public class CompundMetricsGenerator {
 			count++;
 		}		
 
-		CompoundMetric result = new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowPluginTotalThreadsStartedPerTimeInterval"), SUM);
+		CompoundMetric result = new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowPluginTotalThreadsStartedPerTimeInterval"), AVERAGE);
 		result.setValue(totalThreadsStarted / count);
 		return result;
 	}
