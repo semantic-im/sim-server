@@ -61,7 +61,6 @@ public class RdfDatabase implements MetricsVisitor {
 	private URI hasDataValueURI;
 	private URI hasTimeStampURI;
 	
-	private URI hasMethodMetricURI;
 	private URI hasMethodNameURI;
 	private URI hasClassNameURI;
 	private URI hasExceptionURI;
@@ -143,7 +142,6 @@ public class RdfDatabase implements MetricsVisitor {
 		hasDataValueURI = model.createURI(simNS + "hasDataValue");
 		hasTimeStampURI = model.createURI(simNS + "hasTimeStamp");
 		
-		hasMethodMetricURI = model.createURI(simNS + "hasMethodMetric");
 		hasMethodNameURI = model.createURI(simNS + "hasMethodName");
 		hasClassNameURI = model.createURI(simNS + "hasClassName");
 		hasExceptionURI = model.createURI(simNS + "hasException");
@@ -369,9 +367,9 @@ public class RdfDatabase implements MetricsVisitor {
 		if (idContextURI != null) {
 			statements.add(model.createStatement(idURI, hasContextURI, idContextURI));
 		}
-		statements.add(model.createStatement(idSystemURI, hasMethodMetricURI, idURI));
-		statements.add(model.createStatement(idApplicationURI, hasMethodMetricURI, idURI));
-		statements.add(model.createStatement(idMethodURI, hasMethodMetricURI, idURI));
+		statements.add(model.createStatement(idSystemURI, hasMeasurementURI, idURI));
+		statements.add(model.createStatement(idApplicationURI, hasMeasurementURI, idURI));
+		statements.add(model.createStatement(idMethodURI, hasMeasurementURI, idURI));
 		
 		return statements;
 	}

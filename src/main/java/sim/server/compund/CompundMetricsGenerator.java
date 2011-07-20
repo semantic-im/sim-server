@@ -1,7 +1,9 @@
 package sim.server.compund;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.ontoware.aifbcommons.collection.ClosableIterator;
 import org.ontoware.rdf2go.model.QueryRow;
@@ -93,22 +95,63 @@ public class CompundMetricsGenerator {
 	}
 	
 	/**
+	 * Gets the set of workflow ids and their plugins
+	 * @return
+	 */
+	public Set<String> getRegisteredPlugins(){
+		Set<String> registeredPlugins = new HashSet<String>();
+		
+		String queryString = queryPrefixes +
+		"Select Distinct ?PluginName "+
+		"Where{ "+
+			"?PluginNameInstance rdf:type sim:PluginName . "+
+			"?PluginNameInstance sim:hasDataValue ?PluginName ."+
+		"}";
+		
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		while(cr.hasNext()){
+			QueryRow qr = cr.next();
+			registeredPlugins.add(qr.getValue("PluginName").toString());			
+		}		
+			
+		return registeredPlugins;
+	}
+
+	public Set<String> getRegisteredWorkflowIds(){
+		Set<String> registeredWorkflowIds = new HashSet<String>();
+		
+		String queryString = queryPrefixes +
+		
+		"Select Distinct ?WorkflowId "+
+		"Where{ "+
+			"?WorkflowIdInstance rdf:type WorkflowId . "+
+			"?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
+		"}";
+		
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		while(cr.hasNext()){
+			QueryRow qr = cr.next();
+			registeredWorkflowIds.add(qr.getValue("WorkflowId").toString());			
+		}		
+			
+		return registeredWorkflowIds;
+	}
+
+	/**
 	 * Counts the number of queries that were received in a given time interval
 	 * @param startDateTime
 	 * @param endDateTime
 	 * @return a compound metric of type QueriesPerTimeInterval given the start and end time of the interval
 	 */
-	public CompoundMetric generateQueriesPerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime){
-		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
-		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
-				
+	public CompoundMetric generateQueriesPerTimeInterval(long startDateTime, long endDateTime){
+
 		String queryString = queryPrefixes +
 		"Select ?QueryMethodExecutionInstance "+
 		"Where { "+
 	            "?QueryMethodExecutionInstance rdf:type sim:MethodExecution ."+
 	            "?QueryMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.endpoint.sparql.SparqlHandler.handle ."+
 	            "?QueryMethodExecutionInstance sim:hasBeginExecutionTime ?QueryBeginExecutionTime ."+
-	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTimeLong +" && " + "?QueryBeginExecutionTime <= "+ endDateTimeLong + ")."+
+	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTime +" && " + "?QueryBeginExecutionTime <= "+ endDateTime + ")."+
 			"}"; 
 
 		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
@@ -128,9 +171,7 @@ public class CompundMetricsGenerator {
 	 * @param endDateTime
 	 * @return a compound metric of type QuerySuccessRatePerTimeInterval given the start and end time of the interval
 	 */
-	public CompoundMetric generateQueriesSuccessRatePerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime){
-		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
-		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+	public CompoundMetric generateQueriesSuccessRatePerTimeInterval(long startDateTime, long endDateTime){
 				
 		String queryString = queryPrefixes +
 		"Select ?QueryMethodExecutionInstance "+
@@ -139,7 +180,7 @@ public class CompundMetricsGenerator {
 	            "?QueryMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.endpoint.sparql.SparqlHandler.handle ."+
 	            "?QueryMethodExecutionInstance sim:hasBeginExecutionTime ?QueryBeginExecutionTime ."+
 	            "?QueryMethodExecutionInstance sim:hasEndedWithError ?QueryErrorStatus ."+
-	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTimeLong +" && " + "?QueryBeginExecutionTime <= "+ endDateTimeLong + 
+	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTime +" && " + "?QueryBeginExecutionTime <= "+ endDateTime + 
 	   	              " && xsd:boolean(?QueryErrorStatus) = \"true\"^^xsd:boolean)."+
 			"}"; 
 
@@ -160,9 +201,7 @@ public class CompundMetricsGenerator {
 	 * @param endDateTime
 	 * @return a compound metric of type QueryFailureRatePerTimeInterval given the start and end time of the interval
 	 */
-	public CompoundMetric generateQueriesFailureRatePerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime){
-		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
-		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+	public CompoundMetric generateQueriesFailureRatePerTimeInterval(long startDateTime, long endDateTime){
 				
 		String queryString = queryPrefixes +
 		"Select ?QueryMethodExecutionInstance "+
@@ -171,7 +210,7 @@ public class CompundMetricsGenerator {
 	            "?QueryMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.core.endpoint.sparql.SparqlHandler.handle ."+
 	            "?QueryMethodExecutionInstance sim:hasBeginExecutionTime ?QueryBeginExecutionTime ."+
 	            "?QueryMethodExecutionInstance sim:hasEndedWithError ?QueryErrorStatus ."+
-	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTimeLong +" && " + "?QueryBeginExecutionTime <= "+ endDateTimeLong + 
+	   	              "FILTER(?QueryBeginExecutionTime >= "+ startDateTime +" && " + "?QueryBeginExecutionTime <= "+ endDateTime + 
 	   	              " && xsd:boolean(?QueryErrorStatus) = \"flase\"^^xsd:boolean)."+
 			"}"; 
 
@@ -190,11 +229,10 @@ public class CompundMetricsGenerator {
 	 * Counts the number of work-flows of a given name (id) that were started in a given time interval
 	 * @param startDateTime
 	 * @param endDateTime
+	 * @param workflowID
 	 * @return a compound metric of type WorkflowsPerTimeInterval given the start and end time of the interval
 	 */
-	public CompoundMetric generateWorkflowsPerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime, String workflowID){
-		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
-		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+	public CompoundMetric generateWorkflowsPerTimeInterval(long startDateTime, long endDateTime, String workflowID){
 				
 		String queryString = queryPrefixes +
 		"Select ?WorkflowMethodExecutionInstance "+
@@ -213,7 +251,7 @@ public class CompundMetricsGenerator {
 				"?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
 	            
 	            "?WorkflowMethodExecutionInstance sim:hasBeginExecutionTime ?WorkflowBeginExecutionTime ."+
-	   	              "FILTER(?WorkflowBeginExecutionTime >= "+ startDateTimeLong +" && " + "?WorkflowBeginExecutionTime <= "+ endDateTimeLong +
+	   	              "FILTER(?WorkflowBeginExecutionTime >= "+ startDateTime +" && " + "?WorkflowBeginExecutionTime <= "+ endDateTime +
 	   	              		" && ?WorkflowId = "+ workflowID +")."+
 			"}"; 
 
@@ -230,14 +268,13 @@ public class CompundMetricsGenerator {
 
 
 	/**
-	 * Counts the number of work-flows of a given name (id) that were started in a given time interval
+	 * The average duration of a given work-flow in a given time interval
 	 * @param startDateTime
 	 * @param endDateTime
+	 * @param workflowID
 	 * @return a compound metric of type WorkflowAvgDurationPerTimeInterval given the start and end time of the interval
 	 */
-	public CompoundMetric generateWorkflowAvgDurationPerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime, String workflowID){
-		long startDateTimeLong = rdfDatabase.getDateTimeLong(startDateTime);
-		long endDateTimeLong = rdfDatabase.getDateTimeLong(endDateTime);
+	public CompoundMetric generateWorkflowAvgDurationPerTimeInterval(long startDateTime, long endDateTime, String workflowID){
 				
 		String queryString = queryPrefixes +
 		"Select ?WorkflowTotalResponseTime "+
@@ -258,7 +295,7 @@ public class CompundMetricsGenerator {
 				"?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
 	            
 	            "?WorkflowMethodExecutionInstance sim:hasBeginExecutionTime ?WorkflowBeginExecutionTime ."+
-	   	              "FILTER(?WorkflowBeginExecutionTime >= "+ startDateTimeLong +" && " + "?WorkflowBeginExecutionTime <= "+ endDateTimeLong +
+	   	              "FILTER(?WorkflowBeginExecutionTime >= "+ startDateTime +" && " + "?WorkflowBeginExecutionTime <= "+ endDateTime +
 	   	              		" && ?WorkflowId = "+ workflowID +")."+
 			"}"; 
 
@@ -273,6 +310,415 @@ public class CompundMetricsGenerator {
 
 		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgDurationPerTimeInterval"), AVERAGE);
 		result.setValue(avg/count);
+		return result;
+	}
+	
+	/**
+	 * Total execution time of the given  plug-in in a given time interval.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @return a compound metric of type PlatformPluginTotalExecutionTimePerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generatePlatformPluginTotalExecutionTimePerTimeInterval(long startDateTime, long endDateTime, String pluginName){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginTotalResponseTime "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginWallClockTimeInstance ."+
+	            
+	            "?PluginWallClockTimeInstance rdf:type sim:WallClockTime ."+
+	            "?PluginWallClockTimeInstance sim:hasDataValue ?PluginTotalResponseTime ."+
+	            "?PluginWallClockTimeInstance sim:hasContext ?PluginContextInstance ."+
+	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	            
+	   	              "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+	   	              		" && ?PluginName = "+ pluginName +")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		double totalResponseTime = 0;
+		while(cr.hasNext()){
+			totalResponseTime +=new Double(cr.next().getLiteralValue("PluginTotalResponseTime")).doubleValue(); 
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformPluginTotalExecutionTimePerTimeInterval"), SUM);
+		result.setValue(totalResponseTime);
+		return result;
+	}
+
+	/**
+	 * Average execution time of the given  plug-in in a given time interval.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @return a compound metric of type PlatformPluginAvgExecutionTimePerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generatePlatformPluginAvgExecutionTimePerTimeInterval(long startDateTime, long endDateTime, String pluginName){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginTotalResponseTime "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginWallClockTimeInstance ."+
+	            
+	            "?PluginWallClockTimeInstance rdf:type sim:WallClockTime ."+
+	            "?PluginWallClockTimeInstance sim:hasDataValue ?PluginTotalResponseTime ."+
+	            "?PluginWallClockTimeInstance sim:hasContext ?PluginContextInstance ."+
+	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	            
+	   	              "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+	   	              		" && ?PluginName = "+ pluginName +")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		double totalResponseTime = 0;
+		int count = 0;
+		while(cr.hasNext()){
+			totalResponseTime +=new Double(cr.next().getLiteralValue("PluginTotalResponseTime")).doubleValue(); 
+			count++;
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformPluginAvgExecutionTimePerTimeInterval"), AVERAGE);
+		result.setValue(totalResponseTime/count);
+		return result;
+	}
+	
+	/**
+	 * Total execution time of the given plug-in in a given time interval for the given work-flow.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @param workflowID
+	 * @return a compound metric of type WorkflowPluginTotalExecutionTimePerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generateWorkflowPluginTotalExecutionTimePerTimeInterval(long startDateTime, long endDateTime, String pluginName, String workflowID){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginTotalResponseTime "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginWallClockTimeInstance ."+
+	            
+	            "?PluginWallClockTimeInstance rdf:type sim:WallClockTime ."+
+	            "?PluginWallClockTimeInstance sim:hasDataValue ?PluginTotalResponseTime ."+
+	            "?PluginWallClockTimeInstance sim:hasContext ?PluginContextInstance ."+
+	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	         
+	            "?PluginContextInstance sim:hasParentContext ?WorkflowContextInstance ."+
+	            "?WorkflowContextInstance rdf:type sim:WorkflowExecution ."+
+	            "?WorkflowContextInstance sim:hasMetrics ?WorkflowContextInstanceMetrics ."+
+	            "?WorkflowContextInstanceMetrics rdf:li ?WorkflowIdInstance ."+
+	            "?WorkflowIdInstance rdf:type sim:WorkflowId ."+
+	            "?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
+
+	   	         "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+	   	              		" && ?PluginName = "+ pluginName +" && ?WorkflowId = "+ workflowID +")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		double totalResponseTime = 0;
+		while(cr.hasNext()){
+			totalResponseTime +=new Double(cr.next().getLiteralValue("PluginTotalResponseTime")).doubleValue(); 
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowPluginTotalExecutionTimePerTimeInterval"), SUM);
+		result.setValue(totalResponseTime);
+		return result;
+	}
+
+	/**
+	 * Average execution time of the given plug-in in a given time interval for the given work-flow.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @param workflowID
+	 * @return a compound metric of type WorkflowPluginAvgExecutionTimePerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generateWorkflowPluginAvgExecutionTimePerTimeInterval(long startDateTime, long endDateTime, String pluginName, String workflowID){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginTotalResponseTime "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginWallClockTimeInstance ."+
+	            
+	            "?PluginWallClockTimeInstance rdf:type sim:WallClockTime ."+
+	            "?PluginWallClockTimeInstance sim:hasDataValue ?PluginTotalResponseTime ."+
+	            "?PluginWallClockTimeInstance sim:hasContext ?PluginContextInstance ."+
+	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	            "?PluginName sim:hasDataValue "+pluginName+" ."+
+	            
+	         
+	            "?PluginContextInstance sim:hasParentContext ?WorkflowContextInstance ."+
+	            "?WorkflowContextInstance rdf:type sim:WorkflowExecution ."+
+	            "?WorkflowContextInstance sim:hasMetrics ?WorkflowContextInstanceMetrics ."+
+	            "?WorkflowContextInstanceMetrics rdf:li ?WorkflowIdInstance ."+
+	            "?WorkflowIdInstance rdf:type sim:WorkflowId ."+
+	            "?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
+
+	            "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+              		" && ?PluginName = "+ pluginName +" && ?WorkflowId = "+ workflowID +")."+
+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		double totalResponseTime = 0;
+		int count = 0;
+		while(cr.hasNext()){
+			totalResponseTime +=new Double(cr.next().getLiteralValue("PluginTotalResponseTime")).doubleValue(); 
+			count++;
+		}		
+
+		CompoundMetric result =  new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowPluginAvgExecutionTimePerTimeInterval"), AVERAGE);
+		result.setValue(totalResponseTime/count);
+		return result;
+	}
+
+	
+	/**
+	 * Total number of threads of the given plug-in in a given time interval.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @return a compound metric of type PlatformPluginTotalThreadsStartedPerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generatePlatformPluginTotalThreadsStartedPerTimeInterval(long startDateTime, long endDateTime, String pluginName){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginThreadCount "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginThreadCountInstance ."+
+	            
+	            "?PluginThreadCountInstance rdf:type sim:ThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasDataValue ?PluginThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasContext ?PluginContextInstance ."+
+	    	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	            
+	   	              "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+	   	              		" && ?PluginName = "+ pluginName +")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int totalThreadsStarted = 0;
+		while(cr.hasNext()){
+			totalThreadsStarted +=new Integer(cr.next().getLiteralValue("PluginThreadCount")).intValue(); 
+		}		
+
+		CompoundMetric result = new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformPluginTotalThreadsStartedPerTimeInterval"), SUM);
+		result.setValue(totalThreadsStarted);
+		return result;
+	}
+
+	/**
+	 * Average number of threads started by the given plug-in in a given time interval.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @return a compound metric of type PlatformPluginAvgThreadsStartedPerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generatePlatformPluginAvgThreadsStartedPerTimeInterval(long startDateTime, long endDateTime, String pluginName){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginThreadCount "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginThreadCountInstance ."+
+	            
+	            "?PluginThreadCountInstance rdf:type sim:ThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasDataValue ?PluginThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasContext ?PluginContextInstance ."+
+	    	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	            
+	   	              "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+	   	              		" && ?PluginName = "+ pluginName +")."+
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int totalThreadsStarted = 0;
+		int count = 0;
+		while(cr.hasNext()){
+			totalThreadsStarted +=new Integer(cr.next().getLiteralValue("PluginThreadCount")).intValue(); 
+			count++;
+		}		
+
+		CompoundMetric result = new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformPluginAvgThreadsStartedPerTimeInterval"), AVERAGE);
+		result.setValue(totalThreadsStarted / count);
+		return result;
+	}
+	
+	/**
+	 * Total number of threads started by the given plug-in in all the runs of a specified work-flow in a given time interval.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @param workflowId
+	 * @return a compound metric of type WorkflowPluginTotalThreadsStartedPerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generateWorkflowPluginTotalThreadsStartedPerTimeInterval(DatatypeLiteral startDateTime, DatatypeLiteral endDateTime, String pluginName, String workflowId){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginThreadCount "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginThreadCountInstance ."+
+	            
+	            "?PluginThreadCountInstance rdf:type sim:ThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasDataValue ?PluginThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasContext ?PluginContextInstance ."+
+	    	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	            
+	            "?PluginContextInstance sim:hasParentContext ?WorkflowContextInstance ."+
+	            "?WorkflowContextInstance rdf:type sim:WorkflowExecution ."+
+	            "?WorkflowContextInstance sim:hasMetrics ?WorkflowContextInstanceMetrics ."+
+	            "?WorkflowContextInstanceMetrics rdf:li ?WorkflowIdInstance ."+
+	            "?WorkflowIdInstance rdf:type sim:WorkflowId ."+
+	            "?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
+
+	            
+	   	              "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+	   	              		" && ?PluginName = "+ pluginName +" && ?WorkflowId = "+ workflowId +")."+
+	   	              		
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int totalThreadsStarted = 0;
+		while(cr.hasNext()){
+			totalThreadsStarted +=new Integer(cr.next().getLiteralValue("PluginThreadCount")).intValue(); 
+		}		
+
+		CompoundMetric result = new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowPluginTotalThreadsStartedPerTimeInterval"), SUM);
+		result.setValue(totalThreadsStarted);
+		return result;
+	}
+
+
+	/**
+	 * Average number of threads of the given plug-in in all the runs of a specified work-flow in a given time interval.
+	 * @param startDateTime
+	 * @param endDateTime
+	 * @param pluginName
+	 * @param workflowID
+	 * @return a compound metric of type WorkflowPluginAvgThreadsStartedPerTimeInterval given the start and end time of the interval
+	 */
+	
+	public CompoundMetric generateWorkflowPluginAvgThreadsStartedPerTimeInterval(long startDateTime, long endDateTime, String pluginName, String workflowID){
+				
+		String queryString = queryPrefixes +
+		"Select ?PluginThreadCount "+
+		"Where { "+			
+				"?PluginMethodExecutionInstance rdf:type sim:MethodExecution ."+
+				"?PluginMethodExecutionInstance sim:isMethodExecutionOf sim:eu.larkc.plugin.Plugin.invoke ."+
+	            "?PluginMethodExecutionInstance sim:hasBeginExecutionTime ?PluginBeginExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasEndExecutionTime ?PluginEndExecutionTime ."+
+	            "?PluginMethodExecutionInstance sim:hasMethodMetric ?PluginThreadCountInstance ."+
+	            
+	            "?PluginThreadCountInstance rdf:type sim:ThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasDataValue ?PluginThreadCount ."+
+	            "?PluginThreadCountInstance sim:hasContext ?PluginContextInstance ."+
+	    	            
+	            "?PluginContextInstance rdf:type sim:PluginExecution ."+
+	            "?PluginContextInstance sim:hasMetrics ?PluginContextInstanceMetrics ."+
+	            "?PluginContextInstanceMetrics rdf:li ?PluginNameInstance ."+	            				
+	            
+	            "?PluginNameInstance rdf:type sim:PluginName ."+
+	            "?PluginNameInstance sim:hasDataValue ?PluginName ."+
+	            
+	            "?PluginContextInstance sim:hasParentContext ?WorkflowContextInstance ."+
+	            "?WorkflowContextInstance rdf:type sim:WorkflowExecution ."+
+	            "?WorkflowContextInstance sim:hasMetrics ?WorkflowContextInstanceMetrics ."+
+	            "?WorkflowContextInstanceMetrics rdf:li ?WorkflowIdInstance ."+
+	            "?WorkflowIdInstance rdf:type sim:WorkflowId ."+
+	            "?WorkflowIdInstance sim:hasDataValue ?WorkflowId ."+
+
+	            
+	   	              "FILTER(?PluginBeginExecutionTime >= "+ startDateTime +" && " + "?PluginEndExecutionTime <= "+ endDateTime +
+	   	              		" && ?PluginName = "+ pluginName +" && ?WorkflowId = "+ workflowID +")."+
+	   	              		
+			"}"; 
+
+		ClosableIterator<QueryRow> cr = rdfDatabase.sparqlSelect(queryString).iterator();
+		int totalThreadsStarted = 0;
+		int count = 0;
+		while(cr.hasNext()){
+			totalThreadsStarted +=new Integer(cr.next().getLiteralValue("PluginThreadCount")).intValue(); 
+			count++;
+		}		
+
+		CompoundMetric result = new CompoundMetricImpl(new URIImpl("http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowPluginTotalThreadsStartedPerTimeInterval"), SUM);
+		result.setValue(totalThreadsStarted / count);
 		return result;
 	}
 

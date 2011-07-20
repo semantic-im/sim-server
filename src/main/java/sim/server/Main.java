@@ -19,9 +19,15 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import sim.server.compund.CompoundMetricsThread;
 
 /**
  * This class is responsible to start up the SIM-Server application.
@@ -42,6 +48,7 @@ public class Main {
 	public static String storage_server_domain;
 	public static int storage_server_port;
 	public static String storage_repository_id;
+	
 	
 	/**
 	 * @param args
@@ -71,6 +78,17 @@ public class Main {
 		ServerHttpThread serverHttpThread = new ServerHttpThread();
 		Thread thread = new Thread(serverHttpThread);
 		thread.run();
+		
+		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+		
+		CompoundMetricsThread compoundMetricsThread = new CompoundMetricsThread();
+		try {
+			scheduler.scheduleAtFixedRate(compoundMetricsThread, 0, 1, TimeUnit.HOURS);
+		} catch (RejectedExecutionException e) {
+			logger.error("could not compound metrics process, cause is : " + e.getMessage(), e);
+		}
+
+
 	}
 
 	private void printUsage() {
