@@ -587,13 +587,16 @@ public class RdfDatabase implements MetricsVisitor {
 		pm.getUptime();
 		pm.getUsedMemory();
 
-		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "AvgCPUUsage", getDoubleTypeURI(pm.getAvgCpuUsage())));
-		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "CPUTime", getLongTypeURI(pm.getCpuTime())));
-		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "CPUUsage", getDoubleTypeURI(pm.getCpuUsage())));
-		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "GccCount", getLongTypeURI(pm.getCpuTime())));
-		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "GccTime", getLongTypeURI(pm.getCpuTime())));
-		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "Uptime", getLongTypeURI(pm.getCpuTime())));
-		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "UsedMemory", getLongTypeURI(pm.getCpuTime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformAvgCPUUsage", getDoubleTypeURI(pm.getAvgCpuUsage())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformCPUTime", getLongTypeURI(pm.getCpuTime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformCPUUsage", getDoubleTypeURI(pm.getCpuUsage())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformGccCount", getLongTypeURI(pm.getGccCount())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformGccTime", getLongTypeURI(pm.getGccTime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformUptime", getLongTypeURI(pm.getUptime())));
+		statements.addAll(createPlatformMetricStatements(idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformUsedMemory", getLongTypeURI(pm.getUsedMemory())));
+
+		model.addAll(statements.iterator());
+		model.commit();
 	}
 
 	
