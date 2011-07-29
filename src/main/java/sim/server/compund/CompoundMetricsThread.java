@@ -36,6 +36,7 @@ public class CompoundMetricsThread implements Runnable {
 	private static final Logger logger = LoggerFactory
 			.getLogger(CompoundMetricsThread.class);
 
+	private static int FIVE_MINUTES = 300000;
 	private static int ONE_HOUR = 3600000;
 
 	private CompundMetricsGenerator cmg = null;
@@ -64,8 +65,9 @@ public class CompoundMetricsThread implements Runnable {
 	public void run() {
 
 		long endDateTime = System.currentTimeMillis();
-		long startDateTime = endDateTime - ONE_HOUR;
-
+//		long startDateTime = endDateTime - ONE_HOUR;
+		long startDateTime = endDateTime - FIVE_MINUTES;
+	
 		plugins = cmg.getRegisteredPlugins();
 		workflows = cmg.getRegisteredWorkflowIds();
 

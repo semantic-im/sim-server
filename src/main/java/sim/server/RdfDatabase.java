@@ -612,35 +612,35 @@ public class RdfDatabase implements MetricsVisitor {
 		 */		
 		if(methodID.equals("eu.larkc.core.endpoint.sparql.SparqlHandler.handle")){					
 			//write an instance of QueryBeginExecutionTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryBeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryBeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime())));						
 			//write an instance of QueryEndExecutionTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime()));
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime())));
 			//write an instance of QueryErrorStatus
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError()));
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError())));
 			//write an instance of QueryTotalResponseTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime())));			
 			//write an instance of QueryThreadUserCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));			
 			//write an instance of QueryThreadSystemCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));			
 			//write an instance of QueryThreadTotalCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));			
 			//write an instance of QueryThreadCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadCount", getLongTypeURI(methodMetrics.getThreadCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));			
 			//write an instance of QueryThreadBlockCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));			
 			//write an instance of QueryThreadBlockTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime())));			
 			//write an instance of QueryThreadWaitCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));			
 			//write an instance of QueryThreadWaitTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime())));			
 			//write an instance of QueryThreadGccCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));			
 			//write an instance of QueryThreadGccTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));			
 			//write an instance of QueryProcessTotalCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "QueryProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));			
 		}
 		
 		/**
@@ -650,29 +650,29 @@ public class RdfDatabase implements MetricsVisitor {
 		 */		
 		if(methodID.equals("eu.larkc.core.executor.Executor.execute") || methodID.equals("eu.larkc.core.executor.Executor.getNextResults")){	
 			//write an instance of WorkflowTotalResponseTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime())));			
 			//write an instance of WorkflowThreadUserCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));						
 			//write an instance of WorkflowThreadSystemCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));			
 			//write an instance of WorkflowThreadTotalCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));			
 			//write an instance of WorkflowThreadCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadCount", getLongTypeURI(methodMetrics.getThreadCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));			
 			//write an instance of WorkflowThreadBlockCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));			
 			//write an instance of WorkflowThreadBlockTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime())));			
 			//write an instance of WorkflowThreadWaitCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));			
 			//write an instance of WorkflowThreadWaitTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime())));			
 			//write an instance of WorkflowThreadGccCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));			
 			//write an instance of WorkflowThreadGccTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));			
 			//write an instance of WorkflowProcessTotalCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "WorkflowProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));			
 		}
 		
 		/**
@@ -682,35 +682,35 @@ public class RdfDatabase implements MetricsVisitor {
 		 */		
 		if(methodID.equals("eu.larkc.plugin.Plugin.invoke")){		
 			//write an instance of PluginBeginExecutionTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginBeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginBeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime())));			
 			//write an instance of PluingEndExecutionTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime())));			
 			//write an instance of PluingErrorStatus
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError()));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError())));			
 			//write an instance of PluingTotalResponseTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime())));						
 			//write an instance of PluingThreadUserCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));						
 			//write an instance of PluingThreadSystemCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));						
 			//write an instance of PluingThreadTotalCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));						
 			//write an instance of PluingThreadCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadCount", getLongTypeURI(methodMetrics.getThreadCount()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));						
 			//write an instance of PluingThreadBlockCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));						
 			//write an instance of PluingThreadBlockTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime())));						
 			//write an instance of PluingThreadWaitCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));						
 			//write an instance of PluingThreadWaitTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime())));						
 			//write an instance of PluingThreadGccCount
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));						
 			//write an instance of PluingThreadGccTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));						
 			//write an instance of PluingProcessTotalCPUTime
-			createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime()));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));						
 		}
 		return statements;
 	}
