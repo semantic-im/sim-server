@@ -404,6 +404,7 @@ public class RdfDatabase implements MetricsVisitor {
 		URI idSystemURI = systemURICache.get(systemId.getId());
 		if (idSystemURI == null) {
 			idSystemURI = model.createURI(simNS + systemId.getId());
+			systemURICache.put(systemId.getId(), idSystemURI);
 			statements.add(model.createStatement(idSystemURI, typePredicateURI, systemTypeURI));
 			statements.add(model.createStatement(idSystemURI, hasNameURI, getStringTypeURI(systemId.getName())));
 		}
@@ -414,6 +415,7 @@ public class RdfDatabase implements MetricsVisitor {
 		URI idApplicationURI = applicationURICache.get(applicationId.getId());
 		if (idApplicationURI == null) {
 			idApplicationURI = model.createURI(simNS + applicationId.getId());
+			applicationURICache.put(applicationId.getId(), idApplicationURI);
 			statements.add(model.createStatement(idApplicationURI, typePredicateURI, applicationTypeURI));
 			statements.add(model.createStatement(idApplicationURI, hasNameURI, getStringTypeURI(applicationId.getName())));
 		}
