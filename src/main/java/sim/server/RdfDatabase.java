@@ -45,7 +45,7 @@ public class RdfDatabase implements MetricsVisitor {
 	private static final Logger logger = LoggerFactory.getLogger(RdfDatabase.class);
 	
 	public static final String QUERY_CONTENT = "QueryContent";
-	public static final String NUMBER_OF_PLUGINS = "NumberOfPlugin";
+	public static final String NUMBER_OF_PLUGINS = "WorkflowNumberOfPlugins";
 	
 	private Model model;
 
@@ -436,10 +436,13 @@ public class RdfDatabase implements MetricsVisitor {
 		statements.add(model.createStatement(idBagURI, typePredicateURI, bagTypeURI));
 		statements.add(model.createStatement(idContextURI, hasMetricsURI, idBagURI));
 
+		DatatypeLiteral timeURI = getDateTimeTypeURI(context.getCreationTime());
+		
 		for (Entry<String, Object> entry : context.entrySet()) {
 			URI idBagValueURI = generateURI();
 			statements.add(model.createStatement(idBagValueURI, typePredicateURI, model.createURI(simNS + entry.getKey())));
 			statements.add(model.createStatement(idBagValueURI, hasDataValueURI, model.createPlainLiteral(entry.getValue().toString())));
+			statements.add(model.createStatement(idBagValueURI, hasTimeStampURI, timeURI));
 			statements.add(model.createStatement(idBagURI, rdfLiURI, idBagValueURI));
 		}
 		
@@ -456,49 +459,49 @@ public class RdfDatabase implements MetricsVisitor {
 				URI idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryDataSetSourcesNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryDataSetSourcesNb())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 	
 				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryNamespaceNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryNamespaceNb())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 	
 				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryOperatorsNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryOperatorsNb())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 	
 				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultLimitNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultLimitNb())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 			
 				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOffsetNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOffsetNb())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 			
 				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultOrderingNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultOrderingNb())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 										
 				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QuerySizeInCharacters")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQuerySizeInCharacters())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 	
 				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryVariablesNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryVariablesNb())));
-				statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 			}
 		}
@@ -506,7 +509,6 @@ public class RdfDatabase implements MetricsVisitor {
 		/*	check if the context contains information about number of plugins
 		    in a workflow and if that's the case create workflow number of plugins 
 		    atomic metric
-		 */
 		if(context.containsKey(NUMBER_OF_PLUGINS)){
 			int numberOfPlugins = new Integer(context.get(NUMBER_OF_PLUGINS).toString()).intValue();
 
@@ -516,6 +518,7 @@ public class RdfDatabase implements MetricsVisitor {
 			statements.add(model.createStatement(idURI, hasTimeStampURI, getDateTimeTypeURI(context.getCreationTime())));
 			statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));			
 		}
+		 */
 
 		return idContextURI;
 	}
@@ -686,33 +689,33 @@ public class RdfDatabase implements MetricsVisitor {
 			//write an instance of PluginBeginExecutionTime
 			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginBeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime())));			
 			//write an instance of PluingEndExecutionTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime())));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginEndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime())));			
 			//write an instance of PluingErrorStatus
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError())));			
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError())));			
 			//write an instance of PluingTotalResponseTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginTotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime())));						
 			//write an instance of PluingThreadUserCPUTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));						
 			//write an instance of PluingThreadSystemCPUTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));						
 			//write an instance of PluingThreadTotalCPUTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));						
 			//write an instance of PluingThreadCount
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));						
 			//write an instance of PluingThreadBlockCount
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));						
 			//write an instance of PluingThreadBlockTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime())));						
 			//write an instance of PluingThreadWaitCount
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));						
 			//write an instance of PluingThreadWaitTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime())));						
 			//write an instance of PluingThreadGccCount
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));						
 			//write an instance of PluingThreadGccTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));						
 			//write an instance of PluingProcessTotalCPUTime
-			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluingProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));						
+			statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, "PluginProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));						
 		}
 		return statements;
 	}
