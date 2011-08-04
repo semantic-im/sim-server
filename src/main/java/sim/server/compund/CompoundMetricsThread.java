@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import sim.server.Main;
 import sim.server.RdfDatabase;
+import sim.server.data.CompoundMetric;
 
 /**
  * This is the thread writing the compound metrics to rdf store. It is running
@@ -36,6 +37,7 @@ public class CompoundMetricsThread implements Runnable {
 	private static final Logger logger = LoggerFactory
 			.getLogger(CompoundMetricsThread.class);
 
+	private static int ONE_MINUTE = 60000;
 	private static int FIVE_MINUTES = 300000;
 	private static int ONE_HOUR = 3600000;
 
@@ -66,46 +68,59 @@ public class CompoundMetricsThread implements Runnable {
 
 		long endDateTime = System.currentTimeMillis();
 //		long startDateTime = endDateTime - ONE_HOUR;
+//		long startDateTime = endDateTime - ONE_MINUTE;
 		long startDateTime = endDateTime - FIVE_MINUTES;
 	
+		Set<CompoundMetric> cm = new HashSet<CompoundMetric>();
+		
+		cmg.getRdfDatabase().open();
 		plugins = cmg.getRegisteredPlugins();
 		workflows = cmg.getRegisteredWorkflowIds();
 
-		cmg.generateQueriesPerTimeInterval(startDateTime, endDateTime);
-		cmg.generateQueriesSuccessRatePerTimeInterval(startDateTime,
-				endDateTime);
-		cmg.generateQueriesFailureRatePerTimeInterval(startDateTime,
-				endDateTime);
+		cm.add(cmg.generateQueriesPerTimeInterval(startDateTime, endDateTime));
+		cm.add(cmg.generateQueriesSuccessRatePerTimeInterval(startDateTime,
+				endDateTime));
+		cm.add(cmg.generateQueriesFailureRatePerTimeInterval(startDateTime,
+				endDateTime));
 
 		for (String workflowID : workflows) {
-			cmg.generateWorkflowsPerTimeInterval(startDateTime, endDateTime,
-					workflowID);
-			cmg.generateWorkflowAvgDurationPerTimeInterval(startDateTime,
-					endDateTime, workflowID);
+			cm.add(cmg.generateWorkflowsPerTimeInterval(startDateTime, endDateTime,
+					workflowID));
+//			cm.add(cmg.generateWorkflowAvgDurationPerTimeInterval(startDateTime,
+//					endDateTime, workflowID));
 		}
 
+		
 		for (String pluginName : plugins) {
-			cmg.generatePlatformPluginAvgExecutionTimePerTimeInterval(
-					startDateTime, endDateTime, pluginName);
-			cmg.generatePlatformPluginAvgThreadsStartedPerTimeInterval(
-					startDateTime, endDateTime, pluginName);
-			cmg.generatePlatformPluginTotalExecutionTimePerTimeInterval(
-					startDateTime, endDateTime, pluginName);
-			cmg.generatePlatformPluginTotalThreadsStartedPerTimeInterval(
-					startDateTime, endDateTime, pluginName);
+			cm.add(cmg.generatePlatformPluginAvgExecutionTimePerTimeInterval(
+					startDateTime, endDateTime, pluginName));
+			cm.add(cmg.generatePlatformPluginAvgThreadsStartedPerTimeInterval(
+					startDateTime, endDateTime, pluginName));
+			cm.add(cmg.generatePlatformPluginTotalExecutionTimePerTimeInterval(
+					startDateTime, endDateTime, pluginName));
+			cm.add(cmg.generatePlatformPluginTotalThreadsStartedPerTimeInterval(
+					startDateTime, endDateTime, pluginName));
 		}
 
+		
 		for (String workflowID : workflows) {
 			for (String pluginName : plugins) {
-				cmg.generateWorkflowPluginAvgExecutionTimePerTimeInterval(
-						startDateTime, endDateTime, pluginName, workflowID);
-				cmg.generateWorkflowPluginAvgThreadsStartedPerTimeInterval(
-						startDateTime, endDateTime, pluginName, workflowID);
-				cmg.generateWorkflowPluginTotalExecutionTimePerTimeInterval(
-						startDateTime, endDateTime, pluginName, workflowID);
+				cm.add(cmg.generateWorkflowPluginAvgExecutionTimePerTimeInterval(
+						startDateTime, endDateTime, pluginName, workflowID));
+				cm.add(cmg.generateWorkflowPluginAvgThreadsStartedPerTimeInterval(
+						startDateTime, endDateTime, pluginName, workflowID));
+				cm.add(cmg.generateWorkflowPluginTotalExecutionTimePerTimeInterval(
+						startDateTime, endDateTime, pluginName, workflowID));
 			}
 		}
+		
 
+		for(CompoundMetric m:cm)
+			cmg.getRdfDatabase().visit(m);
+
+		cm.removeAll(cm);
+		cmg.getRdfDatabase().close();	
+				
 	}
 
 }
