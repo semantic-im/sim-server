@@ -561,16 +561,20 @@ public class RdfDatabase implements MetricsVisitor {
 	
 	public void visit(CompoundMetric compoundMetric) {
 		List<Statement> statements = new ArrayList<Statement>();
+		DatatypeLiteral dateTimeLiteral = getDateTimeTypeURI(compoundMetric.getCreationTime());
 				
 		URI idCompoundMetricURI = generateURI();
 		compoundMetric.setId(idCompoundMetricURI);
 		
-		statements.add(model.createStatement(idCompoundMetricURI, typePredicateURI, compoundMetric.getType()));
+		statements.add(model.createStatement(idCompoundMetricURI, typePredicateURI, compoundMetric.getType()));		
+		statements.add(model.createStatement(idCompoundMetricURI, hasTimeStampURI, dateTimeLiteral));
+		
 		for(Metric m : compoundMetric.getConstituentMetrics()){
 			statements.add(model.createStatement(idCompoundMetricURI, includesURI, m.getId()));
 		}		
 		statements.add(model.createStatement(idCompoundMetricURI, hasDataValueURI, getDoubleTypeURI(new Double(compoundMetric.getValue()).doubleValue())));
 		
+		System.out.println("Writting compound metric "+idCompoundMetricURI+" of type "+compoundMetric.getType().toString()+" created at "+dateTimeLiteral.getValue()+" having value "+ compoundMetric.getValue());
 		model.addAll(statements.iterator());
 		model.commit();
 	}

@@ -83,7 +83,7 @@ public class Main {
 		
 		CompoundMetricsThread compoundMetricsThread = new CompoundMetricsThread();
 		try {
-			scheduler.scheduleAtFixedRate(compoundMetricsThread, 0, 1, TimeUnit.HOURS);
+			scheduler.scheduleAtFixedRate(compoundMetricsThread, 0, 5, TimeUnit.MINUTES);
 		} catch (RejectedExecutionException e) {
 			logger.error("could not compound metrics process, cause is : " + e.getMessage(), e);
 		}
