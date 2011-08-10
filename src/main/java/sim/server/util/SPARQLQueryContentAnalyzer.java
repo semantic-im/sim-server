@@ -33,12 +33,10 @@ public class SPARQLQueryContentAnalyzer {
 	private int queryResultOrderingNb;
 	private int queryResultLimitNb;
 	private int queryResultOffsetNb;
-	private int querySizeInTriples;
 
 	public SPARQLQueryContentAnalyzer(String QueryContent) {
 		this.queryContent = QueryContent;
 		this.querySizeInCharacters = 0;
-		this.querySizeInTriples = 0;
 	}
 
 
@@ -278,14 +276,6 @@ public class SPARQLQueryContentAnalyzer {
 		return queryResultOffsetNb;
 	}
 	
-	/**
-	 * @return the querySizeInTriples
-	 */
-	public int getQuerySizeInTriples() {
-		return querySizeInTriples;
-	}
-
-
 	/**
 	 * @return the queryNamespaceKeys
 	 */
