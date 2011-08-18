@@ -43,11 +43,19 @@ public class Main {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
+	public static boolean storage_use_rdf;
 	public static int server_port= 8099;
 	public static String storage_properties_file = null;
 	public static String storage_server_domain;
 	public static int storage_server_port;
 	public static String storage_repository_id;
+	public static boolean storage_use_sql;
+	public static String storage_sql_user_name;
+	public static String storage_sql_password;
+	public static String storage_sql_server;
+	public static int storage_sql_port;
+	public static String storage_sql_dbms;
+	public static String storage_sql_database;	
 	
 	
 	/**
@@ -71,21 +79,33 @@ public class Main {
 
 		Properties storageProperties = new Properties();
 		storageProperties.load(new FileInputStream(storage_properties_file));
+		storage_use_rdf = Boolean.valueOf(storageProperties.getProperty("storage-use-rdf"));
 		storage_server_domain = storageProperties.getProperty("storage-server-domain");
 		storage_server_port = Integer.valueOf(storageProperties.getProperty("storage-server-port"));
 		storage_repository_id = storageProperties.getProperty("storage-repository-id");
-		
+
+		storage_use_sql = Boolean.valueOf(storageProperties.getProperty("storage-use_sql"));
+		if(storage_use_sql) {
+			storage_sql_user_name = storageProperties.getProperty("storage-sql-user-name");
+			storage_sql_password = storageProperties.getProperty("storage-sql-password");
+			storage_sql_server = storageProperties.getProperty("storage-sql-server");
+			storage_sql_port = Integer.valueOf(storageProperties.getProperty("storage-sql-port"));
+			storage_sql_dbms = storageProperties.getProperty("storage-sql-dbms");
+			storage_sql_database = storageProperties.getProperty("storage-sql-database");
+		}		
 		ServerHttpThread serverHttpThread = new ServerHttpThread();
 		Thread thread = new Thread(serverHttpThread);
 		thread.run();
 		
-		ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-		
-		CompoundMetricsThread compoundMetricsThread = new CompoundMetricsThread();
-		try {
-			scheduler.scheduleAtFixedRate(compoundMetricsThread, 0, 5, TimeUnit.MINUTES);
-		} catch (RejectedExecutionException e) {
-			logger.error("could not compound metrics process, cause is : " + e.getMessage(), e);
+		if(storage_use_rdf) {
+			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+			
+			CompoundMetricsThread compoundMetricsThread = new CompoundMetricsThread();
+			try {
+				scheduler.scheduleAtFixedRate(compoundMetricsThread, 0, 5, TimeUnit.MINUTES);
+			} catch (RejectedExecutionException e) {
+				logger.error("could not compound metrics process, cause is : " + e.getMessage(), e);
+			}
 		}
 
 
