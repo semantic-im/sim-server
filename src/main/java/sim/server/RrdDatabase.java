@@ -269,7 +269,7 @@ public class RrdDatabase implements MetricsVisitor {
 			sample.setValue(DS_IO_READ, systemMetrics.getIORead());
 			sample.setValue(DS_IO_WRITE, systemMetrics.getIOWrite());
 			sample.setValue(DS_USER_CPU_LOAD, systemMetrics.getUserPerc());
-			sample.setValue(DS_USER_CPU_LOAD, systemMetrics.getSysPerc());
+			sample.setValue(DS_SYSTEM_CPU_LOAD, systemMetrics.getSysPerc());
 			sample.setValue(DS_IDLE_CPU_LOAD, systemMetrics.getIdlePerc());
 			sample.setValue(DS_WAIT_CPU_LOAD, systemMetrics.getWaitPerc());
 			sample.setValue(DS_IRQ_CPU_LOAD, systemMetrics.getIrqPerc());
