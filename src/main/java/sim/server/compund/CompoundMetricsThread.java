@@ -51,9 +51,6 @@ public class CompoundMetricsThread implements Runnable {
 	 */
 	public CompoundMetricsThread() {
 		RdfDatabase rdfDatabase = new RdfDatabase();
-		Main.storage_server_domain = "localhost";
-		Main.storage_server_port = 8080;
-		Main.storage_repository_id = "sim";
 
 		cmg = new CompundMetricsGenerator(rdfDatabase);
 	}
