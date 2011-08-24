@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import sim.data.Metrics;
+import sim.server.CsvDatabase;
 import sim.server.Main;
 import sim.server.RdfDatabase;
 import sim.server.RrdDatabase;
@@ -63,7 +64,8 @@ public class StorageWriter {
 
 		private RdfDatabase rdfWriter = new RdfDatabase();
 		private RrdDatabase rrdWriter = new RrdDatabase();
-		private SqlDatabase sqlWriter = new SqlDatabase();
+		private SqlDatabase sqlWriter = new SqlDatabase();		
+		private CsvDatabase csvWriter = new CsvDatabase();
 		
 		public StorageComunicator() {
 			super("SIM - StorageCommunicator");
@@ -81,13 +83,21 @@ public class StorageWriter {
 				} catch (InterruptedException e) {
 					break;
 				}
+				if (measurements.isEmpty())
+					continue;
 				try {
 					if(Main.storage_use_rdf) {
 						rdfWriter.open();
 					}
+					if(Main.storage_use_csv) {
+						csvWriter.open();
+					}
 					sendMeasurements();
 					if(Main.storage_use_rdf) {
 						rdfWriter.close();
+					}
+					if(Main.storage_use_csv) {
+						csvWriter.close();
 					}
 				} catch (Exception e) {
 					logger.error("unknown error, ignore to heep thread running", e);
@@ -99,9 +109,6 @@ public class StorageWriter {
 		}
 
 		private void sendMeasurements() {
-			if (measurements.isEmpty())
-				return;
-			
 			int count = 0;
 			while (!measurements.isEmpty()) {
 				Metrics metrics = measurements.remove();
@@ -113,6 +120,10 @@ public class StorageWriter {
 				
 				if(Main.storage_use_sql) {
 					metrics.accept(sqlWriter);
+				}
+				
+				if(Main.storage_use_csv) {
+					metrics.accept(csvWriter);
 				}
 				
 				count++;

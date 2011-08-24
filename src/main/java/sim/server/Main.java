@@ -56,6 +56,8 @@ public class Main {
 	public static int storage_sql_port;
 	public static String storage_sql_dbms;
 	public static String storage_sql_database;	
+	public static boolean storage_use_csv;
+	public static String storage_csv_file;
 	
 	
 	/**
@@ -107,7 +109,11 @@ public class Main {
 				logger.error("could not compound metrics process, cause is : " + e.getMessage(), e);
 			}
 		}
-
+		
+		storage_use_csv = Boolean.valueOf(storageProperties.getProperty("storage-use-csv"));
+		if(storage_use_csv) {
+			storage_csv_file = storageProperties.getProperty("storage-csv-file");
+		}
 
 	}
 
