@@ -595,7 +595,7 @@ public class RdfDatabase implements MetricsVisitor {
 		}		
 		statements.add(model.createStatement(idCompoundMetricURI, hasDataValueURI, getDoubleTypeURI(new Double(compoundMetric.getValue()).doubleValue())));
 		
-		System.out.println("Writting compound metric "+idCompoundMetricURI+" of type "+compoundMetric.getType().toString()+" created at "+dateTimeLiteral.getValue()+" having value "+ compoundMetric.getValue());
+		logger.info("Writting compound metric "+idCompoundMetricURI+" of type "+compoundMetric.getType().toString()+" created at "+dateTimeLiteral.getValue()+" having value "+ compoundMetric.getValue());
 		model.addAll(statements.iterator());
 		model.commit();
 	}
