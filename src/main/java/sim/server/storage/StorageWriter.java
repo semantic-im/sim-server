@@ -109,6 +109,7 @@ public class StorageWriter {
 		}
 
 		private void sendMeasurements() {
+			logger.info("Unprocessed metrics: {}", measurements.size());
 			int count = 0;
 			while (!measurements.isEmpty()) {
 				Metrics metrics = measurements.remove();
@@ -130,6 +131,7 @@ public class StorageWriter {
 				if (count >= MAX_METRICS_WRITE)
 					break;
 			}
+			logger.info("Unprocessed metrics: {}", measurements.size());
 		}
 		
 	}
