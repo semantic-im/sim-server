@@ -9,12 +9,20 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.hp.hpl.jena.graph.Node;
+import com.hp.hpl.jena.graph.Triple;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.SortCondition;
 import com.hp.hpl.jena.shared.PrefixMapping;
 import com.hp.hpl.jena.sparql.core.Var;
+import com.hp.hpl.jena.sparql.expr.Expr;
+import com.hp.hpl.jena.sparql.expr.ExprFunction;
 import com.hp.hpl.jena.sparql.syntax.Element;
+import com.hp.hpl.jena.sparql.syntax.ElementFilter;
+import com.hp.hpl.jena.sparql.syntax.ElementGroup;
+import com.hp.hpl.jena.sparql.syntax.ElementOptional;
+import com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock;
 
 public class SPARQLQueryContentAnalyzer {
 	private static final Logger log = LoggerFactory.getLogger(SPARQLQueryContentAnalyzer.class);
@@ -30,6 +38,7 @@ public class SPARQLQueryContentAnalyzer {
 	private int queryDataSetSourcesNb;
 	private List<String> queryDataSetSources;
 	private int queryOperatorsNb;
+	private int queryLiteralsNb;
 	private int queryResultOrderingNb;
 	private int queryResultLimitNb;
 	private int queryResultOffsetNb;
@@ -60,6 +69,8 @@ public class SPARQLQueryContentAnalyzer {
 			parseLimitStatement(query);
 
 			parseOffsetStatement(query);
+			
+			parseQueryOperatorsNb(query);
 			
 			return true;
 
@@ -206,6 +217,78 @@ public class SPARQLQueryContentAnalyzer {
 		}
 	}
 
+	public void parseQueryOperatorsNb(Query query) {
+		/*
+		*display the literals from the query
+		*/
+		//operators appear only in FILTER blocks => number of operators = number of filter blocks
+		Set<String> operators = new HashSet<String>();
+	
+		//save the literals in a set so that they don't appear twice
+		Set<String> literals = new HashSet<String>();
+		
+		Element queryBlock = query.getQueryPattern();		
+		ElementGroup eg = (ElementGroup) queryBlock;
+		
+		//the query elements can be TRIPLE blocks, OPTIONAL blocks or FILTER blocks
+		List<Element> queryElements = eg.getElements();	
+		
+		for (int i = 0; i < queryElements.size(); i++)
+		{
+			//if it is a triple, test if the object of the triple is a literal and save it
+			if (queryElements.get(i).getClass().getName().equals("com.hp.hpl.jena.sparql.syntax.ElementTriplesBlock"))
+			{
+				ElementTriplesBlock etb = (ElementTriplesBlock) queryElements.get(i);
+				Iterator<Triple> tripleIt = etb.patternElts();
+				while (tripleIt.hasNext())
+				{
+					Node nod = tripleIt.next().getObject();					
+					if (nod.isLiteral())
+						literals.add(nod.toString());
+				}
+			}			
+			//if it is an OPTIONAL block, parse all the building blocks and check as above
+			if (queryElements.get(i).getClass().getName().equals("com.hp.hpl.jena.sparql.syntax.ElementOptional"))
+			{
+				ElementOptional opt = (ElementOptional) queryElements.get(i);
+				Element exo = opt.getOptionalElement();
+				ElementGroup ego = (ElementGroup) exo;
+				
+				List<Element> optElements = ego.getElements();
+				
+				for (int j = 0; j < optElements.size(); j++)
+				{
+					ElementTriplesBlock etbo = (ElementTriplesBlock) optElements.get(j);
+					Iterator<Triple> optIt = etbo.patternElts();
+					while (optIt.hasNext())
+					{
+						Node nod = optIt.next().getObject();
+						if (nod.isLiteral())
+							literals.add(nod.toString());
+					}
+				}
+			}
+			
+			//if it is a FILTER block, check as above
+			if (queryElements.get(i).getClass().getName().equals("com.hp.hpl.jena.sparql.syntax.ElementFilter"))
+			{
+				ElementFilter ef = (ElementFilter) queryElements.get(i);
+				Expr ex = ef.getExpr();
+
+				ExprFunction vr = ex.getFunction();
+				List<Expr> t = vr.getArgs();
+				
+				operators.add(vr.getFunctionSymbol().toString());
+				
+				for (int z = 0; z < t.size(); z++)
+					if (t.get(z).isConstant())
+						literals.add(t.get(z).toString());
+			}
+		}
+		
+		this.queryOperatorsNb = operators.size();
+		this.queryLiteralsNb = literals.size();	
+	}
 	
 	/**
 	 * @return the queryContent
@@ -285,6 +368,11 @@ public class SPARQLQueryContentAnalyzer {
 
 	public Set<String> getQueryNamespaceValues() {
 		return queryNamespaceValues;
+	}
+
+
+	public int getQueryLiteralsNb() {
+		return queryLiteralsNb;
 	}
 
 
