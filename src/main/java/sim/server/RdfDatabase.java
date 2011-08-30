@@ -475,6 +475,12 @@ public class RdfDatabase implements MetricsVisitor {
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 	
 				idURI = generateURI();
+				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryLiteralsNb")));
+				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryLiteralsNb())));
+				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
+				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
+
+				idURI = generateURI();
 				statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryResultLimitNb")));
 				statements.add(model.createStatement(idURI, hasDataValueURI, getIntegerTypeURI(sqa.getQueryResultLimitNb())));
 				statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
