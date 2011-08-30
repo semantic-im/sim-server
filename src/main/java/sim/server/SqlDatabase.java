@@ -89,7 +89,6 @@ public class SqlDatabase implements MetricsVisitor {
 	private HashMap<String, TreeSet<String>> workflowIdToWorkflowPluginSet = new HashMap<String, TreeSet<String>>();
 	private HashSet<String> existingSystemInstances = new HashSet<String>();
 	private HashMap<String, String> queryContextIdToWorkflowId = new HashMap<String, String>();
-
 	private HashSet<String> insertedQueryContexts = new HashSet<String>();
 
 	private int getMetricID(String metric) throws SQLException {
@@ -419,7 +418,20 @@ public class SqlDatabase implements MetricsVisitor {
 					}
 
 					String queryContextId = context.getParentContextId();
-					queryContextIdToWorkflowId.put(queryContextId, workflowId);
+					
+					
+					if(insertedQueryContexts.contains(queryContextId)) {
+						//we've seen the query
+						if(!queryContextIdToWorkflowId.containsKey(queryContextId)) {
+							//we haven't inserted it into a workflow
+							queryContextIdToWorkflowId.put(queryContextId, workflowId);
+							stmtInsertQueryIntoWorkflow.setString(1, contextId);
+							stmtInsertQueryIntoWorkflow.setString(2, queryContextIdToWorkflowId.get(contextId));
+							stmtInsertQueryIntoWorkflow.execute();
+						} 
+					} else { //we haven't seen the query
+						queryContextIdToWorkflowId.put(queryContextId, workflowId);
+					}
 
 					// must update all the metrics we got wrong
 					stmtUpdateQueriesWorkflowsChangeWId.setString(1, workflowId);
@@ -450,6 +462,8 @@ public class SqlDatabase implements MetricsVisitor {
 					stmtDeleteWorkflow.setString(1, contextId);
 					stmtDeleteWorkflow.execute();
 
+					
+					
 					if (context.containsKey("NumberOfPlugins")) {
 						logger.debug("Context got NumberOfPlugins");
 						stmtInsertWorkflowMetric.setString(1, workflowId);
@@ -458,6 +472,45 @@ public class SqlDatabase implements MetricsVisitor {
 						stmtInsertWorkflowMetric.setTimestamp(4, new Timestamp(context.getCreationTime()));
 						stmtInsertWorkflowMetric.execute();
 					}
+					
+					Object numberOfExceptions = context.get("NumberOfExceptions");
+					if (numberOfExceptions != null) {
+						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowNumberOfExeceptions"));
+						stmtInsertWorkflowMetric.setString(3, numberOfExceptions.toString());
+						stmtInsertWorkflowMetric.execute();
+					}
+					
+					Object numberOfMalformedSpqarqlQueryExceptions = context.get("NumberOfMalformedSparqlQueryExceptions");
+					if (numberOfMalformedSpqarqlQueryExceptions != null) {
+						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowNumberOfMalformedSparqlQueryExceptions"));
+						stmtInsertWorkflowMetric.setString(3, numberOfMalformedSpqarqlQueryExceptions.toString());
+						stmtInsertWorkflowMetric.execute();
+					}
+
+					Object numberOfOutOfMemoryExceptions = context.get("NumberOfOutOfMemoryExceptions");
+					if (numberOfOutOfMemoryExceptions != null) {
+						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowNumberOfOutOfMemoryExceptions"));
+						stmtInsertWorkflowMetric.setString(3, numberOfOutOfMemoryExceptions.toString());
+						stmtInsertWorkflowMetric.execute();
+					}
+
+					
+					Object dataLayerInserts = context.get("DataLayerInserts");
+					if (dataLayerInserts != null) {
+						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowDataLayerInserts"));
+						stmtInsertWorkflowMetric.setString(3, dataLayerInserts.toString());
+						stmtInsertWorkflowMetric.execute();
+					}
+					
+
+					Object dataLayerSelects = context.get("DataLayerISelects");
+					if (dataLayerSelects != null) {
+						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowDataLayerSelects"));
+						stmtInsertWorkflowMetric.setString(3, dataLayerSelects.toString());
+						stmtInsertWorkflowMetric.execute();
+					}
+					
+					
 				}
 			}
 
@@ -529,6 +582,44 @@ public class SqlDatabase implements MetricsVisitor {
 					stmtInsertPluginMetric.setString(3, pluginCacheHit.toString());
 					stmtInsertPluginMetric.execute();
 				}
+				
+				Object numberOfExceptions = context.get("NumberOfExceptions");
+				if (numberOfExceptions != null) {
+					stmtInsertPluginMetric.setInt(2, getMetricID("PluginNumberOfExeceptions"));
+					stmtInsertPluginMetric.setString(3, numberOfExceptions.toString());
+					stmtInsertPluginMetric.execute();
+				}
+				
+				Object numberOfMalformedSpqarqlQueryExceptions = context.get("NumberOfMalformedSparqlQueryExceptions");
+				if (numberOfMalformedSpqarqlQueryExceptions != null) {
+					stmtInsertPluginMetric.setInt(2, getMetricID("PluginNumberOfMalformedSparqlQueryExceptions"));
+					stmtInsertPluginMetric.setString(3, numberOfMalformedSpqarqlQueryExceptions.toString());
+					stmtInsertPluginMetric.execute();
+				}
+
+				Object numberOfOutOfMemoryExceptions = context.get("NumberOfOutOfMemoryExceptions");
+				if (numberOfOutOfMemoryExceptions != null) {
+					stmtInsertPluginMetric.setInt(2, getMetricID("PluginNumberOfOutOfMemoryExceptions"));
+					stmtInsertPluginMetric.setString(3, numberOfOutOfMemoryExceptions.toString());
+					stmtInsertPluginMetric.execute();
+				}
+
+				
+				Object dataLayerInserts = context.get("DataLayerInserts");
+				if (dataLayerInserts != null) {
+					stmtInsertPluginMetric.setInt(2, getMetricID("PluginDataLayerInserts"));
+					stmtInsertPluginMetric.setString(3, dataLayerInserts.toString());
+					stmtInsertPluginMetric.execute();
+				}
+				
+
+				Object dataLayerSelects = context.get("DataLayerISelects");
+				if (dataLayerSelects != null) {
+					stmtInsertPluginMetric.setInt(2, getMetricID("PluginDataLayerSelects"));
+					stmtInsertPluginMetric.setString(3, dataLayerSelects.toString());
+					stmtInsertPluginMetric.execute();
+				}
+
 
 			}
 
@@ -548,20 +639,28 @@ public class SqlDatabase implements MetricsVisitor {
 					stmtUpdateQuery.setString(1, query);
 					stmtUpdateQuery.execute();
 				} else {
+					//we've not seen this query context before
+					String workflowId = queryContextIdToWorkflowId.get(contextId);
+					if(workflowId != null) {
+						//we know the workflowid
+						//we haven't inserted the query into a workflow
+						queryContextIdToWorkflowId.put(contextId, workflowId);
+						stmtInsertQueryIntoWorkflow.setString(1, contextId);
+						stmtInsertQueryIntoWorkflow.setString(2, queryContextIdToWorkflowId.get(contextId));
+						stmtInsertQueryIntoWorkflow.execute();
+					}
 					stmtInsertQuery.setString(1, contextId);
 					stmtInsertQuery.setString(2, query);
 					stmtInsertQuery.execute();
 					insertedQueryContexts.add(contextId);
 				}
 
-				stmtInsertQueryIntoWorkflow.setString(1, contextId);
-				stmtInsertQueryIntoWorkflow.setString(2, queryContextIdToWorkflowId.get(contextId));
-				stmtInsertQueryIntoWorkflow.execute();
-
+				
 				stmtInsertQueryMetric.setString(1, contextId);
 				stmtInsertQueryMetric.setTimestamp(4, new Timestamp(context.getCreationTime()));
 
 				SPARQLQueryContentAnalyzer sqa = new SPARQLQueryContentAnalyzer(query);
+				
 				if (sqa.parseQuery()) {
 
 					stmtInsertQueryMetric.setInt(2, getMetricID("QueryDataSetSourcesNb"));
@@ -597,11 +696,54 @@ public class SqlDatabase implements MetricsVisitor {
 					stmtInsertQueryMetric.execute();
 				}
 
-				stmtInsertQueryMetric.setInt(2, getMetricID("QueryResultSizeInCharacters"));
+				
 				Object queryResultSizeInCharacters = context.get("QueryResultSizeInCharacters");
 				if (queryResultSizeInCharacters != null) {
+					logger.debug("QueryResultSizeInCharacters");
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryResultSizeInCharacters"));
 					stmtInsertQueryMetric.setString(3, queryResultSizeInCharacters.toString());
 					stmtInsertQueryMetric.execute();
+				}
+				
+				Object numberOfExceptions = context.get("NumberOfExceptions");
+				if (numberOfExceptions != null) {
+					logger.debug("QueryNumberOfExceptions ");
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryNumberOfExceptions"));
+					stmtInsertQueryMetric.setString(3, numberOfExceptions.toString());
+					stmtInsertQueryMetric.execute();
+				}
+				Object numberOfMalformedSpqarqlQueryExceptions = context.get("NumberOfMalformedSparqlQueryExceptions");
+				if (numberOfMalformedSpqarqlQueryExceptions != null) {
+					logger.debug("QueryNumberOfMalformedSparqlQueryExceptions");
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryNumberOfMalformedSparqlQueryExceptions"));
+					stmtInsertQueryMetric.setString(3, numberOfMalformedSpqarqlQueryExceptions.toString());
+					stmtInsertQueryMetric.execute();
+				}
+				
+				Object numberOfOutOfMemoryExceptions = context.get("NumberOfOutOfMemoryExceptions");
+				if (numberOfOutOfMemoryExceptions != null) {
+					logger.debug("QueryNumberOfOutOfMemoryExceptions");
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryNumberOfOutOfMemoryExceptions"));
+					stmtInsertQueryMetric.setString(3, numberOfOutOfMemoryExceptions.toString());
+					stmtInsertQueryMetric.execute();
+				}
+
+				
+				Object dataLayerInserts = context.get("DataLayerInserts");
+				if (dataLayerInserts != null) {
+					logger.debug("QueryDataLayerInserts");
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryDataLayerInserts"));
+					stmtInsertQueryMetric.setString(3, dataLayerInserts.toString());
+					stmtInsertQueryMetric.execute();
+				}
+				
+
+				Object dataLayerSelects = context.get("DataLayerISelects");
+				if (dataLayerSelects != null) {
+					logger.debug("DataLayerISelects");
+					stmtInsertPluginMetric.setInt(2, getMetricID("QueryDataLayerSelects"));
+					stmtInsertPluginMetric.setString(3, dataLayerSelects.toString());
+					stmtInsertPluginMetric.execute();
 				}
 
 			}
