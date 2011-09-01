@@ -511,21 +511,37 @@ public class RdfDatabase implements MetricsVisitor {
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 				
 				if (sqa.getQueryDataSetSources() != null) {
+					StringBuilder sb = new StringBuilder("[");
+					boolean firstTime = true;
+					for(String dataSource:sqa.getQueryDataSetSources()) {
+						if (firstTime)
+							firstTime = false;
+						else
+							sb.append(", ");
+						sb.append(dataSource);
+					}
+					sb.append("]");
 					idURI = generateURI();
 					statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryDataSetSources")));
-					for(String dataSource:sqa.getQueryDataSetSources()){
-						statements.add(model.createStatement(idURI, hasDataValueURI, getStringTypeURI(dataSource)));					
-					}
+					statements.add(model.createStatement(idURI, hasDataValueURI, getStringTypeURI(sb.toString())));
 					statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 					statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 				}
 
 				if (sqa.getQueryNamespaceValues() != null) {
+					StringBuilder sb = new StringBuilder("[");
+					boolean firstTime = true;
+					for(String namespace:sqa.getQueryNamespaceValues()) {
+						if (firstTime)
+							firstTime = false;
+						else
+							sb.append(", ");
+						sb.append(namespace);
+					}
+					sb.append("]");
 					idURI = generateURI();
 					statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + "QueryNamespaceValues")));
-					for(String namespace:sqa.getQueryNamespaceValues()){
-						statements.add(model.createStatement(idURI, hasDataValueURI, getStringTypeURI(namespace)));					
-					}
+					statements.add(model.createStatement(idURI, hasDataValueURI, getStringTypeURI(sb.toString())));					
 					statements.add(model.createStatement(idURI, hasTimeStampURI, timeURI));
 					statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 				}
