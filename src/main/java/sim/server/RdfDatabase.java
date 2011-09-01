@@ -277,7 +277,7 @@ public class RdfDatabase implements MetricsVisitor {
 		 * if the method execution is the method execution of specific methods that correspond to
 		 * atomic metrics than the corresponding atomic metrics are written in the RDF storage
 		 */
-		List<Statement> atomicMetricsStatements = processMetric(methodMetrics,idContextURI,dateTimeLiteral);
+		List<Statement> atomicMetricsStatements = processMetric(methodMetrics, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral);
 		if(atomicMetricsStatements.size()>0)		
 			statements.addAll(atomicMetricsStatements);
 
@@ -382,7 +382,7 @@ public class RdfDatabase implements MetricsVisitor {
 		return statements;
 	}
 
-	private List<Statement> createAtomicMetricStatements(URI idContextURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
+	private List<Statement> createAtomicMetricStatements(URI idSystemURI, URI idApplicationURI, URI idContextURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
 		List<Statement> statements = new ArrayList<Statement>();
 		URI idURI = generateURI();
 		statements.add(model.createStatement(idURI, typePredicateURI, model.createURI(simNS + type)));
@@ -391,6 +391,8 @@ public class RdfDatabase implements MetricsVisitor {
 		if (idContextURI != null) {
 			statements.add(model.createStatement(idURI, hasContextURI, idContextURI));
 		}
+		statements.add(model.createStatement(idSystemURI, hasMeasurementURI, idURI));
+		statements.add(model.createStatement(idApplicationURI, hasMeasurementURI, idURI));
 		return statements;
 	}
 
@@ -667,34 +669,34 @@ public class RdfDatabase implements MetricsVisitor {
 		model.commit();
 	}
 
-	private void createAtomicMetrics(List<Statement> statements, URI idContextURI, DatatypeLiteral dateTimeLiteral, String prefix, MethodMetrics methodMetrics) {
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "BeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime())));						
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "EndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "Exception", getStringTypeURI(methodMetrics.getException())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "TotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "ProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));			
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "AllocatedMemoryBefore", getLongTypeURI(methodMetrics.getAllocatedMemoryBefore())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "UsedMemoryBefore", getLongTypeURI(methodMetrics.getUsedMemoryBefore())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "FreeMemoryBefore", getLongTypeURI(methodMetrics.getFreeMemoryBefore())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "UnallocatedMemoryBefore", getLongTypeURI(methodMetrics.getUnallocatedMemoryBefore())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "AllocatedMemoryAfter", getLongTypeURI(methodMetrics.getAllocatedMemoryAfter())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "UsedMemoryAfter", getLongTypeURI(methodMetrics.getUsedMemoryAfter())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "FreeMemoryAfter", getLongTypeURI(methodMetrics.getFreeMemoryAfter())));
-		statements.addAll(createAtomicMetricStatements(idContextURI, dateTimeLiteral, prefix + "UnallocatedMemoryAfter", getLongTypeURI(methodMetrics.getUnallocatedMemoryAfter())));
+	private void createAtomicMetrics(List<Statement> statements, URI idSystemURI, URI idApplicationURI, URI idContextURI, DatatypeLiteral dateTimeLiteral, String prefix, MethodMetrics methodMetrics) {
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "BeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime())));						
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "EndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "Exception", getStringTypeURI(methodMetrics.getException())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "TotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadTotalCPUTime", getLongTypeURI(methodMetrics.getThreadTotalCpuTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadCount", getLongTypeURI(methodMetrics.getThreadCount())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadBlockCount", getLongTypeURI(methodMetrics.getThreadBlockCount())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadBlockTime", getLongTypeURI(methodMetrics.getThreadBlockTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadWaitCount", getLongTypeURI(methodMetrics.getThreadWaitCount())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadWaitTime", getLongTypeURI(methodMetrics.getThreadWaitTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadGccCount", getLongTypeURI(methodMetrics.getThreadGccCount())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadGccTime", getLongTypeURI(methodMetrics.getThreadGccTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ProcessTotalCPUTime", getLongTypeURI(methodMetrics.getProcessTotalCpuTime())));			
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "AllocatedMemoryBefore", getLongTypeURI(methodMetrics.getAllocatedMemoryBefore())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "UsedMemoryBefore", getLongTypeURI(methodMetrics.getUsedMemoryBefore())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "FreeMemoryBefore", getLongTypeURI(methodMetrics.getFreeMemoryBefore())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "UnallocatedMemoryBefore", getLongTypeURI(methodMetrics.getUnallocatedMemoryBefore())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "AllocatedMemoryAfter", getLongTypeURI(methodMetrics.getAllocatedMemoryAfter())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "UsedMemoryAfter", getLongTypeURI(methodMetrics.getUsedMemoryAfter())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "FreeMemoryAfter", getLongTypeURI(methodMetrics.getFreeMemoryAfter())));
+		statements.addAll(createAtomicMetricStatements(idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "UnallocatedMemoryAfter", getLongTypeURI(methodMetrics.getUnallocatedMemoryAfter())));
 	}
 	
-	private List<Statement> processMetric(MethodMetrics methodMetrics, URI idContextURI, DatatypeLiteral dateTimeLiteral){
+	private List<Statement> processMetric(MethodMetrics methodMetrics, URI idSystemURI, URI idApplicationURI, URI idContextURI, DatatypeLiteral dateTimeLiteral){
 		
 		List<Statement> statements = new ArrayList<Statement>();
 		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName().replace("<init>", "new");
@@ -705,7 +707,7 @@ public class RdfDatabase implements MetricsVisitor {
 		 * we write query related atomic metrics
 		 */		
 		if(methodID.equals("eu.larkc.core.endpoint.sparql.SparqlHandler.handle")){					
-			createAtomicMetrics(statements, idContextURI, dateTimeLiteral, "Query", methodMetrics);
+			createAtomicMetrics(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, "Query", methodMetrics);
 		}
 		
 		/**
@@ -714,7 +716,7 @@ public class RdfDatabase implements MetricsVisitor {
 		 * we write workflow related atomic metrics
 		 */		
 		if(methodID.equals("eu.larkc.core.executor.Executor.execute") || methodID.equals("eu.larkc.core.executor.Executor.getNextResults")){	
-			createAtomicMetrics(statements, idContextURI, dateTimeLiteral, "Workflow", methodMetrics);
+			createAtomicMetrics(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, "Workflow", methodMetrics);
 		}
 		
 		/**
@@ -723,7 +725,7 @@ public class RdfDatabase implements MetricsVisitor {
 		 * we write plugin related atomic metrics
 		 */		
 		if(methodID.equals("eu.larkc.plugin.Plugin.invoke")){
-			createAtomicMetrics(statements, idContextURI, dateTimeLiteral, "Plugin", methodMetrics);
+			createAtomicMetrics(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, "Plugin", methodMetrics);
 		}
 		return statements;
 	}
