@@ -92,6 +92,9 @@ public class RdfDatabase implements MetricsVisitor {
 	
 	private URI hasPlatformMetricURI;
 	
+	private URI hasTotalMemoryURI;
+	private URI hasCpuCountURI;
+	
 	private URI bagTypeURI;
 	
 	private static final HashMap<String, URI> methodURICache = new HashMap<String, URI>();
@@ -172,6 +175,9 @@ public class RdfDatabase implements MetricsVisitor {
 		applicationTypeURI = model.createURI(simNS + "Application");
 		
 		hasPlatformMetricURI = model.createURI(simNS + "hasPlatformMetric");
+		
+		hasTotalMemoryURI = model.createURI(simNS + "hasTotalMemoryURI");
+		hasCpuCountURI = model.createURI(simNS + "hasCpuCountURI");
 		
 		bagTypeURI = model.createURI(simNS + "Bag");
 	}
@@ -417,6 +423,9 @@ public class RdfDatabase implements MetricsVisitor {
 			systemURICache.put(systemId.getId(), idSystemURI);
 			statements.add(model.createStatement(idSystemURI, typePredicateURI, systemTypeURI));
 			statements.add(model.createStatement(idSystemURI, hasNameURI, getStringTypeURI(systemId.getName())));
+			statements.add(model.createStatement(idSystemURI, hasTotalMemoryURI, getLongTypeURI(systemId.getTotalMemory())));
+			statements.add(model.createStatement(idSystemURI, hasCpuCountURI, getLongTypeURI(systemId.getCpuCount())));
+
 		}
 		return idSystemURI;
 	}
@@ -428,6 +437,8 @@ public class RdfDatabase implements MetricsVisitor {
 			applicationURICache.put(applicationId.getId(), idApplicationURI);
 			statements.add(model.createStatement(idApplicationURI, typePredicateURI, applicationTypeURI));
 			statements.add(model.createStatement(idApplicationURI, hasNameURI, getStringTypeURI(applicationId.getName())));
+			statements.add(model.createStatement(idApplicationURI, hasTotalMemoryURI, getLongTypeURI(applicationId.getTotalMemory())));
+			statements.add(model.createStatement(idApplicationURI, hasCpuCountURI, getLongTypeURI(applicationId.getCpuCount())));
 		}
 		return idApplicationURI;
 	}
