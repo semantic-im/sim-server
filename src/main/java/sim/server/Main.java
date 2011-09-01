@@ -58,6 +58,7 @@ public class Main {
 	public static String storage_sql_database;	
 	public static boolean storage_use_csv;
 	public static String storage_csv_file;
+	public static boolean storage_calculate_compound_metrics;
 	
 	
 	/**
@@ -81,12 +82,13 @@ public class Main {
 
 		Properties storageProperties = new Properties();
 		storageProperties.load(new FileInputStream(storage_properties_file));
-		storage_use_rdf = Boolean.valueOf(storageProperties.getProperty("storage-use-rdf"));
-		storage_server_domain = storageProperties.getProperty("storage-server-domain");
-		storage_server_port = Integer.valueOf(storageProperties.getProperty("storage-server-port"));
-		storage_repository_id = storageProperties.getProperty("storage-repository-id");
+		storage_use_rdf = Boolean.valueOf(storageProperties.getProperty("storage-use-rdf", "true"));
+		storage_calculate_compound_metrics = Boolean.valueOf(storageProperties.getProperty("storage-calculate-compound-metrics", "false"));
+		storage_server_domain = storageProperties.getProperty("storage-server-domain", "localhost");
+		storage_server_port = Integer.valueOf(storageProperties.getProperty("storage-server-port", "8080"));
+		storage_repository_id = storageProperties.getProperty("storage-repository-id", "sim");
 
-		storage_use_sql = Boolean.valueOf(storageProperties.getProperty("storage-use_sql"));
+		storage_use_sql = Boolean.valueOf(storageProperties.getProperty("storage-use_sql", "false"));
 		if(storage_use_sql) {
 			storage_sql_user_name = storageProperties.getProperty("storage-sql-user-name");
 			storage_sql_password = storageProperties.getProperty("storage-sql-password");
@@ -99,7 +101,7 @@ public class Main {
 		Thread thread = new Thread(serverHttpThread);
 		thread.run();
 		
-		if(storage_use_rdf) {
+		if(storage_calculate_compound_metrics) {
 			ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 			
 			CompoundMetricsThread compoundMetricsThread = new CompoundMetricsThread();
@@ -110,7 +112,7 @@ public class Main {
 			}
 		}
 		
-		storage_use_csv = Boolean.valueOf(storageProperties.getProperty("storage-use-csv"));
+		storage_use_csv = Boolean.valueOf(storageProperties.getProperty("storage-use-csv", "false"));
 		if(storage_use_csv) {
 			storage_csv_file = storageProperties.getProperty("storage-csv-file");
 		}
