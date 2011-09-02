@@ -282,9 +282,7 @@ public class RdfDatabase implements MetricsVisitor {
 		 * if the method execution is the method execution of specific methods that correspond to
 		 * atomic metrics than the corresponding atomic metrics are written in the RDF storage
 		 */
-		List<Statement> atomicMetricsStatements = processMetric(methodMetrics, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral);
-		if(atomicMetricsStatements.size()>0)		
-			statements.addAll(atomicMetricsStatements);
+		extractAtomicMetricsFromMethodMetric(statements, methodMetrics, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral);
 
 		model.addAll(statements.iterator());
 		model.commit();
@@ -610,7 +608,8 @@ public class RdfDatabase implements MetricsVisitor {
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "BeginExecutionTime", getLongTypeURI(methodMetrics.getBeginExecutionTime()));						
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "EndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime()));
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError()));
-		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "Exception", getStringTypeURI(methodMetrics.getException()));
+		if (methodMetrics.getException() != null)
+			addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "Exception", getStringTypeURI(methodMetrics.getException()));
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "TotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));			
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));			
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));			
@@ -633,9 +632,7 @@ public class RdfDatabase implements MetricsVisitor {
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "UnallocatedMemoryAfter", getLongTypeURI(methodMetrics.getUnallocatedMemoryAfter()));
 	}
 	
-	private List<Statement> processMetric(MethodMetrics methodMetrics, URI idSystemURI, URI idApplicationURI, URI idContextURI, DatatypeLiteral dateTimeLiteral){
-		
-		List<Statement> statements = new ArrayList<Statement>();
+	private void extractAtomicMetricsFromMethodMetric(List<Statement> statements, MethodMetrics methodMetrics, URI idSystemURI, URI idApplicationURI, URI idContextURI, DatatypeLiteral dateTimeLiteral){
 		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName().replace("<init>", "new");
 
 		/**
@@ -664,7 +661,6 @@ public class RdfDatabase implements MetricsVisitor {
 		if(methodID.equals("eu.larkc.plugin.Plugin.invoke")){
 			addAtomicMetrics(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, "Plugin", methodMetrics);
 		}
-		return statements;
 	}
 
 	public Model getModel() {
