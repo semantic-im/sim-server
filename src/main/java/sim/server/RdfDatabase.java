@@ -609,7 +609,7 @@ public class RdfDatabase implements MetricsVisitor {
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "EndExecutionTime", getLongTypeURI(methodMetrics.getEndExecutionTime()));
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ErrorStatus", getBooleanTypeURI(methodMetrics.endedWithError()));
 		if (methodMetrics.getException() != null)
-			addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "Exception", getStringTypeURI(methodMetrics.getException()));
+			addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ErrorMessage", getStringTypeURI(methodMetrics.getException()));
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "TotalResponseTime", getLongTypeURI(methodMetrics.getWallClockTime()));			
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadUserCPUTime", getLongTypeURI(methodMetrics.getThreadUserCpuTime()));			
 		addAtomicMetricStatements(statements, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral, prefix + "ThreadSystemCPUTime", getLongTypeURI(methodMetrics.getThreadSystemCpuTime()));			
