@@ -485,7 +485,7 @@ public class RdfDatabase implements MetricsVisitor {
 				idURI = addContextMetricStatement(statements, idSystemURI, idApplicationURI, idContextURI, timeURI, "QueryVariablesNb", getIntegerTypeURI(sqa.getQueryVariablesNb()));
 				statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 
-				if (sqa.getQueryDataSetSources() != null) {
+				if (sqa.getQueryDataSetSources() != null && sqa.getQueryDataSetSources().size() > 0) {
 					StringBuilder sb = new StringBuilder("[");
 					boolean firstTime = true;
 					for(String dataSource:sqa.getQueryDataSetSources()) {
@@ -500,7 +500,7 @@ public class RdfDatabase implements MetricsVisitor {
 					statements.add(model.createStatement(idBagURI, rdfLiURI, idURI));
 				}
 
-				if (sqa.getQueryNamespaceValues() != null) {
+				if (sqa.getQueryNamespaceValues() != null && sqa.getQueryNamespaceValues().size() > 0) {
 					StringBuilder sb = new StringBuilder("[");
 					boolean firstTime = true;
 					for(String namespace:sqa.getQueryNamespaceValues()) {
