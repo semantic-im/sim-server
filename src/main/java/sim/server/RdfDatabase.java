@@ -599,7 +599,10 @@ public class RdfDatabase implements MetricsVisitor {
 		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformUsedMemory", getLongTypeURI(pm.getUsedMemory()));
 		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformUFreeMemory", getLongTypeURI(pm.getFreeMemory()));
 		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformUnallocatedMemory", getLongTypeURI(pm.getUnallocatedMemory()));
-		
+		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformThreadsCount", getLongTypeURI(pm.getThreadsCount()));
+		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformThreadsStarted", getLongTypeURI(pm.getThreadsStarted()));
+		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformTotalThreadsStarted", getLongTypeURI(pm.getTotalThreadsStarted()));
+
 		model.addAll(statements.iterator());
 		model.commit();
 	}
