@@ -354,6 +354,16 @@ public class RdfDatabase implements MetricsVisitor {
 		//Irq
 		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "IrqCPUTime", getDoubleTypeURI(systemMetrics.getIrq()));
 		
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "ProcessesCount", getLongTypeURI(systemMetrics.getProcessesCount()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "RunningProcessesCount", getLongTypeURI(systemMetrics.getRunningProcessesCount()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "ThreadsCount", getLongTypeURI(systemMetrics.getThreadsCount()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "TcpInbound", getLongTypeURI(systemMetrics.getTcpInbound()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "TcpOutbound", getLongTypeURI(systemMetrics.getTcpOutbound()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "NetworkReceived", getLongTypeURI(systemMetrics.getNetworkReceived()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "NetworkSent", getLongTypeURI(systemMetrics.getNetworkSent()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkReceived", getLongTypeURI(systemMetrics.getLoopbackNetworkReceived()));
+		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkSent", getLongTypeURI(systemMetrics.getLoopbackNetworkSent()));
+
 		model.addAll(statements.iterator());
 		model.commit();
 	}
