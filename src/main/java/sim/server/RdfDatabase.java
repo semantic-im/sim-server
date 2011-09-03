@@ -230,7 +230,7 @@ public class RdfDatabase implements MetricsVisitor {
 		URI idSystemURI = addSystem(methodMetrics.getSystemId(), statements);
 		URI idApplicationURI = addApplication(methodMetrics.getMethod().getApplicationId(), statements);
 
-		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName().replace("<init>", "new");
+		String methodID = methodMetrics.getMethod().getSignature();
 		
 		URI idMethodURI = methodURICache.get(methodID);
 		if(idMethodURI == null){		
@@ -646,7 +646,7 @@ public class RdfDatabase implements MetricsVisitor {
 	}
 	
 	private void extractAtomicMetricsFromMethodMetric(List<Statement> statements, MethodMetrics methodMetrics, URI idSystemURI, URI idApplicationURI, URI idContextURI, DatatypeLiteral dateTimeLiteral){
-		String methodID = methodMetrics.getMethod().getClassName() + "." + methodMetrics.getMethod().getMethodName().replace("<init>", "new");
+		String methodID = methodMetrics.getMethod().getSignature();
 
 		/**
 		 * if the method execution is the method execution of 
