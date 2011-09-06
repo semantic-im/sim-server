@@ -176,8 +176,8 @@ public class RdfDatabase implements MetricsVisitor {
 		
 		hasPlatformMetricURI = model.createURI(simNS + "hasPlatformMetric");
 		
-		hasTotalMemoryURI = model.createURI(simNS + "hasTotalMemoryURI");
-		hasCpuCountURI = model.createURI(simNS + "hasCpuCountURI");
+		hasTotalMemoryURI = model.createURI(simNS + "hasTotalMemory");
+		hasCpuCountURI = model.createURI(simNS + "hasCpuCount");
 		
 		bagTypeURI = model.createURI(simNS + "Bag");
 	}
