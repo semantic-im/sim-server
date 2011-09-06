@@ -46,6 +46,16 @@ public class CsvDatabase implements MetricsVisitor {
 	private final String DS_IDLE_CPU_TIME = "idleCPUTime";
 	private final String DS_WAIT_CPU_TIME = "waitCPUTime";
 	private final String DS_IRQ_CPU_TIME = "irqCPUTime";
+	private final String DS_PROCESSES_COUNT = "processesCount";
+	private final String DS_THREADS_COUNT = "threadsCount";
+	private final String DS_RUNNING_PROCESSES_COUNT = "runningProcessesCount";
+	private final String DS_RUNNING_THREADS_COUNT = "threadsCount";
+	private final String DS_TCP_OUTBOUND = "tcpOutbound";
+	private final String DS_TCP_INBOUND = "tcpInbound";
+	private final String DS_NETWORK_SENT = "networkSent";
+	private final String DS_NETWORK_RECEICED = "networkReceived";
+	private final String DS_LOOPBACK_NETWORK_SENT = "loopbackNetworkSent";
+	private final String DS_LOOPBACK_NETWORK_RECEIVED = "loopbackNetworkReceived";
 	
 	
 
@@ -89,14 +99,23 @@ public class CsvDatabase implements MetricsVisitor {
 							DS_SYSTEM_CPU_TIME+", "+
 							DS_IDLE_CPU_TIME+", "+
 							DS_WAIT_CPU_TIME+", "+
-							DS_IRQ_CPU_TIME);
-			} 
+							DS_IRQ_CPU_TIME+", "+
+							DS_PROCESSES_COUNT+", "+			
+							DS_THREADS_COUNT+", "+
+							DS_RUNNING_PROCESSES_COUNT+", "+
+							DS_RUNNING_THREADS_COUNT+", "+
+							DS_TCP_OUTBOUND+", "+
+							DS_TCP_INBOUND+", "+
+							DS_NETWORK_SENT+", "+
+							DS_NETWORK_RECEICED+", "+
+	                        DS_LOOPBACK_NETWORK_SENT+", "+
+	                        DS_LOOPBACK_NETWORK_RECEIVED);
+			}
 		} catch (IOException e) {
 			logger.error("io exception", e);
 			throw new RuntimeException("io exception", e);
 		}
 	}
-	
 	public void close() {
 		logger.info("Closing CSV file");
 		out.close();
@@ -132,7 +151,15 @@ public class CsvDatabase implements MetricsVisitor {
 		out.print(", "+systemMetrics.getIdle());
 		out.print(", "+systemMetrics.getWait());
 		out.print(", "+systemMetrics.getIrq());
-
+		out.print(", "+systemMetrics.getProcessesCount());
+		out.print(", "+systemMetrics.getRunningProcessesCount());
+		out.print(", "+systemMetrics.getThreadsCount());
+		out.print(", "+systemMetrics.getTcpOutbound());
+		out.print(", "+systemMetrics.getTcpInbound());
+		out.print(", "+systemMetrics.getNetworkSent());
+		out.print(", "+systemMetrics.getNetworkReceived());
+		out.print(", "+systemMetrics.getLoopbackNetworkSent());
+		out.print(", "+systemMetrics.getLoopbackNetworkReceived());
 		out.println();
 	}
 	

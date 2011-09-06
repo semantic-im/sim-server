@@ -97,7 +97,7 @@ public class SqlDatabase implements MetricsVisitor {
 			stmtGetMetricId.setString(1, metric);
 			ResultSet rs = stmtGetMetricId.executeQuery();
 			if (!rs.next()) {
-				throw new SQLException("Metric name does not exist in Database");
+				throw new SQLException("Metric "+metric+" does not exist in Database");
 			}
 			int newId = rs.getInt(1);
 			metricIDCache.put(metric, newId);
@@ -475,7 +475,7 @@ public class SqlDatabase implements MetricsVisitor {
 					
 					Object numberOfExceptions = context.get("NumberOfExceptions");
 					if (numberOfExceptions != null) {
-						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowNumberOfExeceptions"));
+						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowNumberOfExceptions"));
 						stmtInsertWorkflowMetric.setString(3, numberOfExceptions.toString());
 						stmtInsertWorkflowMetric.execute();
 					}
@@ -585,7 +585,7 @@ public class SqlDatabase implements MetricsVisitor {
 				
 				Object numberOfExceptions = context.get("NumberOfExceptions");
 				if (numberOfExceptions != null) {
-					stmtInsertPluginMetric.setInt(2, getMetricID("PluginNumberOfExeceptions"));
+					stmtInsertPluginMetric.setInt(2, getMetricID("PluginNumberOfExceptions"));
 					stmtInsertPluginMetric.setString(3, numberOfExceptions.toString());
 					stmtInsertPluginMetric.execute();
 				}
@@ -741,16 +741,24 @@ public class SqlDatabase implements MetricsVisitor {
 				Object dataLayerSelects = context.get("DataLayerISelects");
 				if (dataLayerSelects != null) {
 					logger.debug("DataLayerISelects");
-					stmtInsertPluginMetric.setInt(2, getMetricID("QueryDataLayerSelects"));
-					stmtInsertPluginMetric.setString(3, dataLayerSelects.toString());
-					stmtInsertPluginMetric.execute();
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryDataLayerSelects"));
+					stmtInsertQueryMetric.setString(3, dataLayerSelects.toString());
+					stmtInsertQueryMetric.execute();
 				}
-
+				
+				Object queryErrorMessage = context.get("QueryErrorMessage");
+				if (queryErrorMessage != null) {
+					logger.debug("QueryErrorMessage");
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryErrorMessage"));
+					stmtInsertQueryMetric.setString(3, queryErrorMessage.toString());
+					stmtInsertQueryMetric.execute();
+				}
+				
+				
 			}
 
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
-			e.printStackTrace();
 		}
 	}
 
@@ -775,6 +783,10 @@ public class SqlDatabase implements MetricsVisitor {
 			stmtInsertPlatformMetric.setString(3, "" + pm.getCpuTime());
 			stmtInsertPlatformMetric.execute();
 
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformTotalCPUTime"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getTotalCpuTime());
+			stmtInsertPlatformMetric.execute();
+			
 			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformCPUUsage"));
 			stmtInsertPlatformMetric.setString(3, "" + pm.getCpuUsage());
 			stmtInsertPlatformMetric.execute();
@@ -783,17 +795,51 @@ public class SqlDatabase implements MetricsVisitor {
 			stmtInsertPlatformMetric.setString(3, "" + pm.getGccCount());
 			stmtInsertPlatformMetric.execute();
 
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformTotalGccCount"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getTotalGccCount());
+			stmtInsertPlatformMetric.execute();
+
+			
 			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformGccTime"));
 			stmtInsertPlatformMetric.setString(3, "" + pm.getGccTime());
 			stmtInsertPlatformMetric.execute();
 
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformTotalGccTime"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getTotalGccTime());
+			stmtInsertPlatformMetric.execute();
+			
 			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformUptime"));
 			stmtInsertPlatformMetric.setString(3, "" + pm.getUptime());
 			stmtInsertPlatformMetric.execute();
 
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformAllocatedMemory"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getAllocatedMemory());
+			stmtInsertPlatformMetric.execute();
+			
 			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformUsedMemory"));
 			stmtInsertPlatformMetric.setString(3, "" + pm.getUsedMemory());
 			stmtInsertPlatformMetric.execute();
+			
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformFreeMemory"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getFreeMemory());
+			stmtInsertPlatformMetric.execute();
+			
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformUnallocatedMemory"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getUnallocatedMemory());
+			stmtInsertPlatformMetric.execute();
+			
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformThreadsCount"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getThreadsCount());
+			stmtInsertPlatformMetric.execute();
+			
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformThreadsStarted"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getThreadsStarted());
+			stmtInsertPlatformMetric.execute();
+			
+			stmtInsertPlatformMetric.setInt(2, getMetricID("PlatformTotalThreadsStarted"));
+			stmtInsertPlatformMetric.setString(3, "" + pm.getTotalThreadsStarted());
+			stmtInsertPlatformMetric.execute();
+			
 		} catch (SQLException e) {
 			logger.error(e.getMessage());
 			e.printStackTrace();
@@ -899,6 +945,41 @@ public class SqlDatabase implements MetricsVisitor {
 			stmtInsertQueryMetric.setInt(2, getMetricID("QueryProcessTotalCPUTime"));
 			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getProcessTotalCpuTime());
 			stmtInsertQueryMetric.execute();
+			
+			
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryAllocatedMemoryBefore"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getAllocatedMemoryBefore());
+			stmtInsertQueryMetric.execute();
+			
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryAllocatedMemoryAfter"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getAllocatedMemoryAfter());
+			stmtInsertQueryMetric.execute();
+			
+			
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryUsedMemoryBefore"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getUsedMemoryBefore());
+			stmtInsertQueryMetric.execute();
+			
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryUsedMemoryAfter"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getUsedMemoryAfter());
+			stmtInsertQueryMetric.execute();
+					
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryFreeMemoryBefore"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getFreeMemoryBefore());
+			stmtInsertQueryMetric.execute();
+	
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryFreeMemoryAfter"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getFreeMemoryAfter());
+			stmtInsertQueryMetric.execute();
+	
+			
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryUnallocatedMemoryBefore"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getUnallocatedMemoryBefore());
+			stmtInsertQueryMetric.execute();
+			
+			stmtInsertQueryMetric.setInt(2, getMetricID("QueryUnallocatedMemoryAfter"));
+			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getUnallocatedMemoryAfter());
+			stmtInsertQueryMetric.execute();
 
 		}
 
@@ -975,6 +1056,41 @@ public class SqlDatabase implements MetricsVisitor {
 			// write an instance of WorkflowProcessTotalCPUTime
 			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowProcessTotalCPUTime"));
 			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getProcessTotalCpuTime());
+			stmtInsertWorkflowMetric.execute();
+			
+			
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowAllocatedMemoryBefore"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getAllocatedMemoryBefore());
+			stmtInsertWorkflowMetric.execute();
+			
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowAllocatedMemoryAfter"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getAllocatedMemoryAfter());
+			stmtInsertWorkflowMetric.execute();
+			
+			
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowUsedMemoryBefore"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getUsedMemoryBefore());
+			stmtInsertWorkflowMetric.execute();
+			
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowUsedMemoryAfter"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getUsedMemoryAfter());
+			stmtInsertWorkflowMetric.execute();
+					
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowFreeMemoryBefore"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getFreeMemoryBefore());
+			stmtInsertWorkflowMetric.execute();
+	
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowFreeMemoryAfter"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getFreeMemoryAfter());
+			stmtInsertWorkflowMetric.execute();
+	
+			
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowUnallocatedMemoryBefore"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getUnallocatedMemoryBefore());
+			stmtInsertWorkflowMetric.execute();
+			
+			stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowUnallocatedMemoryAfter"));
+			stmtInsertWorkflowMetric.setString(3, "" + methodMetrics.getUnallocatedMemoryAfter());
 			stmtInsertWorkflowMetric.execute();
 		}
 
@@ -1062,6 +1178,40 @@ public class SqlDatabase implements MetricsVisitor {
 			// write an instance of PluginProcessTotalCPUTime
 			stmtInsertPluginMetric.setInt(2, getMetricID("PluginProcessTotalCPUTime"));
 			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getProcessTotalCpuTime());
+			stmtInsertPluginMetric.execute();
+			
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginAllocatedMemoryBefore"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getAllocatedMemoryBefore());
+			stmtInsertPluginMetric.execute();
+			
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginAllocatedMemoryAfter"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getAllocatedMemoryAfter());
+			stmtInsertPluginMetric.execute();
+			
+			
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginUsedMemoryBefore"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getUsedMemoryBefore());
+			stmtInsertPluginMetric.execute();
+			
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginUsedMemoryAfter"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getUsedMemoryAfter());
+			stmtInsertPluginMetric.execute();
+					
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginFreeMemoryBefore"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getFreeMemoryBefore());
+			stmtInsertPluginMetric.execute();
+	
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginFreeMemoryAfter"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getFreeMemoryAfter());
+			stmtInsertPluginMetric.execute();
+	
+			
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginUnallocatedMemoryBefore"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getUnallocatedMemoryBefore());
+			stmtInsertPluginMetric.execute();
+			
+			stmtInsertPluginMetric.setInt(2, getMetricID("PluginUnallocatedMemoryAfter"));
+			stmtInsertPluginMetric.setString(3, "" + methodMetrics.getUnallocatedMemoryAfter());
 			stmtInsertPluginMetric.execute();
 		}
 	}
