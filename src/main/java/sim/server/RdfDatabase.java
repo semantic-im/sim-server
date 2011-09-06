@@ -298,71 +298,71 @@ public class RdfDatabase implements MetricsVisitor {
 		URI idSystemURI = addSystem(systemMetrics.getSystemId(), statements);
 		
 		//SystemLoadAverage
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "SystemLoadAverage", getDoubleTypeURI(systemMetrics.getSystemLoadAverage()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "SystemLoadAverage", getDoubleTypeURI(systemMetrics.getSystemLoadAverage()));
 		
 		//TotalSystemFreeMemory
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "TotalSystemFreeMemory", getLongTypeURI(systemMetrics.getTotalSystemFreeMemory()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "TotalSystemFreeMemory", getLongTypeURI(systemMetrics.getTotalSystemFreeMemory()));
 		
 		//TotalSystemUsedMemory
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "TotalSystemUsedMemory", getLongTypeURI(systemMetrics.getTotalSystemUsedMemory()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "TotalSystemUsedMemory", getLongTypeURI(systemMetrics.getTotalSystemUsedMemory()));
 		
 		//TotalSystemUsedSwap
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "TotalSystemUsedSwap", getLongTypeURI(systemMetrics.getTotalSystemUsedSwap()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "TotalSystemUsedSwap", getLongTypeURI(systemMetrics.getTotalSystemUsedSwap()));
 
 		//SystemOpenFileDescriptors
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "SystemOpenFileDescriptorCount", getLongTypeURI(systemMetrics.getSystemOpenFileDescriptors()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "SystemOpenFileDescriptorCount", getLongTypeURI(systemMetrics.getSystemOpenFileDescriptors()));
 		
 		//SwapIn
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "SwapIn", getLongTypeURI(systemMetrics.getSwapIn()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "SwapIn", getLongTypeURI(systemMetrics.getSwapIn()));
 
 		//SwapOut
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "SwapOut", getLongTypeURI(systemMetrics.getSwapOut()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "SwapOut", getLongTypeURI(systemMetrics.getSwapOut()));
 
 		//IORead
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "IORead", getLongTypeURI(systemMetrics.getIORead()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "IORead", getLongTypeURI(systemMetrics.getIORead()));
 
 		//IOWrite
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "IOWrite", getLongTypeURI(systemMetrics.getIOWrite()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "IOWrite", getLongTypeURI(systemMetrics.getIOWrite()));
 
 		//UserPerc
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "UserCPULoad", getDoubleTypeURI(systemMetrics.getUserPerc()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "UserCPULoad", getDoubleTypeURI(systemMetrics.getUserPerc()));
 
 		//SysPerc
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "SystemCPULoad", getDoubleTypeURI(systemMetrics.getSysPerc()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "SystemCPULoad", getDoubleTypeURI(systemMetrics.getSysPerc()));
 
 		//IdlePerc
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "IdleCPULoad", getDoubleTypeURI(systemMetrics.getIdlePerc()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "IdleCPULoad", getDoubleTypeURI(systemMetrics.getIdlePerc()));
 
 		//WaitPerc
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "WaitCPULoad", getDoubleTypeURI(systemMetrics.getWaitPerc()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "WaitCPULoad", getDoubleTypeURI(systemMetrics.getWaitPerc()));
 		
 		//IrqPerc
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "IrqCPULoad", getDoubleTypeURI(systemMetrics.getIrqPerc()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "IrqCPULoad", getDoubleTypeURI(systemMetrics.getIrqPerc()));
 		
 		//User
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "UserCPUTime", getDoubleTypeURI(systemMetrics.getUser()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "UserCPUTime", getDoubleTypeURI(systemMetrics.getUser()));
 		
 		//Sys
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "SystemCPUTime", getDoubleTypeURI(systemMetrics.getSys()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "SystemCPUTime", getDoubleTypeURI(systemMetrics.getSys()));
 		
 		//Idle
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "IdleCPUTime", getDoubleTypeURI(systemMetrics.getIdle()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "IdleCPUTime", getDoubleTypeURI(systemMetrics.getIdle()));
 		
 		//Wait
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "WaitCPUTime", getDoubleTypeURI(systemMetrics.getWait()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "WaitCPUTime", getDoubleTypeURI(systemMetrics.getWait()));
 		
 		//Irq
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "IrqCPUTime", getDoubleTypeURI(systemMetrics.getIrq()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "IrqCPUTime", getDoubleTypeURI(systemMetrics.getIrq()));
 		
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "ProcessesCount", getLongTypeURI(systemMetrics.getProcessesCount()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "RunningProcessesCount", getLongTypeURI(systemMetrics.getRunningProcessesCount()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "ThreadsCount", getLongTypeURI(systemMetrics.getThreadsCount()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "TcpInbound", getLongTypeURI(systemMetrics.getTcpInbound()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "TcpOutbound", getLongTypeURI(systemMetrics.getTcpOutbound()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "NetworkReceived", getLongTypeURI(systemMetrics.getNetworkReceived()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "NetworkSent", getLongTypeURI(systemMetrics.getNetworkSent()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkReceived", getLongTypeURI(systemMetrics.getLoopbackNetworkReceived()));
-		addSystemMetrictatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkSent", getLongTypeURI(systemMetrics.getLoopbackNetworkSent()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "ProcessesCount", getLongTypeURI(systemMetrics.getProcessesCount()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "RunningProcessesCount", getLongTypeURI(systemMetrics.getRunningProcessesCount()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "ThreadsCount", getLongTypeURI(systemMetrics.getThreadsCount()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "TcpInbound", getLongTypeURI(systemMetrics.getTcpInbound()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "TcpOutbound", getLongTypeURI(systemMetrics.getTcpOutbound()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "NetworkReceived", getLongTypeURI(systemMetrics.getNetworkReceived()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "NetworkSent", getLongTypeURI(systemMetrics.getNetworkSent()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkReceived", getLongTypeURI(systemMetrics.getLoopbackNetworkReceived()));
+		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkSent", getLongTypeURI(systemMetrics.getLoopbackNetworkSent()));
 
 		model.addAll(statements.iterator());
 		model.commit();
@@ -384,7 +384,7 @@ public class RdfDatabase implements MetricsVisitor {
 		return idURI;
 	}
 
-	private URI addSystemMetrictatements(List<Statement> statements, URI idSystemURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
+	private URI addSystemMetricStatements(List<Statement> statements, URI idSystemURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
 		return addMetricStatements(statements, idSystemURI, null, null, null, dateTimeLiteral, type, value);
 	}
 
