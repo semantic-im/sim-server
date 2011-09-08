@@ -420,19 +420,20 @@ public class SqlDatabase implements MetricsVisitor {
 					String queryContextId = context.getParentContextId();
 					
 					
-					if(insertedQueryContexts.contains(queryContextId)) {
-						//we've seen the query
-						if(!queryContextIdToWorkflowId.containsKey(queryContextId)) {
-							//we haven't inserted it into a workflow
-							queryContextIdToWorkflowId.put(queryContextId, workflowId);
-							stmtInsertQueryIntoWorkflow.setString(1, contextId);
-							stmtInsertQueryIntoWorkflow.setString(2, queryContextIdToWorkflowId.get(contextId));
-							stmtInsertQueryIntoWorkflow.execute();
-						} 
-					} else { //we haven't seen the query
-						queryContextIdToWorkflowId.put(queryContextId, workflowId);
+					if(!insertedQueryContexts.contains(queryContextId)) {
+						stmtInsertQuery.setString(1, queryContextId);
+						stmtInsertQuery.setString(2, "");
+						stmtInsertQuery.execute();
+						insertedQueryContexts.add(queryContextId);
 					}
-
+					if(!queryContextIdToWorkflowId.containsKey(queryContextId)) {
+						//we haven't inserted the query into a workflow
+						queryContextIdToWorkflowId.put(queryContextId, workflowId);
+						stmtInsertQueryIntoWorkflow.setString(1,queryContextId );
+						stmtInsertQueryIntoWorkflow.setString(2, contextId);
+						stmtInsertQueryIntoWorkflow.execute();
+					} 
+					
 					// must update all the metrics we got wrong
 					stmtUpdateQueriesWorkflowsChangeWId.setString(1, workflowId);
 					stmtUpdateQueriesWorkflowsChangeWId.setString(2, contextId);
@@ -640,15 +641,6 @@ public class SqlDatabase implements MetricsVisitor {
 					stmtUpdateQuery.execute();
 				} else {
 					//we've not seen this query context before
-					String workflowId = queryContextIdToWorkflowId.get(contextId);
-					if(workflowId != null) {
-						//we know the workflowid
-						//we haven't inserted the query into a workflow
-						queryContextIdToWorkflowId.put(contextId, workflowId);
-						stmtInsertQueryIntoWorkflow.setString(1, contextId);
-						stmtInsertQueryIntoWorkflow.setString(2, queryContextIdToWorkflowId.get(contextId));
-						stmtInsertQueryIntoWorkflow.execute();
-					}
 					stmtInsertQuery.setString(1, contextId);
 					stmtInsertQuery.setString(2, query);
 					stmtInsertQuery.execute();
