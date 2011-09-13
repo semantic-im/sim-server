@@ -67,6 +67,10 @@ public class SqlDatabase implements MetricsVisitor {
 	private PreparedStatement stmtInsertQueryMetric;
 
 	private PreparedStatement stmtInsertPlatformAndApplication;
+	
+	private PreparedStatement stmtInsertSystem;
+	
+	private PreparedStatement stmtInsertSystemMetric;
 
 	private PreparedStatement stmtInsertWorkflowInstance;
 	private PreparedStatement stmtUpdateWorkflowInstanceChangeDescription;
@@ -88,6 +92,7 @@ public class SqlDatabase implements MetricsVisitor {
 	private HashMap<String, Integer> pluginNameToPluginId = new HashMap<String, Integer>();
 	private HashMap<String, TreeSet<String>> workflowIdToWorkflowPluginSet = new HashMap<String, TreeSet<String>>();
 	private HashSet<String> existingSystemInstances = new HashSet<String>();
+	private HashSet<String> existingPlatformInstances = new HashSet<String>();
 	private HashMap<String, String> queryContextIdToWorkflowId = new HashMap<String, String>();
 	private HashSet<String> insertedQueryContexts = new HashSet<String>();
 
@@ -312,6 +317,10 @@ public class SqlDatabase implements MetricsVisitor {
 					.prepareStatement("delete from platforms_workflows where Workflows_idWorkflow=?");
 			stmtUpdateWorkflowsPlatformsChangeWId = conn
 					.prepareStatement("update ignore platforms_workflows set Workflows_idWorkflow=? where Workflows_idWorkflow=?");
+			
+			stmtInsertSystem = conn.prepareStatement("insert ignore into systems values(?,?,?,?)");
+			
+			stmtInsertSystemMetric = conn.prepareStatement("insert ignore into systems_metrics values(?,?,?,?)");
 
 		} catch (SQLException e) {
 			logger.error("Exception encounter while trying to open the SQL connection: " + e.getMessage());
@@ -325,6 +334,7 @@ public class SqlDatabase implements MetricsVisitor {
 			metricIDCache.clear();
 			workflowIdToWorkflowPluginSet.clear();
 			existingSystemInstances.clear();
+			existingPlatformInstances.clear();
 			stmtGetMetricId.close();
 			stmtGetPluginId.close();
 			stmtInsertPlugin.close();
@@ -361,15 +371,152 @@ public class SqlDatabase implements MetricsVisitor {
 
 	@Override
 	public void visit(SystemMetrics systemMetrics) {
-		// no system metric stored in SQL
+		SystemId systemId = systemMetrics.getSystemId();
+		
+		String sysIdString = systemId.getId();
+		
+		try {
+			if (!existingSystemInstances.contains(sysIdString)) {
+				existingSystemInstances.add(sysIdString);
+				stmtInsertSystem.setString(1, sysIdString);
+				stmtInsertSystem.setString(2, systemId.getName());
+				stmtInsertSystem.setLong(3, systemId.getCpuCount());
+				stmtInsertSystem.setLong(4, systemId.getTotalMemory());
+				stmtInsertSystem.execute();
+			}
+			
+			stmtInsertSystemMetric.setString(1, sysIdString);
+			stmtInsertSystemMetric.setTimestamp(4, new Timestamp(systemMetrics.getCreationTime()));
+			
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemLoadAverage"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getSystemLoadAverage());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemTotalFreeMemory"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getTotalSystemFreeMemory());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemTotalUsedMemory"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getTotalSystemUsedMemory());
+			stmtInsertSystemMetric.execute();
+	
+			
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemTotalUsedSwap"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getTotalSystemUsedSwap());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemTotalUsedSwap"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getTotalSystemUsedSwap());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemOpenFileDescrCnt"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getSystemOpenFileDescriptors());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemSwapIn"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getSwapIn());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemSwapOut"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getSwapOut());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemIORead"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getIORead());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemIOWrite"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getIOWrite());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemUserCPULoad"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getUserPerc());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemCPULoad"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getSysPerc());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemIdleCPULoad"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getIdlePerc());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemWaitCPULoad"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getWaitPerc());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemIrqCPULoad"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getIrqPerc());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemUserCPUTime"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getUser());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemCPUTime"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getSys());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemIdleCPUTime"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getIdle());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemWaitCPUTime"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getWait());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemIrqCPUTime"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getIrq());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemThreadsCount"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getThreadsCount());
+			stmtInsertSystemMetric.execute();
+	
+			
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemProcessesCount"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getProcessesCount());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemRunningProcessesCount"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getRunningProcessesCount());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemTcpInbound"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getTcpInbound());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemTcpOutbound"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getTcpOutbound());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemNetworkSent"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getNetworkSent());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemNetworkReceived"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getNetworkReceived());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemLoopbackNetworkSent"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getLoopbackNetworkSent());
+			stmtInsertSystemMetric.execute();
+	
+			stmtInsertSystemMetric.setInt(2, getMetricID("SystemLoopbackNetworkReceived"));
+			stmtInsertSystemMetric.setString(3, ""+systemMetrics.getLoopbackNetworkReceived());
+			stmtInsertSystemMetric.execute();
+		}catch(SQLException e) {
+			logger.error(e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	private void addApplicationAndSystem(MethodMetrics methodMetrics) throws SQLException {
 		Method method = methodMetrics.getMethod();
 		SystemId systemId = methodMetrics.getSystemId();
 		String sysIdString = systemId.getId();
-		if (!existingSystemInstances.contains(sysIdString)) {
-			existingSystemInstances.add(sysIdString);
+		if (!existingPlatformInstances.contains(sysIdString)) {
+			existingPlatformInstances.add(sysIdString);
 
 			stmtInsertPlatformAndApplication.setString(1, sysIdString);
 			stmtInsertPlatformAndApplication.setString(2, systemId.getName());
@@ -465,11 +612,11 @@ public class SqlDatabase implements MetricsVisitor {
 
 					
 					
-					if (context.containsKey("NumberOfPlugins")) {
-						logger.debug("Context got NumberOfPlugins");
+					if (context.containsKey("WorkflowNumberOfPlugins")) {
+						logger.debug("Context got WorkflowNumberOfPlugins");
 						stmtInsertWorkflowMetric.setString(1, workflowId);
 						stmtInsertWorkflowMetric.setInt(2, getMetricID("WorkflowNumberOfPlugins"));
-						stmtInsertWorkflowMetric.setString(3, context.get("NumberOfPlugins").toString());
+						stmtInsertWorkflowMetric.setString(3, context.get("WorkflowNumberOfPlugins").toString());
 						stmtInsertWorkflowMetric.setTimestamp(4, new Timestamp(context.getCreationTime()));
 						stmtInsertWorkflowMetric.execute();
 					}
@@ -633,8 +780,15 @@ public class SqlDatabase implements MetricsVisitor {
 			if ("Query".equals(contextName)) {
 				logger.debug("Context got QueryContent");
 
-				String query = context.get("QueryContent").toString();
-
+				String query = "";
+				if(context.get("QueryContent")==null) {
+					logger.warn("Query context does not contain QueryContet, skipping...");
+				} else {
+					query = context.get("QueryContent").toString();
+				}
+				
+				
+						
 				if (insertedQueryContexts.contains(contextId)) {
 					stmtUpdateQuery.setString(2, contextId);
 					stmtUpdateQuery.setString(1, query);
@@ -686,6 +840,42 @@ public class SqlDatabase implements MetricsVisitor {
 					stmtInsertQueryMetric.setInt(2, getMetricID("QueryVariablesNb"));
 					stmtInsertQueryMetric.setString(3, "" + sqa.getQueryVariablesNb());
 					stmtInsertQueryMetric.execute();
+					
+					stmtInsertQueryMetric.setInt(2, getMetricID("QueryLiteralsNb"));
+					stmtInsertQueryMetric.setString(3, "" + sqa.getQueryLiteralsNb());
+					stmtInsertQueryMetric.execute();
+					
+					if (sqa.getQueryDataSetSources() != null && sqa.getQueryDataSetSources().size() > 0) {
+						StringBuilder sb = new StringBuilder("[");
+						boolean firstTime = true;
+						for(String dataSource:sqa.getQueryDataSetSources()) {
+							if (firstTime)
+								firstTime = false;
+							else
+								sb.append(", ");
+							sb.append(dataSource);
+						}
+						
+						stmtInsertQueryMetric.setInt(2, getMetricID("QueryDataSetSources"));
+						stmtInsertQueryMetric.setString(3, sb.toString());
+						stmtInsertQueryMetric.execute();
+					}
+
+					if (sqa.getQueryNamespaceValues() != null && sqa.getQueryNamespaceValues().size() > 0) {
+						StringBuilder sb = new StringBuilder("[");
+						boolean firstTime = true;
+						for(String namespace:sqa.getQueryNamespaceValues()) {
+							if (firstTime)
+								firstTime = false;
+							else
+								sb.append(", ");
+							sb.append(namespace);
+						}
+						sb.append("]");
+						stmtInsertQueryMetric.setInt(2, getMetricID("QueryNamespaceValues"));
+						stmtInsertQueryMetric.setString(3, sb.toString());
+						stmtInsertQueryMetric.execute();
+					}
 				}
 
 				
@@ -972,7 +1162,6 @@ public class SqlDatabase implements MetricsVisitor {
 			stmtInsertQueryMetric.setInt(2, getMetricID("QueryUnallocatedMemoryAfter"));
 			stmtInsertQueryMetric.setString(3, "" + methodMetrics.getUnallocatedMemoryAfter());
 			stmtInsertQueryMetric.execute();
-
 		}
 
 		/**
