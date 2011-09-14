@@ -66,6 +66,15 @@ public class RrdDatabase implements MetricsVisitor {
 	private final String DS_IDLE_CPU_TIME = "idleCPUTime";
 	private final String DS_WAIT_CPU_TIME = "waitCPUTime";
 	private final String DS_IRQ_CPU_TIME = "irqCPUTime";
+	private final String DS_PROCESSES_COUNT = "processesCount";
+	private final String DS_RUNNING_PROCESSES_COUNT = "runningProcCount";
+	private final String DS_THREADS_COUNT = "threadsCount";
+	private final String DS_TCP_INBOUND = "tcpInbound";
+	private final String DS_TCP_OUTBOUND = "tcpOutbound";
+	private final String DS_NETWORK_RECEIVED = "networkReceived";
+	private final String DS_NETWORK_SENT = "networkSent";
+	private final String DS_LOOPBACK_NETWORK_RECEIVED = "loNetworkReceived";
+	private final String DS_LOOPBACK_NETWORK_SENT = "loNetworkSent";
 	
 	private final String DS_WALL_CLOCK_TIME = "wallClockTime";
 	private final String DS_THREAD_USER_CPU_TIME = "threadUserCPUTime";
@@ -78,13 +87,19 @@ public class RrdDatabase implements MetricsVisitor {
 	private final String DS_THREAD_GCC_TIME = "threadGccTime";
 	private final String DS_PROCESS_TOTAL_CPU_TIME = "processTotalCPUTime";
 
-	private final String DS_AVG_CPU_USAGE = "avgCpuUsage";
-	private final String DS_CPU_USAGE = "cpuUsage";
-	private final String DS_CPU_TIME = "cpuTime";
-	private final String DS_GCC_COUNT = "gccCount";
-	private final String DS_GCC_TIME = "gccTime";
-	private final String DS_UPTIME = "upTime";
-	private final String DS_USED_MEMORY = "usedMemory";
+	private final String DS_PLATFORM_AVG_CPU_USAGE = "avgCpuUsage";
+	private final String DS_PLATFORM_CPU_USAGE = "cpuUsage";
+	private final String DS_PLATFORM_CPU_TIME = "cpuTime";
+	private final String DS_PLATFORM_GCC_COUNT = "gccCount";
+	private final String DS_PLATFORM_GCC_TIME = "gccTime";
+	private final String DS_PLATFORM_UPTIME = "upTime";
+	private final String DS_PLATFORM_ALLOCATED_MEMORY = "allocatedMemory";
+	private final String DS_PLATFORM_USED_MEMORY = "usedMemory";
+	private final String DS_PLATFORM_FREE_MEMORY = "feeMemory";
+	private final String DS_PLATFORM_UNALLOCATED_MEMORY = "unallocatedMemory";
+	private final String DS_PLATFORM_PLATFORM_THREADS_COUNT = "threadsCount";
+	private final String DS_PLATFORM_THREADS_STARTED = "threadsStarted";
+	private final String DS_PLATFORM_THREADS_TOTAL = "totalThreadsStarted";
 
 	private RrdDb systemMetricsRRD = null;
 	private Map<String, RrdDb> methodMetricsRRD = new HashMap<String, RrdDb>();
@@ -123,6 +138,15 @@ public class RrdDatabase implements MetricsVisitor {
 				rrdDef.addDatasource(DS_IDLE_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				rrdDef.addDatasource(DS_WAIT_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				rrdDef.addDatasource(DS_IRQ_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PROCESSES_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_RUNNING_PROCESSES_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_THREADS_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_TCP_INBOUND, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_TCP_OUTBOUND, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_NETWORK_RECEIVED, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_NETWORK_SENT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_LOOPBACK_NETWORK_RECEIVED, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_LOOPBACK_NETWORK_SENT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
 				
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 12 * 60); //detail last day, one record each 5 seconds
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 12 * 10, 6 * 24 * 7); //detail last week, one record each 10 minutes
@@ -207,46 +231,48 @@ public class RrdDatabase implements MetricsVisitor {
 	 */
 	@Override
 	public void visit(MethodMetrics methodMetrics) {
-		RrdDb methodRrd = openMethodMetricDb(methodMetrics);
-		try {
-			Sample sample = methodRrd.createSample();
-			
-			long time = 0;
-			Object obj = methodMetrics.getSystemId().getName() + "_" + methodMetrics.getMethod().getApplicationId().getName() + (methodMetrics.getContextId() == null ? "" : "_" + methodMetrics.getContextId());
-			synchronized(obj) {
-				time = Util.getTimestamp(new Date(methodMetrics.getCreationTime()));
-				
-				String contextId = methodMetrics.getContextId() == null ? "null" : methodMetrics.getContextId();
-				//logger.info("contextId: " + contextId);
-				//logger.info("timestamp: " + time);
-				long lastTimestamp = -1;
-				if (contextLastTimestamp.containsKey(contextId)) {
-					lastTimestamp = contextLastTimestamp.get(contextId);
-				}
-				//logger.info("lastTimestamp: " + lastTimestamp);
-				if (contextLastTimestamp.containsKey(contextId) && time <= lastTimestamp) {
-					time = lastTimestamp + 1;
-				}
-				contextLastTimestamp.put(contextId, time);
-			}
-			sample.setTime(time);
-			sample.setValue(DS_WALL_CLOCK_TIME, methodMetrics.getWallClockTime());
-			sample.setValue(DS_THREAD_USER_CPU_TIME, methodMetrics.getThreadUserCpuTime());
-			sample.setValue(DS_THREAD_SYSTEM_CPU_TIME, methodMetrics.getThreadSystemCpuTime());
-			sample.setValue(DS_THREAD_TOTAL_CPU_TIME, methodMetrics.getThreadTotalCpuTime());
-			sample.setValue(DS_THREAD_COUNT, methodMetrics.getThreadCount());
-			sample.setValue(DS_THREAD_BLOCK_COUNT, methodMetrics.getThreadBlockCount());
-			sample.setValue(DS_THREAD_WAIT_COUNT, methodMetrics.getThreadWaitCount());
-			sample.setValue(DS_THREAD_GCC_COUNT, methodMetrics.getThreadGccCount());
-			sample.setValue(DS_THREAD_GCC_TIME, methodMetrics.getThreadGccTime());
-			sample.setValue(DS_PROCESS_TOTAL_CPU_TIME, methodMetrics.getProcessTotalCpuTime());
-			
-			sample.update();
-		} catch (IOException e) {
-			logger.error("io exception", e);
-			throw new RuntimeException("io exception", e);
-		}
-		closeMethodMetricDb(methodMetrics);
+		// stop storing method metrics for rrd; they are not used and rrd is not a good fit for these metrics
+		return;
+//		RrdDb methodRrd = openMethodMetricDb(methodMetrics);
+//		try {
+//			Sample sample = methodRrd.createSample();
+//			
+//			long time = 0;
+//			Object obj = methodMetrics.getSystemId().getName() + "_" + methodMetrics.getMethod().getApplicationId().getName() + (methodMetrics.getContextId() == null ? "" : "_" + methodMetrics.getContextId());
+//			synchronized(obj) {
+//				time = Util.getTimestamp(new Date(methodMetrics.getCreationTime()));
+//				
+//				String contextId = methodMetrics.getContextId() == null ? "null" : methodMetrics.getContextId();
+//				//logger.info("contextId: " + contextId);
+//				//logger.info("timestamp: " + time);
+//				long lastTimestamp = -1;
+//				if (contextLastTimestamp.containsKey(contextId)) {
+//					lastTimestamp = contextLastTimestamp.get(contextId);
+//				}
+//				//logger.info("lastTimestamp: " + lastTimestamp);
+//				if (contextLastTimestamp.containsKey(contextId) && time <= lastTimestamp) {
+//					time = lastTimestamp + 1;
+//				}
+//				contextLastTimestamp.put(contextId, time);
+//			}
+//			sample.setTime(time);
+//			sample.setValue(DS_WALL_CLOCK_TIME, methodMetrics.getWallClockTime());
+//			sample.setValue(DS_THREAD_USER_CPU_TIME, methodMetrics.getThreadUserCpuTime());
+//			sample.setValue(DS_THREAD_SYSTEM_CPU_TIME, methodMetrics.getThreadSystemCpuTime());
+//			sample.setValue(DS_THREAD_TOTAL_CPU_TIME, methodMetrics.getThreadTotalCpuTime());
+//			sample.setValue(DS_THREAD_COUNT, methodMetrics.getThreadCount());
+//			sample.setValue(DS_THREAD_BLOCK_COUNT, methodMetrics.getThreadBlockCount());
+//			sample.setValue(DS_THREAD_WAIT_COUNT, methodMetrics.getThreadWaitCount());
+//			sample.setValue(DS_THREAD_GCC_COUNT, methodMetrics.getThreadGccCount());
+//			sample.setValue(DS_THREAD_GCC_TIME, methodMetrics.getThreadGccTime());
+//			sample.setValue(DS_PROCESS_TOTAL_CPU_TIME, methodMetrics.getProcessTotalCpuTime());
+//			
+//			sample.update();
+//		} catch (IOException e) {
+//			logger.error("io exception", e);
+//			throw new RuntimeException("io exception", e);
+//		}
+//		closeMethodMetricDb(methodMetrics);
 	}
 
 	/* (non-Javadoc)
@@ -278,6 +304,15 @@ public class RrdDatabase implements MetricsVisitor {
 			sample.setValue(DS_IDLE_CPU_TIME, systemMetrics.getIdle());
 			sample.setValue(DS_WAIT_CPU_TIME, systemMetrics.getWait());
 			sample.setValue(DS_IRQ_CPU_TIME, systemMetrics.getIrq());
+			sample.setValue(DS_PROCESSES_COUNT, systemMetrics.getProcessesCount());
+			sample.setValue(DS_RUNNING_PROCESSES_COUNT, systemMetrics.getRunningProcessesCount());
+			sample.setValue(DS_THREADS_COUNT, systemMetrics.getThreadsCount());
+			sample.setValue(DS_TCP_INBOUND, systemMetrics.getTcpInbound());
+			sample.setValue(DS_TCP_OUTBOUND, systemMetrics.getTcpOutbound());
+			sample.setValue(DS_NETWORK_RECEIVED, systemMetrics.getNetworkReceived());
+			sample.setValue(DS_NETWORK_SENT, systemMetrics.getNetworkSent());
+			sample.setValue(DS_LOOPBACK_NETWORK_RECEIVED, systemMetrics.getLoopbackNetworkReceived());
+			sample.setValue(DS_LOOPBACK_NETWORK_SENT, systemMetrics.getLoopbackNetworkSent());
 			
 			sample.update();
 		} catch (IOException e) {
@@ -338,8 +373,7 @@ public class RrdDatabase implements MetricsVisitor {
 
 	@Override
 	public void visit(Context context) {
-		// TODO Auto-generated method stub	
-		
+		// do nothing; context metrcis are not stored into rrd
 	}
 	
 	private String getDatabasePath(PlatformMetrics pm) {		
@@ -357,13 +391,19 @@ public class RrdDatabase implements MetricsVisitor {
 			if (!new File(rrdDbPath).exists()) {
 				RrdDef rrdDef = new RrdDef(rrdDbPath, RRD_START_TIME, PLATFORM_RRD_STEP);
 				
-				rrdDef.addDatasource(DS_AVG_CPU_USAGE, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_CPU_USAGE, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_CPU_TIME, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_GCC_COUNT, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_GCC_TIME, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_UPTIME, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
-				rrdDef.addDatasource(DS_USED_MEMORY, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_AVG_CPU_USAGE, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_CPU_USAGE, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_CPU_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_GCC_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_GCC_TIME, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_UPTIME, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_ALLOCATED_MEMORY, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_USED_MEMORY, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_FREE_MEMORY, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_UNALLOCATED_MEMORY, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_PLATFORM_THREADS_COUNT, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_THREADS_STARTED, DsType.GAUGE, RRD_HEARBEAT, 0, Double.NaN);
+				rrdDef.addDatasource(DS_PLATFORM_THREADS_TOTAL, DsType.COUNTER, RRD_HEARBEAT, 0, Double.NaN);
 				
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 1, 60); //detail last day, one record each 5 seconds
 				rrdDef.addArchive(ConsolFun.AVERAGE, 0.5, 10, 6 * 24 * 7); //detail last week, one record each 10 minutes
@@ -400,14 +440,21 @@ public class RrdDatabase implements MetricsVisitor {
 		RrdDb platformRrd = openPlatformMetricDb(pm);
 		try {
 			Sample sample = platformRrd.createSample();
-			sample.setTime(Util.getTimestamp(new Date(pm.getCreationTime())));
-			sample.setValue(DS_AVG_CPU_USAGE, pm.getAvgCpuUsage());
-			sample.setValue(DS_CPU_USAGE, pm.getCpuUsage());
-			sample.setValue(DS_CPU_TIME, pm.getCpuTime());
-			sample.setValue(DS_GCC_COUNT, pm.getGccCount());
-			sample.setValue(DS_GCC_TIME, pm.getGccTime());
-			sample.setValue(DS_UPTIME, pm.getUptime());
-			sample.setValue(DS_USED_MEMORY, pm.getUsedMemory());
+			sample.setTime(Util.getTimestamp(new Date(pm.getCreationTime())));		
+			
+			sample.setValue(DS_PLATFORM_AVG_CPU_USAGE, pm.getAvgCpuUsage());
+			sample.setValue(DS_PLATFORM_CPU_USAGE, pm.getCpuUsage());
+			sample.setValue(DS_PLATFORM_CPU_TIME, pm.getCpuTime());
+			sample.setValue(DS_PLATFORM_GCC_COUNT, pm.getGccCount());
+			sample.setValue(DS_PLATFORM_GCC_TIME, pm.getGccTime());
+			sample.setValue(DS_PLATFORM_UPTIME, pm.getUptime());
+			sample.setValue(DS_PLATFORM_ALLOCATED_MEMORY, pm.getAllocatedMemory());
+			sample.setValue(DS_PLATFORM_USED_MEMORY, pm.getUsedMemory());
+			sample.setValue(DS_PLATFORM_FREE_MEMORY, pm.getFreeMemory());
+			sample.setValue(DS_PLATFORM_UNALLOCATED_MEMORY, pm.getUnallocatedMemory());
+			sample.setValue(DS_PLATFORM_PLATFORM_THREADS_COUNT, pm.getThreadsCount());
+			sample.setValue(DS_PLATFORM_THREADS_STARTED, pm.getThreadsStarted());
+			sample.setValue(DS_PLATFORM_THREADS_TOTAL, pm.getTotalThreadsStarted());
 			
 			sample.update();
 		} catch (IOException e) {
