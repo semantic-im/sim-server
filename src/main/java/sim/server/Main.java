@@ -59,6 +59,7 @@ public class Main {
 	public static boolean storage_use_csv;
 	public static String storage_csv_file;
 	public static boolean storage_calculate_compound_metrics;
+	public static boolean storage_use_rrd;
 	
 	
 	/**
@@ -88,7 +89,7 @@ public class Main {
 		storage_server_port = Integer.valueOf(storageProperties.getProperty("storage-server-port", "8080"));
 		storage_repository_id = storageProperties.getProperty("storage-repository-id", "sim");
 
-		storage_use_sql = Boolean.valueOf(storageProperties.getProperty("storage-use_sql", "false"));
+		storage_use_sql = Boolean.valueOf(storageProperties.getProperty("storage-use-sql", "false"));
 		if(storage_use_sql) {
 			storage_sql_user_name = storageProperties.getProperty("storage-sql-user-name");
 			storage_sql_password = storageProperties.getProperty("storage-sql-password");
@@ -97,6 +98,9 @@ public class Main {
 			storage_sql_dbms = storageProperties.getProperty("storage-sql-dbms");
 			storage_sql_database = storageProperties.getProperty("storage-sql-database");
 		}		
+		
+		storage_use_rrd = Boolean.valueOf(storageProperties.getProperty("storage-use-rrd"));
+		
 		ServerHttpThread serverHttpThread = new ServerHttpThread();
 		Thread thread = new Thread(serverHttpThread);
 		thread.run();

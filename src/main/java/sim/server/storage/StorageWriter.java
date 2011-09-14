@@ -117,8 +117,9 @@ public class StorageWriter {
 				if(Main.storage_use_rdf) {
 					metrics.accept(rdfWriter);
 				}
-				metrics.accept(rrdWriter);
-				
+				if(Main.storage_use_rrd) {
+					metrics.accept(rrdWriter);
+				}
 				if(Main.storage_use_sql) {
 					metrics.accept(sqlWriter);
 				}
