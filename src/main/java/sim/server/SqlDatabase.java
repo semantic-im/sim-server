@@ -92,7 +92,7 @@ public class SqlDatabase implements MetricsVisitor {
 		StringBuilder ret = new StringBuilder();
 		for (String s : pluginSet) {
 			ret.append(s);
-			ret.append(";");
+			ret.append("; ");
 		}
 		return ret.toString();
 	}
@@ -142,7 +142,7 @@ public class SqlDatabase implements MetricsVisitor {
 			conn = DriverManager.getConnection(connectionString, connectionProps);
 
 			// prepare statements
-			stmtGetMetricId = conn.prepareStatement("select idMetric from metrics where name=?");
+			stmtGetMetricId = conn.prepareStatement("select idMetric from metrics where MetricName=?");
 
 			stmtInsertPlugin = conn.prepareStatement("insert ignore into plugins values(?,?)");
 
@@ -165,7 +165,7 @@ public class SqlDatabase implements MetricsVisitor {
 
 			stmtInsertWorkflowInstance = conn.prepareStatement("insert ignore into workflows values(?,?)");
 			stmtUpdateWorkflowInstanceChangeDescription = conn
-					.prepareStatement("update workflows set WorkflowDescription=? where WorkflowId=?");
+					.prepareStatement("update workflows set WorkflowDescription=? where idWorkflow=?");
 
 			stmtInsertPluginIntoWorkflow = conn
 					.prepareStatement("insert ignore into workflows_plugins values(?,?)");
@@ -528,7 +528,7 @@ public class SqlDatabase implements MetricsVisitor {
 				
 				
 				stmtInsertQuery.setString(1, contextId);
-				stmtInsertQuery.setString(2, query);
+				stmtInsertQuery.setString(2, query.length()<1000?query:query.substring(0, 1000));
 				stmtInsertQuery.execute();
 				
 				stmtInsertQueryMetric.setString(1, contextId);
