@@ -1,0 +1,2183 @@
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix : <http://www.larkc.eu/ontologies/IMOntology.rdf#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dc: <http://purl.org/dc/elements/1.1/> .
+@base <http://www.larkc.eu/ontologies/IMOntology.rdf> .
+
+<http://www.larkc.eu/ontologies/IMOntology.rdf> rdf:type owl:Ontology .
+
+dc:description rdf:type owl:AnnotationProperty .
+
+rdfs:comment rdf:type owl:AnnotationProperty .
+
+
+:Metric rdf:type owl:Class .
+
+:SystemMetric rdfs:subClassOf :Metric .
+:PlatformMetric rdfs:subClassOf :Metric .
+:MethodMetric rdfs:subClassOf :Metric .
+:AtomicMetric rdfs:subClassOf :Metric .
+:CompoundMetric rdfs:subClassOf :Metric .
+
+
+:MeasurementUnit rdf:type owl:Class ,
+		 owl:NamedIndividual ;
+                 dc:description "concept that represents an abstract measurement unit" .
+
+:Microsecond rdf:type :MeasurementUnit ;
+	     rdfs:label "us" .
+
+:Millisecond rdf:type :MeasurementUnit ;
+	rdfs:label "ms" .
+
+:Second rdf:type :MeasurementUnit ;
+	rdfs:label "s" .
+
+:Percent rdf:type :MeasurementUnit ;
+	rdfs:label "%" .
+
+:Byte rdf:type :MeasurementUnit ;
+	rdfs:label "B" .
+
+:Kilobyte rdf:type :MeasurementUnit ;
+	rdfs:label "KB" .
+
+:Counter rdf:type :MeasurementUnit ;
+	rdfs:label "count" .
+
+:TimePoint rdf:type :MeasurementUnit ;
+	rdfs:label "tp" ;
+	rdfs:comment "the difference, measured in milliseconds, between the current time and midnight, January 1, 1970 UTC." .
+
+:ErrorStatus rdf:type :MeasurementUnit ;
+	rdfs:label "error status" ;
+	rdfs:comment "a flag that signals if there was an error" .
+
+:ErrorMessage rdf:type :MeasurementUnit ;
+	rdfs:label "error message" ;
+	rdfs:comment "exception type and exception error message" .
+
+:StringValue rdf:type :MeasurementUnit ;
+	rdfs:label "string value" ;
+	rdfs:comment "a text message" .
+
+:NumericValue rdf:type :MeasurementUnit ;
+	rdfs:label "numeric value" ;
+	rdfs:comment "a numeric value" .
+
+:BooleanValue rdf:type :MeasurementUnit ;
+	rdfs:label "boolean value" ;
+	rdfs:comment "a boolean value" .
+
+
+:hasTimeStamp rdf:type owl:DatatypeProperty ;
+              dc:description "specifies the time stamp when the measurment was performed" ;
+              rdfs:range xsd:dateTime ;
+              rdfs:domain :Metric .
+
+:hasMeasurementUnit rdf:type owl:ObjectProperty ;
+                    dc:description "specifies the measurement unit of a metric" ;
+                    rdfs:range :MeasurementUnit ;
+                    rdfs:domain :Metric .
+
+:hasDataValueType rdf:type owl:DatatypeProperty ;
+                    dc:description "specifies the measurement unit of a metric" ;
+                    rdfs:range rdfs:Datatype ;
+                    rdfs:domain :Metric .
+
+:hasDataValue rdf:type owl:DatatypeProperty ;
+                    dc:description "specifies the value of a metric measurement" ;
+                    rdfs:range rdfs:Datatype ;
+                    rdfs:domain :Metric .
+
+
+:SystemLoadAverage rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "SystemLoadAverage" ;
+              dc:description "the system load average for la last minute" ;
+              rdfs:comment "Load averages are not normalized for the number of CPUs in a system, so a load average of 1  means  a  single CPU system is loaded all the time while on a 4 CPU system it means it was idle 75% of the time." .
+
+:TotalSystemFreeMemory rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Kilobyte ;
+              rdfs:label "TotalSystemFreeMemory" ;
+              dc:description "total system free memory expressed in KB" .
+
+:TotalSystemUsedMemory rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Kilobyte ;
+              rdfs:label "TotalSystemUsedMemory" ;
+              dc:description "total system used memory expressed in KB" .
+
+:TotalSystemUsedSwap rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Kilobyte ;
+              rdfs:label "TotalSystemUsedSwap" ;
+              dc:description "total system used swap expressed in KB" .
+
+:SystemOpenFileDescriptors rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "SystemOpenFileDescriptors" ;
+              dc:description "system open file descriptors count" .
+
+:SwapIn rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Kilobyte ;
+              rdfs:label "SwapIn" ;
+              dc:description "size of data read from swap in KB" .
+
+:SwapOut rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Kilobyte ;
+              rdfs:label "SwapOut" ;
+              dc:description "size of data written to swap in KB" .
+
+:IORead rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Kilobyte ;
+              rdfs:label "IORead" ;
+              dc:description "number of KB read from the file system" .
+
+:IOWrite rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Kilobyte ;
+              rdfs:label "IOWrite" ;
+              dc:description "number of KB written to the file system" .
+
+:UserCPULoad rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "UserCPULoad" ;
+              dc:description "time spent running non-kernel code, expressed as percentage of total CPU time" .
+
+:SystemCPULoad rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "SystemCPULoad" ;
+              dc:description "time spent running kernel code, expressed as percentage of total CPU time" .
+
+:IdleCPULoad rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "SystemCPULoad" ;
+              dc:description "time spent idle, expressed as percentage of total CPU time" .
+
+:WaitCPULoad rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "WaitCPULoad" ;
+              dc:description "time spent waiting for I/O, expressed as percentage of total CPU time" .
+
+:IrqCPULoad rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "IrqCPULoad" ;
+              dc:description "time spent servicing interrupts, expressed as percentage of total CPU time" .
+
+:UserCPUTime rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Second ;
+              rdfs:label "UserCPUTime" ;
+              dc:description "time spent running non-kernel code" .
+
+:SystemCPUTime rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Second ;
+              rdfs:label "SystemCPUTime" ;
+              dc:description "time spent running kernel code" .
+
+:IdleCPUTime rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Second ;
+              rdfs:label "IdleCPUTime" ;
+              dc:description "time spent idle" .
+
+:WaitCPUTime rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Second ;
+              rdfs:label "WaitCPUTime" ;
+              dc:description "time spent waiting for I/O" .
+
+:IrqCPUTime rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Second ;
+              rdfs:label "IrqCPUTime" ;
+              dc:description "time spent servicing interrupts" .
+
+:ProcessesCount rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "ProcessesCount" ;
+              dc:description "total number of processes" .
+
+:RunningProcessesCount rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "RunningProcessesCount" ;
+              dc:description "total number of processes in run state" .
+
+:ThreadsCount rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "ThreadsCount" ;
+              dc:description "total number of threads" .
+
+:TcpInbound rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "TcpInbound" ;
+              dc:description "the number of current inbound tcp connections" .
+
+:TcpOutbound rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "TcpOutbound" ;
+              dc:description "the number of current outbound tcp connections" .
+
+:NetworkReceived rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "NetworkReceived" ;
+              dc:description "the total number of bytes received over all installed network interfaces, except loopback, since last measurement" .
+
+:NetworkSent rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "NetworkSent" ;
+              dc:description "the total number of bytes sent over all installed network interfaces, except loopback, since last measurement" .
+
+:LoopbackNetworkReceived rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "LoopbackNetworkReceived" ;
+              dc:description "the total number of bytes received over loopback interface since last measurement" .
+
+:LoopbackNetworkSent rdfs:subClassOf :SystemMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "LoopbackNetworkSent" ;
+              dc:description "the total number of bytes sent over loopback interface since last measurement" .
+
+
+
+
+
+:PlatformAvgCPUUsage rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "PlatformAvgCPUUsage" ;
+              dc:description "average cpu usage since jvm start (%)" .
+
+:PlatformCPUTime rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PlatformCPUTime" ;
+              dc:description "CPU time used by current instrumented application since last measurement (ms)" .
+
+:PlatformTotalCPUTime rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PlatformTotalCPUTime" ;
+              dc:description "total CPU time used by current instrumented application since jvm start (ms)" .
+
+:PlatformCPUUsage rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:double ;
+              :hasMeasurementUnit :Percent ;
+              rdfs:label "PlatformCPUUsage" ;
+              dc:description "average cpu usage since last measurement (%)" .
+
+:PlatformGccCount rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PlatformGccCount" ;
+              dc:description "number of collections since last measurement (count)" .
+
+:PlatformGccTime rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PlatformGccTime" ;
+              dc:description "accumulated collection elapsed time since last measurement (ms)" .
+
+:PlatformTotalGccCount rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PlatformTotalGccCount" ;
+              dc:description "total number of collections since jvm start (count)" .
+
+:PlatformTotalGccTime rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PlatformTotalGccTime" ;
+              dc:description "total accumulated collection elapsed time since jvm start (ms)" .
+
+:PlatformUptime rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PlatformUptime" ;
+              dc:description "total time since platform start (ms)" .
+
+:PlatformAllocatedMemory rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PlatformAllocatedMemory" ;
+              dc:description "the amount of current allocated (commited) memory in bytes" .
+
+:PlatformUsedMemory rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PlatformUsedMemory" ;
+              dc:description "the amount of current allocated and used memory in bytes" .
+
+:PlatformFreeMemory rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PlatformFreeMemory" ;
+              dc:description "the amount of current allocated and free memory in bytes" .
+
+:PlatformUnallocatedMemory rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PlatformUnallocatedMemory" ;
+              dc:description "the amount of current unallocated (and free to allocate) memory in bytes" .
+
+:PlatformThreadsCount rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PlatformThreadsCount" ;
+              dc:description "the current number of live threads including both daemon and non-daemon threads (count)" .
+
+:PlatformThreadsStarted rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PlatformThreadsStarted" ;
+              dc:description "the number of threads started since last measurement (count)" .
+
+:PlatformTotalThreadsStarted rdfs:subClassOf :PlatformMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PlatformTotalThreadsStarted" ;
+              dc:description "total number of threads started since jvm start (count)" .
+
+
+
+
+
+:WallClockTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WallClockTime" ;
+              dc:description "elapsed time between method entry and method exit (ms)" .
+
+:ThreadUserCPUTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "ThreadUserCPUTime" ;
+              dc:description "user CPU time spent by current thread executing this method (ms)" .
+
+:ThreadSystemCPUTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "ThreadSystemCPUTime" ;
+              dc:description "system CPU time spent by current thread executing this method (ms)" .
+
+:ThreadTotalCPUTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "ThreadTotalCPUTime" ;
+              dc:description "total CPU time spent by current thread executing this method (user time + system time) (ms)" .
+
+:ThreadCount rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "ThreadCount" ;
+              dc:description "total number of threads that were started during this method execution (count)" .
+
+:ThreadBlockCount rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "ThreadBlockCount" ;
+              dc:description "the total number of times that the current thread executing this method entered the BLOCKED state (count)" .
+
+:ThreadBlockTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "ThreadBlockTime" ;
+              dc:description "the total accumulated time the current thread executing this method has been in the BLOCKED (ms)" .
+
+:ThreadWaitCount rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "ThreadWaitCount" ;
+              dc:description "the number of times that the current thread executing this method has been in the WAITING or TIMED_WAITING state (count)" .
+
+:ThreadWaitTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "ThreadWaitTime" ;
+              dc:description "the total accumulated time the current thread executing this method has been in the WAITING or TIMED_WAITING state (ms)" .
+
+:ThreadGccCount rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "ThreadGccCount" ;
+              dc:description "total number of collections that have occurred while executing this method (count)" .
+
+:ThreadGccTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "ThreadGccTime" ;
+              dc:description "approximate accumulated collection elapsed time in milliseconds while executing this method (ms)" .
+
+:ProcessTotalCPUTime rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "ProcessTotalCPUTime" ;
+              dc:description "total CPU time spent by current process (all threads from the application) executing this method (ms)" .
+
+:AllocatedMemoryBefore rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "AllocatedMemoryBefore" ;
+              dc:description "the amount of allocated (commited) memory before method execution (bytes)" .
+
+:UsedMemoryBefore rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "UsedMemoryBefore" ;
+              dc:description "the amount of allocated and used memory before method execution (bytes)" .
+
+:FreeMemoryBefore rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "FreeMemoryBefore" ;
+              dc:description "the amount of allocated and free memory before method execution (bytes)" .
+
+:UnallocatedMemoryBefore rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "UnallocatedMemoryBefore" ;
+              dc:description "the amount of unallocated (and free to allocate) memory before method execution (bytes)" .
+
+:AllocatedMemoryAfter rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "AllocatedMemoryAfter" ;
+              dc:description "the amount of allocated (commited) memory after method execution (bytes)" .
+
+:UsedMemoryAfter rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "UsedMemoryAfter" ;
+              dc:description "the amount of allocated and used memory after method execution (bytes)" .
+
+:FreeMemoryAfter rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "FreeMemoryAfter" ;
+              dc:description "the amount of allocated and free memory after method execution (bytes)" .
+
+:UnallocatedMemoryAfter rdfs:subClassOf :MethodMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "UnallocatedMemoryAfter" ;
+              dc:description "the amount of unallocated (and free to allocate) memory after method execution (bytes)" .
+
+
+
+
+
+
+
+
+
+
+
+:QueryBeginExecutionTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :TimePoint ;
+              rdfs:label "QueryBeginExecutionTime" ;
+              dc:description "query start time (ms)" .
+
+:QueryEndExecutionTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :TimePoint ;
+              rdfs:label "QueryEndExecutionTime" ;
+              dc:description "query end time (ms)" .
+
+:QueryErrorStatus rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:boolean ;
+              :hasMeasurementUnit :ErrorStatus ;
+              rdfs:label "QueryErrorStatus" ;
+              dc:description "true if there was an error" .
+
+:QueryErrorMessage rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:string ;
+              :hasMeasurementUnit :ErrorMessage ;
+              rdfs:label "QueryErrorMessage" ;
+              dc:description "error message if there was an error" .
+
+:QueryTotalResponseTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryTotalResponseTime" ;
+              dc:description "total elapsed time for executing a query (ms)" .
+
+:QueryThreadUserCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryThreadUserCPUTime" ;
+              dc:description "user CPU time spent by current thread executing this query (ms)" .
+
+:QueryThreadSystemCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryThreadSystemCPUTime" ;
+              dc:description "system CPU time spent by current thread executing this query (ms)" .
+
+:QueryThreadTotalCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryThreadTotalCPUTime" ;
+              dc:description "total CPU time spent by current thread executing this query (user time + system time) (ms)" .
+
+:QueryThreadCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryThreadCount" ;
+              dc:description "total number of threads that were started during this query execution (count)" .
+
+:QueryThreadBlockCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryThreadBlockCount" ;
+              dc:description "the total number of times that the current thread executing this query entered the BLOCKED state (count)" .
+
+:QueryThreadBlockTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryThreadBlockTime" ;
+              dc:description "the total accumulated time the current thread executing this query has been in the BLOCKED (ms)" .
+
+:QueryThreadWaitCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryThreadWaitCount" ;
+              dc:description "the number of times that the current thread executing this query has been in the WAITING or TIMED_WAITING state (count)" .
+
+:QueryThreadWaitTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryThreadWaitTime" ;
+              dc:description "the total accumulated time the current thread executing this query has been in the WAITING or TIMED_WAITING state (ms)" .
+
+:QueryThreadGccCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryThreadGccCount" ;
+              dc:description "total number of collections that have occurred while executing this query (count)" .
+
+:QueryThreadGccTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryThreadGccTime" ;
+              dc:description "approximate accumulated collection elapsed time in milliseconds while executing this query (ms)" .
+
+:QueryProcessTotalCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "QueryProcessTotalCPUTime" ;
+              dc:description "total CPU time spent by current process (all threads from the application) executing this query (ms)" .
+
+:QueryAllocatedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryAllocatedMemoryBefore" ;
+              dc:description "the amount of allocated (commited) memory before query execution (bytes)" .
+
+:QueryUsedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryUsedMemoryBefore" ;
+              dc:description "the amount of allocated and used memory before query execution (bytes)" .
+
+:QueryFreeMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryFreeMemoryBefore" ;
+              dc:description "the amount of allocated and free memory before query execution (bytes)" .
+
+:QueryUnallocatedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryUnallocatedMemoryBefore" ;
+              dc:description "the amount of unallocated (and free to allocate) memory before query execution (bytes)" .
+
+:QueryAllocatedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryAllocatedMemoryAfter" ;
+              dc:description "the amount of allocated (commited) memory after query execution (bytes)" .
+
+:QueryUsedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryUsedMemoryAfter" ;
+              dc:description "the amount of allocated and used memory after query execution (bytes)" .
+
+:QueryFreeMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryFreeMemoryAfter" ;
+              dc:description "the amount of allocated and free memory after query execution (bytes)" .
+
+:QueryUnallocatedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "QueryUnallocatedMemoryAfter" ;
+              dc:description "the amount of unallocated (and free to allocate) memory after query execution (bytes)" .
+
+:QueryContent rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:string ;
+              :hasMeasurementUnit :StringValue ;
+              rdfs:label "QueryContent" ;
+              dc:description "sparql query executed by larkc" .
+
+:QuerySizeInCharacters rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QuerySizeInCharacters" ;
+              dc:description "query number of characters (count)" .
+
+:QueryNamespaceNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryNamespaceNb" ;
+              dc:description "query number of defined and used namespaces (count)" .
+
+:QueryNamespaceValues rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:string ;
+              :hasMeasurementUnit :StringValue ;
+              rdfs:label "QueryNamespaceValues" ;
+              dc:description "array of query defined and used namespaces (count)" .
+
+:QueryVariablesNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryVariablesNb" ;
+              dc:description "query number of variables (count)" .
+
+:QueryDataSetSourcesNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryDataSetSourcesNb" ;
+              dc:description "specifies the number of dataset source of FROM clauses in a query (count)" .
+
+:QueryDataSetSources rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:string ;
+              :hasMeasurementUnit :StringValue ;
+              rdfs:label "QueryDataSetSources" ;
+              dc:description "array of query defined dataset sources (count)" .
+
+:QueryOperatorsNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryOperatorsNb" ;
+              dc:description "query number of operators (count)" .
+
+:QueryLiteralsNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryLiteralsNb" ;
+              dc:description "query number of literals (count)" .
+
+:QueryResultOrderingNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryResultOrderingNb" ;
+              dc:description "query number of ordering fields (count)" .
+
+:QueryResultLimitNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryResultLimitNb" ;
+              dc:description "limit value for query" .
+
+:QueryResultOffsetNb rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryResultOffsetNb" ;
+              dc:description "offset value for query" .
+
+:QueryResultSizeInCharacters rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryResultSizeInCharacters" ;
+              dc:description "query result number of characters (count)" .
+
+:QueryDataLayerInserts rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryDataLayerInserts" ;
+              dc:description "query number of datalayer insert operations (count)" .
+
+:QueryDataLayerSelects rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryDataLayerSelects" ;
+              dc:description "query number of datalayer select operations (count)" .
+
+:QueryNumberOfExceptions rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryNumberOfExceptions" ;
+              dc:description "query number of exceptions (count)" .
+
+:QueryNumberOfOutOfMemoryErrors rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryNumberOfOutOfMemoryErrors" ;
+              dc:description "query number of out of memory exceptions (count)" .
+
+:QueryNumberOfMalformedSparqlQueryExceptions rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "QueryNumberOfMalformedSparqlQueryExceptions" ;
+              dc:description "query number of MalformedSparqlQuery exceptions (count)" .
+
+
+
+
+
+:WorkflowBeginExecutionTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :TimePoint ;
+              rdfs:label "WorkflowBeginExecutionTime" ;
+              dc:description "Workflow start time (ms)" .
+
+:WorkflowEndExecutionTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :TimePoint ;
+              rdfs:label "WorkflowEndExecutionTime" ;
+              dc:description "Workflow end time (ms)" .
+
+:WorkflowErrorStatus rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:boolean ;
+              :hasMeasurementUnit :ErrorStatus ;
+              rdfs:label "WorkflowErrorStatus" ;
+              dc:description "true if there was an error" .
+
+:WorkflowErrorMessage rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:string ;
+              :hasMeasurementUnit :ErrorMessage ;
+              rdfs:label "WorkflowErrorMessage" ;
+              dc:description "error message if there was an error" .
+
+:WorkflowTotalResponseTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowTotalResponseTime" ;
+              dc:description "total elapsed time for executing a Workflow (ms)" .
+
+:WorkflowThreadUserCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowThreadUserCPUTime" ;
+              dc:description "user CPU time spent by current thread executing this Workflow (ms)" .
+
+:WorkflowThreadSystemCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowThreadSystemCPUTime" ;
+              dc:description "system CPU time spent by current thread executing this Workflow (ms)" .
+
+:WorkflowThreadTotalCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowThreadTotalCPUTime" ;
+              dc:description "total CPU time spent by current thread executing this Workflow (user time + system time) (ms)" .
+
+:WorkflowThreadCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowThreadCount" ;
+              dc:description "total number of threads that were started during this Workflow execution (count)" .
+
+:WorkflowThreadBlockCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowThreadBlockCount" ;
+              dc:description "the total number of times that the current thread executing this Workflow entered the BLOCKED state (count)" .
+
+:WorkflowThreadBlockTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowThreadBlockTime" ;
+              dc:description "the total accumulated time the current thread executing this Workflow has been in the BLOCKED (ms)" .
+
+:WorkflowThreadWaitCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowThreadWaitCount" ;
+              dc:description "the number of times that the current thread executing this Workflow has been in the WAITING or TIMED_WAITING state (count)" .
+
+:WorkflowThreadWaitTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowThreadWaitTime" ;
+              dc:description "the total accumulated time the current thread executing this Workflow has been in the WAITING or TIMED_WAITING state (ms)" .
+
+:WorkflowThreadGccCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowThreadGccCount" ;
+              dc:description "total number of collections that have occurred while executing this Workflow (count)" .
+
+:WorkflowThreadGccTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowThreadGccTime" ;
+              dc:description "approximate accumulated collection elapsed time in milliseconds while executing this Workflow (ms)" .
+
+:WorkflowProcessTotalCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "WorkflowProcessTotalCPUTime" ;
+              dc:description "total CPU time spent by current process (all threads from the application) executing this Workflow (ms)" .
+
+:WorkflowAllocatedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowAllocatedMemoryBefore" ;
+              dc:description "the amount of allocated (commited) memory before Workflow execution (bytes)" .
+
+:WorkflowUsedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowUsedMemoryBefore" ;
+              dc:description "the amount of allocated and used memory before Workflow execution (bytes)" .
+
+:WorkflowFreeMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowFreeMemoryBefore" ;
+              dc:description "the amount of allocated and free memory before Workflow execution (bytes)" .
+
+:WorkflowUnallocatedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowUnallocatedMemoryBefore" ;
+              dc:description "the amount of unallocated (and free to allocate) memory before Workflow execution (bytes)" .
+
+:WorkflowAllocatedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowAllocatedMemoryAfter" ;
+              dc:description "the amount of allocated (commited) memory after Workflow execution (bytes)" .
+
+:WorkflowUsedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowUsedMemoryAfter" ;
+              dc:description "the amount of allocated and used memory after Workflow execution (bytes)" .
+
+:WorkflowFreeMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowFreeMemoryAfter" ;
+              dc:description "the amount of allocated and free memory after Workflow execution (bytes)" .
+
+:WorkflowUnallocatedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "WorkflowUnallocatedMemoryAfter" ;
+              dc:description "the amount of unallocated (and free to allocate) memory after Workflow execution (bytes)" .
+
+:WorkflowId rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :NumericValue ;
+              rdfs:label "WorkflowId" ;
+              dc:description "id of the workflow" .
+
+:WorkflowNumberOfPlugins rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowNumberOfPlugins" ;
+              dc:description "number of plugins from the workflow (count)" .
+
+:WorkflowDataLayerInserts rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowDataLayerInserts" ;
+              dc:description "Workflow number of datalayer insert operations (count)" .
+
+:WorkflowDataLayerSelects rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowDataLayerSelects" ;
+              dc:description "Workflow number of datalayer select operations (count)" .
+
+:WorkflowNumberOfExceptions rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowNumberOfExceptions" ;
+              dc:description "Workflow number of exceptions (count)" .
+
+:WorkflowNumberOfOutOfMemoryErrors rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowNumberOfOutOfMemoryErrors" ;
+              dc:description "Workflow number of out of memory exceptions (count)" .
+
+:WorkflowNQueryNumberOfMalformedSparqlQueryExceptions rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "WorkflowNQueryNumberOfMalformedSparqlQueryExceptions" ;
+              dc:description "Workflow number of NumberOfMalformedSparqlQuery exceptions (count)" .
+
+
+
+
+
+:PluginBeginExecutionTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :TimePoint ;
+              rdfs:label "PluginBeginExecutionTime" ;
+              dc:description "Plugin start time (ms)" .
+
+:PluginEndExecutionTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :TimePoint ;
+              rdfs:label "PluginEndExecutionTime" ;
+              dc:description "Plugin end time (ms)" .
+
+:PluginErrorStatus rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:boolean ;
+              :hasMeasurementUnit :ErrorStatus ;
+              rdfs:label "PluginErrorStatus" ;
+              dc:description "true if there was an error" .
+
+:PluginErrorMessage rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:string ;
+              :hasMeasurementUnit :ErrorMessage ;
+              rdfs:label "PluginErrorMessage" ;
+              dc:description "error message if there was an error" .
+
+:PluginTotalResponseTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginTotalResponseTime" ;
+              dc:description "total elapsed time for executing a Plugin (ms)" .
+
+:PluginThreadUserCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginThreadUserCPUTime" ;
+              dc:description "user CPU time spent by current thread executing this Plugin (ms)" .
+
+:PluginThreadSystemCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginThreadSystemCPUTime" ;
+              dc:description "system CPU time spent by current thread executing this Plugin (ms)" .
+
+:PluginThreadTotalCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginThreadTotalCPUTime" ;
+              dc:description "total CPU time spent by current thread executing this Plugin (user time + system time) (ms)" .
+
+:PluginThreadCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginThreadCount" ;
+              dc:description "total number of threads that were started during this Plugin execution (count)" .
+
+:PluginThreadBlockCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginThreadBlockCount" ;
+              dc:description "the total number of times that the current thread executing this Plugin entered the BLOCKED state (count)" .
+
+:PluginThreadBlockTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginThreadBlockTime" ;
+              dc:description "the total accumulated time the current thread executing this Plugin has been in the BLOCKED (ms)" .
+
+:PluginThreadWaitCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginThreadWaitCount" ;
+              dc:description "the number of times that the current thread executing this Plugin has been in the WAITING or TIMED_WAITING state (count)" .
+
+:PluginThreadWaitTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginThreadWaitTime" ;
+              dc:description "the total accumulated time the current thread executing this Plugin has been in the WAITING or TIMED_WAITING state (ms)" .
+
+:PluginThreadGccCount rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginThreadGccCount" ;
+              dc:description "total number of collections that have occurred while executing this Plugin (count)" .
+
+:PluginThreadGccTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginThreadGccTime" ;
+              dc:description "approximate accumulated collection elapsed time in milliseconds while executing this Plugin (ms)" .
+
+:PluginProcessTotalCPUTime rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Millisecond ;
+              rdfs:label "PluginProcessTotalCPUTime" ;
+              dc:description "total CPU time spent by current process (all threads from the application) executing this Plugin (ms)" .
+
+:PluginAllocatedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginAllocatedMemoryBefore" ;
+              dc:description "the amount of allocated (commited) memory before Plugin execution (bytes)" .
+
+:PluginUsedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginUsedMemoryBefore" ;
+              dc:description "the amount of allocated and used memory before Plugin execution (bytes)" .
+
+:PluginFreeMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginFreeMemoryBefore" ;
+              dc:description "the amount of allocated and free memory before Plugin execution (bytes)" .
+
+:PluginUnallocatedMemoryBefore rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginUnallocatedMemoryBefore" ;
+              dc:description "the amount of unallocated (and free to allocate) memory before Plugin execution (bytes)" .
+
+:PluginAllocatedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginAllocatedMemoryAfter" ;
+              dc:description "the amount of allocated (commited) memory after Plugin execution (bytes)" .
+
+:PluginUsedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginUsedMemoryAfter" ;
+              dc:description "the amount of allocated and used memory after Plugin execution (bytes)" .
+
+:PluginFreeMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginFreeMemoryAfter" ;
+              dc:description "the amount of allocated and free memory after Plugin execution (bytes)" .
+
+:PluginUnallocatedMemoryAfter rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Byte ;
+              rdfs:label "PluginUnallocatedMemoryAfter" ;
+              dc:description "the amount of unallocated (and free to allocate) memory after Plugin execution (bytes)" .
+
+:PluginName rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:string ;
+              :hasMeasurementUnit :StringValue ;
+              rdfs:label "PluginName" ;
+              dc:description "plugin name" .
+
+:PluginInputSizeInTriples rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginInputSizeInTriples" ;
+              dc:description "plugin input size number of triples (count)" .
+
+:PluginOutputSizeInTriples rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginOutputSizeInTriples" ;
+              dc:description "plugin output size number of triples (count)" .
+
+:PluginCacheHit rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:boolean ;
+              :hasMeasurementUnit :BooleanValue ;
+              rdfs:label "PluginCacheHit" ;
+              dc:description "true if thee was a cache hit when executing the plugin, false otherwise" .
+
+:PluginDataLayerInserts rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginDataLayerInserts" ;
+              dc:description "Plugin number of datalayer insert operations (count)" .
+
+:PluginDataLayerSelects rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginDataLayerSelects" ;
+              dc:description "Plugin number of datalayer select operations (count)" .
+
+:PluginNumberOfExceptions rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginNumberOfExceptions" ;
+              dc:description "Plugin number of exceptions (count)" .
+
+:PluginNumberOfOutOfMemoryErrors rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginNumberOfOutOfMemoryErrors" ;
+              dc:description "Plugin number of out of memory exceptions (count)" .
+
+:PluginNQueryNumberOfMalformedSparqlQueryExceptions rdfs:subClassOf :AtomicMetric ;
+              :hasDataValueType xsd:long ;
+              :hasMeasurementUnit :Counter ;
+              rdfs:label "PluginNQueryNumberOfMalformedSparqlQueryExceptions" ;
+              dc:description "Plugin number of NumberOfMalformedSparqlQuery exceptions (count)" .
+
+
+
+
+
+
+
+
+
+
+
+
+
+:SystemTag rdf:type owl:NamedIndividual .
+:PlatformTag rdf:type owl:NamedIndividual .
+:QueryTag rdf:type owl:NamedIndividual .
+:WorkflowTag rdf:type owl:NamedIndividual .
+:PluginTag rdf:type owl:NamedIndividual .
+:ThreadTag rdf:type owl:NamedIndividual .
+:TimeTag rdf:type owl:NamedIndividual .
+:CountTag rdf:type owl:NamedIndividual .
+:MemoryTag rdf:type owl:NamedIndividual .
+:ErrorTag rdf:type owl:NamedIndividual .
+
+:WallClockTime :hasTag :TimeTag .
+:ThreadUserCPUTime :hasTag :TimeTag .
+:ThreadSystemCPUTime :hasTag :TimeTag .
+:ThreadTotalCPUTime :hasTag :TimeTag .
+:ThreadCount :hasTag :CountTag .
+:ThreadBlockCount :hasTag :CountTag .
+:ThreadBlockTime :hasTag :TimeTag .
+:ThreadWaitCount :hasTag :CountTag .
+:ThreadWaitTime :hasTag :TimeTag .
+:ThreadGccCount :hasTag :CountTag .
+:ThreadGccTime :hasTag :TimeTag .
+:ProcessTotalCPUTime :hasTag :TimeTag .
+:AllocatedMemoryBefore :hasTag :MemoryTag .
+:UsedMemoryBefore :hasTag :MemoryTag .
+:FreeMemoryBefore :hasTag :MemoryTag .
+:UnallocatedMemoryBefore :hasTag :MemoryTag .
+:AllocatedMemoryAfter :hasTag :MemoryTag .
+:UsedMemoryAfter :hasTag :MemoryTag .
+:FreeMemoryAfter :hasTag :MemoryTag .
+:UnallocatedMemoryAfter :hasTag :MemoryTag .
+:QueryBeginExecutionTime :hasTag :TimeTag .
+:QueryEndExecutionTime :hasTag :TimeTag .
+:QueryErrorStatus :hasTag :ErrorTag .
+:QueryErrorMessage :hasTag :ErrorTag .
+:QueryTotalResponseTime :hasTag :TimeTag .
+:QueryThreadUserCPUTime :hasTag :TimeTag .
+:QueryThreadSystemCPUTime :hasTag :TimeTag .
+:QueryThreadTotalCPUTime :hasTag :TimeTag .
+:QueryThreadCount :hasTag :CountTag .
+:QueryThreadBlockCount :hasTag :CountTag .
+:QueryThreadBlockTime :hasTag :TimeTag .
+:QueryThreadWaitCount :hasTag :CountTag .
+:QueryThreadWaitTime :hasTag :TimeTag .
+:QueryThreadGccCount :hasTag :CountTag .
+:QueryThreadGccTime :hasTag :TimeTag .
+:QueryProcessTotalCPUTime :hasTag :TimeTag .
+:QueryAllocatedMemoryBefore :hasTag :MemoryTag .
+:QueryUsedMemoryBefore :hasTag :MemoryTag .
+:QueryFreeMemoryBefore :hasTag :MemoryTag .
+:QueryUnallocatedMemoryBefore :hasTag :MemoryTag .
+:QueryAllocatedMemoryAfter :hasTag :MemoryTag .
+:QueryUsedMemoryAfter :hasTag :MemoryTag .
+:QueryFreeMemoryAfter :hasTag :MemoryTag .
+:QueryUnallocatedMemoryAfter :hasTag :MemoryTag .
+:QueryContent :hasTag :QueryTag .
+:QuerySizeInCharacters :hasTag :QueryTag .
+:QueryNamespaceNb :hasTag :QueryTag .
+:QueryNamespaceValues :hasTag :QueryTag .
+:QueryVariablesNb :hasTag :QueryTag .
+:QueryDataSetSourcesNb :hasTag :QueryTag .
+:QueryDataSetSources :hasTag :QueryTag .
+:QueryOperatorsNb :hasTag :QueryTag .
+:QueryLiteralsNb :hasTag :QueryTag .
+:QueryResultOrderingNb :hasTag :QueryTag .
+:QueryResultLimitNb :hasTag :QueryTag .
+:QueryResultOffsetNb :hasTag :QueryTag .
+:QueryResultSizeInCharacters :hasTag :QueryTag .
+:QueryDataLayerInserts :hasTag :DataLayerTag .
+:QueryDataLayerSelects :hasTag :DataLayerTag .
+:QueryNumberOfExceptions :hasTag :ErrorTag .
+:QueryNumberOfOutOfMemoryErrors :hasTag :ErrorTag .
+:QueryNumberOfMalformedSparqlQueryExceptions :hasTag :ErrorTag .
+:WorkflowBeginExecutionTime :hasTag :TimeTag .
+:WorkflowEndExecutionTime :hasTag :TimeTag .
+:WorkflowErrorStatus :hasTag :ErrorTag .
+:WorkflowErrorMessage :hasTag :ErrorTag .
+:WorkflowTotalResponseTime :hasTag :TimeTag .
+:WorkflowThreadUserCPUTime :hasTag :TimeTag .
+:WorkflowThreadSystemCPUTime :hasTag :TimeTag .
+:WorkflowThreadTotalCPUTime :hasTag :TimeTag .
+:WorkflowThreadCount :hasTag :CountTag .
+:WorkflowThreadBlockCount :hasTag :CountTag .
+:WorkflowThreadBlockTime :hasTag :TimeTag .
+:WorkflowThreadWaitCount :hasTag :CountTag .
+:WorkflowThreadWaitTime :hasTag :TimeTag .
+:WorkflowThreadGccCount :hasTag :CountTag .
+:WorkflowThreadGccTime :hasTag :TimeTag .
+:WorkflowProcessTotalCPUTime :hasTag :TimeTag .
+:WorkflowAllocatedMemoryBefore :hasTag :MemoryTag .
+:WorkflowUsedMemoryBefore :hasTag :MemoryTag .
+:WorkflowFreeMemoryBefore :hasTag :MemoryTag .
+:WorkflowUnallocatedMemoryBefore :hasTag :MemoryTag .
+:WorkflowAllocatedMemoryAfter :hasTag :MemoryTag .
+:WorkflowUsedMemoryAfter :hasTag :MemoryTag .
+:WorkflowFreeMemoryAfter :hasTag :MemoryTag .
+:WorkflowUnallocatedMemoryAfter :hasTag :MemoryTag .
+:WorkflowId :hasTag :WorkflowTag .
+:WorkflowNumberOfPlugins :hasTag :WorkflowTag .
+:WorkflowDataLayerInserts :hasTag :DataLayerTag .
+:WorkflowDataLayerSelects :hasTag :DataLayerTag .
+:WorkflowNumberOfExceptions :hasTag :ErrorTag .
+:WorkflowNumberOfOutOfMemoryErrors :hasTag :ErrorTag .
+:WorkflowNumberOfMalformedSparqlQueryExceptions :hasTag :ErrorTag .
+:PluginBeginExecutionTime :hasTag :TimeTag .
+:PluginEndExecutionTime :hasTag :TimeTag .
+:PluginErrorStatus :hasTag :ErrorTag .
+:PluginErrorMessage :hasTag :ErrorTag .
+:PluginTotalResponseTime :hasTag :TimeTag .
+:PluginThreadUserCPUTime :hasTag :TimeTag .
+:PluginThreadSystemCPUTime :hasTag :TimeTag .
+:PluginThreadTotalCPUTime :hasTag :TimeTag .
+:PluginThreadCount :hasTag :CountTag .
+:PluginThreadBlockCount :hasTag :CountTag .
+:PluginThreadBlockTime :hasTag :TimeTag .
+:PluginThreadWaitCount :hasTag :CountTag .
+:PluginThreadWaitTime :hasTag :TimeTag .
+:PluginThreadGccCount :hasTag :CountTag .
+:PluginThreadGccTime :hasTag :TimeTag .
+:PluginProcessTotalCPUTime :hasTag :TimeTag .
+:PluginAllocatedMemoryBefore :hasTag :MemoryTag .
+:PluginUsedMemoryBefore :hasTag :MemoryTag .
+:PluginFreeMemoryBefore :hasTag :MemoryTag .
+:PluginUnallocatedMemoryBefore :hasTag :MemoryTag .
+:PluginAllocatedMemoryAfter :hasTag :MemoryTag .
+:PluginUsedMemoryAfter :hasTag :MemoryTag .
+:PluginFreeMemoryAfter :hasTag :MemoryTag .
+:PluginUnallocatedMemoryAfter :hasTag :MemoryTag .
+:PluginName :hasTag :PluginTag .
+:PluginInputSizeInTriples :hasTag :PluginTag .
+:PluginOutputSizeInTriples :hasTag :PluginTag .
+:PluginCacheHit :hasTag :PluginTag .
+:PluginDataLayerInserts :hasTag :DataLayerTag .
+:PluginDataLayerSelects :hasTag :DataLayerTag .
+:PluginNumberOfExceptions :hasTag :ErrorTag .
+:PluginNumberOfOutOfMemoryErrors :hasTag :ErrorTag .
+:PluginNumberOfMalformedSparqlQueryExceptions :hasTag :ErrorTag .
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasAggregationFunction
+
+:hasAggregationFunction rdf:type owl:ObjectProperty ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "a compound metric is defined using an aggregation function over other metrics" ;
+                        
+                        rdfs:range :AggregationFunction ;
+                        
+                        rdfs:domain :CompoundMetric .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasBeginExecutionTime
+
+:hasBeginExecutionTime rdf:type owl:ObjectProperty ;
+                       
+                       rdfs:domain :MethodExecution ;
+                       
+                       rdfs:range :TimePoint .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasContext
+
+:hasContext rdf:type owl:ObjectProperty ;
+            
+            rdfs:range :Context ;
+            
+            rdfs:domain :MethodMetric ;
+            
+            rdfs:subPropertyOf owl:topObjectProperty .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasEndExecutionTime
+
+:hasEndExecutionTime rdf:type owl:ObjectProperty ;
+                     
+                     rdfs:domain :MethodExecution ;
+                     
+                     rdfs:range :TimePoint .
+
+
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasEndedWithError
+
+:hasEndedWithError rdf:type owl:ObjectProperty ;
+                   
+                   rdfs:range :Error ;
+                   
+                   rdfs:domain :MethodExecution .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasException
+
+:hasException rdf:type owl:ObjectProperty ;
+              
+              <http://purl.org/dc/elements/1.1/description> "if the method ended with an exception this returns the string representation of the exception" ;
+              
+              rdfs:range :Exception ;
+              
+              rdfs:domain :Method .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMeasurement
+
+:hasMeasurement rdf:type owl:ObjectProperty ;
+                
+                <http://purl.org/dc/elements/1.1/description> "connects a method execution with a measurement" ;
+                
+                rdfs:domain :MethodExecution ;
+                
+                rdfs:range :MethodMetric .
+
+
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMethodExecution
+
+:hasMethodExecution rdf:type owl:ObjectProperty ;
+                    
+                    <http://purl.org/dc/elements/1.1/description> "connects a method with a method execution" ;
+                    
+                    rdfs:domain :Method ;
+                    
+                    rdfs:range :MethodExecution .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMetrics
+
+:hasMetrics rdf:type owl:ObjectProperty ;
+            
+            rdfs:domain :Context ;
+            
+            rdfs:range rdf:Bag .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasParentContext
+
+:hasParentContext rdf:type owl:ObjectProperty ,
+                           owl:TransitiveProperty ;
+                  
+                  rdfs:domain :Context ;
+                  
+                  rdfs:range :Context .
+
+
+
+
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasSystemMetric
+
+:hasSystemMetric rdf:type owl:ObjectProperty ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "connects a system with a system metric that is measured on that system" ;
+                 
+                 rdfs:domain :System ;
+                 
+                 rdfs:range :SystemMetric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasTimeInterval
+
+:hasTimeInterval rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:domain :PerTimeInterval ;
+                 
+                 rdfs:range :TimeInterval .
+
+
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#includes
+
+:includes rdf:type owl:ObjectProperty ;
+          
+          <http://purl.org/dc/elements/1.1/description> "specifies a relation between a compound metric and another metric; can be used to specify for example that query execution time is composed of the execution time of a set of methods" ;
+          
+          rdfs:domain :CompoundMetric ;
+          
+          rdfs:range :Metric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#isMeasurementOf
+
+:isMeasurementOf rdf:type owl:ObjectProperty ;
+                 
+                 rdfs:range :MethodExecution ;
+                 
+                 rdfs:domain :MethodMetric ;
+                 
+                 owl:inverseOf :hasMeasurement .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#isMethodExecutionOf
+
+:isMethodExecutionOf rdf:type owl:ObjectProperty ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "connects a method execution with a method" ;
+                     
+                     rdfs:range :Method ;
+                     
+                     rdfs:domain :MethodExecution ;
+                     
+                     owl:inverseOf :hasMethodExecution .
+
+
+
+###  http://www.w3.org/2002/07/owl#topObjectProperty
+
+owl:topObjectProperty rdf:type owl:ObjectProperty .
+
+
+
+
+
+#################################################################
+#
+#    Data properties
+#
+#################################################################
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasAverageNumberOf
+
+:hasAverageNumberOf rdf:type owl:DatatypeProperty ;
+                    
+                    rdfs:domain :WorkflowsPerTimeInterval ;
+                    
+                    rdfs:range xsd:float .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasClassName
+
+:hasClassName rdf:type owl:DatatypeProperty ;
+              
+              <http://purl.org/dc/elements/1.1/description> "full class name where the metrics are collected" ;
+              
+              rdfs:domain :Method ;
+              
+              rdfs:subPropertyOf :hasName ;
+              
+              rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasContent
+
+:hasContent rdf:type owl:DatatypeProperty ;
+            
+            <http://purl.org/dc/elements/1.1/description> "specifies the string representation of the query" ;
+            
+            rdfs:domain :Query ;
+            
+            rdfs:range xsd:string .
+
+
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasErrorMessage
+
+:hasErrorMessage rdf:type owl:DatatypeProperty ;
+                 
+                 rdfs:domain :Error ;
+                 
+                 rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMethodId
+
+:hasMethodId rdf:type owl:DatatypeProperty ;
+             
+             rdfs:domain :AtomicMetric ;
+             
+             rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasMethodName
+
+:hasMethodName rdf:type owl:DatatypeProperty ;
+               
+               <http://purl.org/dc/elements/1.1/description> "method name where the metrics are collected" ;
+               
+               rdfs:domain :Method ;
+               
+               rdfs:subPropertyOf :hasName ;
+               
+               rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasName
+
+:hasName rdf:type owl:DatatypeProperty ;
+         
+         rdfs:range xsd:string ;
+         
+         rdfs:domain owl:Thing .
+
+
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasNumeberOfQueries
+
+:hasNumeberOfQueries rdf:type owl:DatatypeProperty ;
+                     
+                     rdfs:comment "specifies the number of queries attached to a QueriesPerTimeInterval concept or its subconcepts" ;
+                     
+                     rdfs:domain :QueriesPerTimeInterval ;
+                     
+                     rdfs:range xsd:integer .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasPrefix
+
+:hasPrefix rdf:type owl:DatatypeProperty ;
+           
+           rdfs:domain :QueriesPerNamespacePerTimeInterval ;
+           
+           rdfs:range xsd:string .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#hasTimePointValue
+
+:hasTimePointValue rdf:type owl:DatatypeProperty ;
+                   
+                   rdfs:domain :TimePoint ;
+                   
+                   rdfs:range xsd:long .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#isTrueError
+
+:isTrueError rdf:type owl:DatatypeProperty ;
+             
+             rdfs:domain :Error ;
+             
+             rdfs:range xsd:boolean .
+
+
+
+###  http://www.w3.org/2002/07/owl#topDataProperty
+
+owl:topDataProperty rdf:type owl:DatatypeProperty .
+
+
+
+
+
+#################################################################
+#
+#    Classes
+#
+#################################################################
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#AggregationFunction
+
+:AggregationFunction rdf:type owl:Class .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Application
+
+:Application rdf:type owl:Class ;
+             
+             <http://purl.org/dc/elements/1.1/description> "Generic concept of application (LarKC is one example)" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Average
+
+:Average rdf:type owl:Class ;
+         
+         rdfs:subClassOf :AggregationFunction .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#AvgDimenssion
+
+:AvgDimenssion rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MetricType .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#CPULoad
+
+:CPULoad rdf:type owl:Class ;
+         
+         rdfs:subClassOf :MetricType ;
+         
+         <http://purl.org/dc/elements/1.1/description> "The load of the CPU at the time of measurement (per computation node)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#CompoundMetric
+
+:CompoundMetric rdf:type owl:Class ;
+                
+                rdfs:subClassOf :Metric .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Context
+
+:Context rdf:type owl:Class ;
+         
+         <http://purl.org/dc/elements/1.1/description> "Generic concept of context which contains method specific information" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Count
+
+:Count rdf:type owl:Class ;
+       
+       rdfs:subClassOf :AggregationFunction .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Duration
+
+:Duration rdf:type owl:Class ;
+          
+          rdfs:subClassOf :MetricType ;
+          
+          <http://purl.org/dc/elements/1.1/description> "The time between two events (e.g. the time it took for some code to be executed)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Error
+
+:Error rdf:type owl:Class ;
+       
+       <http://purl.org/dc/elements/1.1/description> "concept that represents an error" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Event
+
+:Event rdf:type owl:Class ;
+       
+       rdfs:subClassOf owl:Thing ;
+       
+       <http://purl.org/dc/elements/1.1/description> "Some code point has been reached and the time stamp at which this event occurred is transmitted" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Exception
+
+:Exception rdf:type owl:Class ;
+           
+           rdfs:subClassOf :MetricType ;
+           
+           <http://purl.org/dc/elements/1.1/description> "An exceptional condition occurred while processing the request" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MemoryPercent
+
+:MemoryPercent rdf:type owl:Class ;
+               
+               rdfs:subClassOf :MetricType ;
+               
+               <http://purl.org/dc/elements/1.1/description> "The memory load at the time of the measurement (per computation node)" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Method
+
+:Method rdf:type owl:Class ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents a method that is instrumented" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MethodExecution
+
+:MethodExecution rdf:type owl:Class ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "concept that represents a method execution" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#MetricType
+
+:MetricType rdf:type owl:Class .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Namespace
+
+:Namespace rdf:type owl:Class ;
+           
+           rdfs:subClassOf [ rdf:type owl:Restriction ;
+                             owl:onProperty :hasDataValue ;
+                             owl:someValuesFrom xsd:anyURI
+                           ] ;
+           
+           <http://purl.org/dc/elements/1.1/description> "concept that represents a namespace from a SPARQL query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#NumberOfEventPerUnitTime
+
+:NumberOfEventPerUnitTime rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :MetricType ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "the number fof events per unit time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PerTimeInterval
+
+:PerTimeInterval rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :CompoundMetric ,
+                                 [ rdf:type owl:Restriction ;
+                                   owl:onProperty :hasTimeInterval ;
+                                   owl:allValuesFrom :TimeInterval
+                                 ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Platform
+
+:Platform rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Context ;
+          
+          <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC platform" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PlatformStart
+
+:PlatformStart rdf:type owl:Class ;
+               
+               rdfs:subClassOf :Platform .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Plugin
+
+:Plugin rdf:type owl:Class ;
+        
+        rdfs:subClassOf :Context ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC plugin" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInstanceCreation
+
+:PluginInstanceCreation rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :Metric ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "the instantiation of a new plug-in" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginInstanceCreationPerTimeInterval
+
+:PluginInstanceCreationPerTimeInterval rdf:type owl:Class ;
+                                       
+                                       rdfs:subClassOf :PerTimeInterval ;
+                                       
+                                       <http://purl.org/dc/elements/1.1/description> "The number of plug-in instances creation for a given plug-in in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#PluginMethodInvocationPerTimeInterval
+
+:PluginMethodInvocationPerTimeInterval rdf:type owl:Class ;
+                                       
+                                       rdfs:subClassOf :PerTimeInterval ;
+                                       
+                                       <http://purl.org/dc/elements/1.1/description> "The number of invocations of a given method in a given plug-in in a given work-flow in a given time interval" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesPerNamespacePerTimeInterval
+
+:QueriesPerNamespacePerTimeInterval rdf:type owl:Class ;
+                                    
+                                    rdfs:subClassOf :QueriesPerTimeInterval ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/description> "denotes the number of queries that contained a given name space (PREFIX) and were received by the LarKC platform in a time interval." .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesPerTimeInterval
+
+:QueriesPerTimeInterval rdf:type owl:Class ;
+                        
+                        rdfs:subClassOf :PerTimeInterval ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :includes ;
+                                          owl:onClass :QueryInvocation ;
+                                          owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger
+                                        ] ,
+                                        [ rdf:type owl:Restriction ;
+                                          owl:onProperty :hasAggregationFunction ;
+                                          owl:allValuesFrom :Count
+                                        ] ;
+                        
+                        <http://purl.org/dc/elements/1.1/description> "counts the number of queries that were received by the LarKC platform in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueriesWithExecutionTimeInRangePerInterval
+
+:QueriesWithExecutionTimeInRangePerInterval rdf:type owl:Class ;
+                                            
+                                            rdfs:subClassOf :PerTimeInterval ;
+                                            
+                                            <http://purl.org/dc/elements/1.1/description> "denotes the number of queries that have the query response time in the given interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Query
+
+:Query rdf:type owl:Class ;
+       
+       rdfs:subClassOf :Context ;
+       
+       <http://purl.org/dc/elements/1.1/description> "concept that represents a SPARQL query" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryFailureRatePerTimeInterval
+
+:QueryFailureRatePerTimeInterval rdf:type owl:Class ;
+                                 
+                                 rdfs:subClassOf :PerTimeInterval ,
+                                                 [ rdf:type owl:Restriction ;
+                                                   owl:onProperty :hasAggregationFunction ;
+                                                   owl:allValuesFrom :Count
+                                                 ] ;
+                                 
+                                 <http://purl.org/dc/elements/1.1/description> "The number of queries that finished with failure." .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QueryInvocation
+
+:QueryInvocation rdf:type owl:Class ;
+                 
+                 rdfs:subClassOf :Event ;
+                 
+                 <http://purl.org/dc/elements/1.1/description> "records the fact that a new query has been sent to the platform" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#QuerySuccessRatePerTimeInterval
+
+:QuerySuccessRatePerTimeInterval rdf:type owl:Class ;
+                                 
+                                 rdfs:subClassOf :PerTimeInterval ,
+                                                 [ rdf:type owl:Restriction ;
+                                                   owl:onProperty :hasAggregationFunction ;
+                                                   owl:allValuesFrom :Count
+                                                 ] ;
+                                 
+                                 <http://purl.org/dc/elements/1.1/description> "The number of queries that finished with success" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Result
+
+:Result rdf:type owl:Class ;
+        
+        rdfs:subClassOf owl:Thing ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents the result of a SPARQL query" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ResultSize
+
+:ResultSize rdf:type owl:Class ;
+            
+            rdfs:subClassOf :Metric ,
+                            [ rdf:type owl:Restriction ;
+                              owl:onProperty :hasDataValue ;
+                              owl:allValuesFrom xsd:integer
+                            ] ;
+            
+            <http://purl.org/dc/elements/1.1/description> "concept that represents the size of a result" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ResultSizeInBytes
+
+:ResultSizeInBytes rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :ResultSize ;
+                   
+                   <http://purl.org/dc/elements/1.1/description> "the size of a result represented in bytes" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#ResultSizeInTriples
+
+:ResultSizeInTriples rdf:type owl:Class ;
+                     
+                     rdfs:subClassOf :ResultSize ;
+                     
+                     <http://purl.org/dc/elements/1.1/description> "the size of a result represented in terms of number of RDF triples" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Session
+
+:Session rdf:type owl:Class ;
+         
+         <http://purl.org/dc/elements/1.1/description> "Generic concept of a session" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Size
+
+:Size rdf:type owl:Class ;
+      
+      rdfs:subClassOf :MetricType ;
+      
+      <http://purl.org/dc/elements/1.1/description> "The size of the data structure" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Sum
+
+:Sum rdf:type owl:Class ;
+     
+     rdfs:subClassOf :AggregationFunction .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#System
+
+:System rdf:type owl:Class ;
+        
+        <http://purl.org/dc/elements/1.1/description> "concept that represents a system where the application is running (e.g. your personal computer)" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#TimeInterval
+
+:TimeInterval rdf:type owl:Class ;
+              
+              <http://purl.org/dc/elements/1.1/description> "represents a time interval between two moments in time" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Variable
+
+:Variable rdf:type owl:Class ;
+          
+          <http://purl.org/dc/elements/1.1/description> "concept that represents a variable from a SPARQL query" .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#Workflow
+
+:Workflow rdf:type owl:Class ;
+          
+          rdfs:subClassOf :Context ;
+          
+          <http://purl.org/dc/elements/1.1/description> "concept that represents a LarKC workflow" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgDurationPerTimeInterval
+
+:WorkflowAvgDurationPerTimeInterval rdf:type owl:Class ;
+                                    
+                                    rdfs:subClassOf :WorkflowAvgPerTimeInterval ,
+                                                    [ rdf:type owl:Restriction ;
+                                                      owl:onProperty :includes ;
+                                                      owl:onClass :WorkflowTotalResponseTime ;
+                                                      owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger
+                                                    ] ,
+                                                    [ rdf:type owl:Restriction ;
+                                                      owl:onProperty :hasMeasurementUnit ;
+                                                      owl:hasValue :Microsecond
+                                                    ] ;
+                                    
+                                    <http://purl.org/dc/elements/1.1/description> "The average duration of a given work-flow in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgNodesPerTimeInterval
+
+:WorkflowAvgNodesPerTimeInterval rdf:type owl:Class ;
+                                 
+                                 rdfs:subClassOf :WorkflowAvgPerTimeInterval ;
+                                 
+                                 <http://purl.org/dc/elements/1.1/description> "The average number of nodes used by a given work-flow in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgPerTimeInterval
+
+:WorkflowAvgPerTimeInterval rdf:type owl:Class ;
+                            
+                            rdfs:subClassOf :PerTimeInterval ,
+                                            [ rdf:type owl:Restriction ;
+                                              owl:onProperty :hasAggregationFunction ;
+                                              owl:allValuesFrom :Average
+                                            ] .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowAvgThreadsPerTimeInterval
+
+:WorkflowAvgThreadsPerTimeInterval rdf:type owl:Class ;
+                                   
+                                   rdfs:subClassOf :WorkflowAvgPerTimeInterval ;
+                                   
+                                   <http://purl.org/dc/elements/1.1/description> "The average number of threads used by a given work-flow in a given time interval" .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowCreation
+
+:WorkflowCreation rdf:type owl:Class ;
+                  
+                  rdfs:subClassOf :Workflow .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowExecution
+
+:WorkflowExecution rdf:type owl:Class ;
+                   
+                   rdfs:subClassOf :Workflow .
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowInvocation
+
+:WorkflowInvocation rdf:type owl:Class ;
+                    
+                    rdfs:subClassOf :Event .
+
+
+
+
+###  http://www.larkc.eu/ontologies/IMOntology.rdf#WorkflowsPerTimeInterval
+
+:WorkflowsPerTimeInterval rdf:type owl:Class ;
+                          
+                          rdfs:subClassOf :PerTimeInterval ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :hasAggregationFunction ;
+                                            owl:allValuesFrom :Count
+                                          ] ,
+                                          [ rdf:type owl:Restriction ;
+                                            owl:onProperty :includes ;
+                                            owl:onClass :WorkflowInvocation ;
+                                            owl:minQualifiedCardinality "1"^^xsd:nonNegativeInteger
+                                          ] ;
+                          
+                          <http://purl.org/dc/elements/1.1/description> "The number of work-flows of a given name that were started in a given time interval" .
+
+
+
+
