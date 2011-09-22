@@ -167,7 +167,7 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 :IdleCPULoad rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
-              rdfs:label "SystemCPULoad" ;
+              rdfs:label "IdleCPULoad" ;
               dc:description "time spent idle, expressed as percentage of total CPU time" .
 
 :WaitCPULoad rdfs:subClassOf :SystemMetric ;
