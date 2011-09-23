@@ -1155,15 +1155,35 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 
 :SystemTag rdf:type owl:NamedIndividual .
+:SystemTag rdfs:label "System" .
+
 :PlatformTag rdf:type owl:NamedIndividual .
+:PlatformTag rdfs:label "Platform" .
+
 :QueryTag rdf:type owl:NamedIndividual .
+:QueryTag rdfs:label "Query" .
+
 :WorkflowTag rdf:type owl:NamedIndividual .
+:WorkflowTag rdfs:label "Workflow" .
+
 :PluginTag rdf:type owl:NamedIndividual .
+:PluginTag rdfs:label "Plugin" .
+
 :ThreadTag rdf:type owl:NamedIndividual .
+:ThreadTag rdfs:label "Thread" .
+
 :TimeTag rdf:type owl:NamedIndividual .
+:TimeTag rdfs:label "Time" .
+
 :CountTag rdf:type owl:NamedIndividual .
+:CountTag rdfs:label "Count" .
+
 :MemoryTag rdf:type owl:NamedIndividual .
+:MemoryTag rdfs:label "Memory" .
+
 :ErrorTag rdf:type owl:NamedIndividual .
+:ErrorTag rdfs:label "Error" .
+
 
 :WallClockTime :hasTag :TimeTag .
 :ThreadUserCPUTime :hasTag :TimeTag .
