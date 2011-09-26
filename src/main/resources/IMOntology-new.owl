@@ -17,13 +17,28 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 :Metric rdf:type owl:Class .
 
+:SystemMetric rdf:type owl:Class .
 :SystemMetric rdfs:subClassOf :Metric .
+
+:PlatformMetric rdf:type owl:Class .
 :PlatformMetric rdfs:subClassOf :Metric .
+
+:MethodMetric rdf:type owl:Class .
 :MethodMetric rdfs:subClassOf :Metric .
+
+:AtomicMetric rdf:type owl:Class .
 :AtomicMetric rdfs:subClassOf :Metric .
+
+:CompoundMetric rdf:type owl:Class .
 :CompoundMetric rdfs:subClassOf :Metric .
+
+:QueryMetric rdf:type owl:Class .
 :QueryMetric rdfs:subClassOf :AtomicMetric .
+
+:WorkflowMetric rdf:type owl:Class .
 :WorkflowMetric rdfs:subClassOf :AtomicMetric .
+
+:PluginMetric rdf:type owl:Class .
 :PluginMetric rdfs:subClassOf :AtomicMetric .
 
 :MeasurementUnit rdf:type owl:Class ,
