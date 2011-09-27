@@ -111,7 +111,7 @@ rdfs:comment rdf:type owl:AnnotationProperty .
                     rdfs:range rdfs:Datatype ;
                     rdfs:domain :Metric .
 
-
+:SystemLoadAverage rdf:type owl:Class .
 :SystemLoadAverage rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
@@ -119,162 +119,189 @@ rdfs:comment rdf:type owl:AnnotationProperty .
               dc:description "the system load average for la last minute" ;
               rdfs:comment "Load averages are not normalized for the number of CPUs in a system, so a load average of 1  means  a  single CPU system is loaded all the time while on a 4 CPU system it means it was idle 75% of the time." .
 
+:TotalSystemFreeMemory rdf:type owl:Class .
 :TotalSystemFreeMemory rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Kilobyte ;
               rdfs:label "TotalSystemFreeMemory" ;
               dc:description "total system free memory expressed in KB" .
 
+:TotalSystemUsedMEmory rdf:type owl:Class .
 :TotalSystemUsedMemory rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Kilobyte ;
               rdfs:label "TotalSystemUsedMemory" ;
               dc:description "total system used memory expressed in KB" .
 
+:TotalSystemUsedSwap rdf:type owl:Class .
 :TotalSystemUsedSwap rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Kilobyte ;
               rdfs:label "TotalSystemUsedSwap" ;
               dc:description "total system used swap expressed in KB" .
 
+:SystemOpenFileDescriptor rdf:type owl:Class .
 :SystemOpenFileDescriptors rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "SystemOpenFileDescriptors" ;
               dc:description "system open file descriptors count" .
 
+:SwapIn rdf:type owl:Class .
 :SwapIn rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Kilobyte ;
               rdfs:label "SwapIn" ;
               dc:description "size of data read from swap in KB" .
 
+:SwapOut rdf:type owl:Class .
 :SwapOut rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Kilobyte ;
               rdfs:label "SwapOut" ;
               dc:description "size of data written to swap in KB" .
 
+:IORead rdf:type owl:Class .
 :IORead rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Kilobyte ;
               rdfs:label "IORead" ;
               dc:description "number of KB read from the file system" .
 
+:IOWrite rdf:type owl:Class .
 :IOWrite rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Kilobyte ;
               rdfs:label "IOWrite" ;
               dc:description "number of KB written to the file system" .
 
+:UserCPULoad rdf:type owl:Class .
 :UserCPULoad rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
               rdfs:label "UserCPULoad" ;
               dc:description "time spent running non-kernel code, expressed as percentage of total CPU time" .
 
+:SystemCPULoad rdf:type owl:Class .
 :SystemCPULoad rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
               rdfs:label "SystemCPULoad" ;
               dc:description "time spent running kernel code, expressed as percentage of total CPU time" .
 
+:IdleCPULoad rdf:type owl:Class .
 :IdleCPULoad rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
               rdfs:label "IdleCPULoad" ;
               dc:description "time spent idle, expressed as percentage of total CPU time" .
 
+:WaitCPULoad rdf:type owl:Class .
 :WaitCPULoad rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
               rdfs:label "WaitCPULoad" ;
               dc:description "time spent waiting for I/O, expressed as percentage of total CPU time" .
 
+:IrqCPULoad rdf:type owl:Class .
 :IrqCPULoad rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
               rdfs:label "IrqCPULoad" ;
               dc:description "time spent servicing interrupts, expressed as percentage of total CPU time" .
 
+:UserCPUTime rdf:type owl:Class .
 :UserCPUTime rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Second ;
               rdfs:label "UserCPUTime" ;
               dc:description "time spent running non-kernel code" .
 
+:SystemCPUTime rdf:type owl:Class .
 :SystemCPUTime rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Second ;
               rdfs:label "SystemCPUTime" ;
               dc:description "time spent running kernel code" .
 
+:IdleCPUTime rdf:type owl:Class .
 :IdleCPUTime rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Second ;
               rdfs:label "IdleCPUTime" ;
               dc:description "time spent idle" .
 
+:WaitCPUTime rdf:type owl:Class .
 :WaitCPUTime rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Second ;
               rdfs:label "WaitCPUTime" ;
               dc:description "time spent waiting for I/O" .
 
+:IrqCPUTime rdf:type owl:Class .
 :IrqCPUTime rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Second ;
               rdfs:label "IrqCPUTime" ;
               dc:description "time spent servicing interrupts" .
 
+:ProcessesCount rdf:type owl:Class .
 :ProcessesCount rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "ProcessesCount" ;
               dc:description "total number of processes" .
 
+:RunningProcessesCount rdf:type owl:Class .
 :RunningProcessesCount rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "RunningProcessesCount" ;
               dc:description "total number of processes in run state" .
 
+:ThreadsCount rdf:type owl:Class .
 :ThreadsCount rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "ThreadsCount" ;
               dc:description "total number of threads" .
 
+:TcpInbound rdf:type owl:Class .
 :TcpInbound rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "TcpInbound" ;
               dc:description "the number of current inbound tcp connections" .
 
+:TcpOutbound rdf:type owl:Class .
 :TcpOutbound rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "TcpOutbound" ;
               dc:description "the number of current outbound tcp connections" .
 
+:NetworkReceived rdf:type owl:Class .
 :NetworkReceived rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "NetworkReceived" ;
               dc:description "the total number of bytes received over all installed network interfaces, except loopback, since last measurement" .
 
+:NetworkSent rdf:type owl:Class .
 :NetworkSent rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "NetworkSent" ;
               dc:description "the total number of bytes sent over all installed network interfaces, except loopback, since last measurement" .
 
+:LoopbackNetworkReceived rdf:type owl:Class .
 :LoopbackNetworkReceived rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "LoopbackNetworkReceived" ;
               dc:description "the total number of bytes received over loopback interface since last measurement" .
 
+:LoopbackNetworkSent rdf:type owl:Class .
 :LoopbackNetworkSent rdfs:subClassOf :SystemMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
@@ -285,96 +312,112 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 
 
+:PlatformAvgCPUUsage rdf:type owl:Class .
 :PlatformAvgCPUUsage rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
               rdfs:label "PlatformAvgCPUUsage" ;
               dc:description "average cpu usage since jvm start (%)" .
 
+:PlatformCPUTime rdf:type owl:Class .
 :PlatformCPUTime rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PlatformCPUTime" ;
               dc:description "CPU time used by current instrumented application since last measurement (ms)" .
 
+:PlatformTotalCPUTime rdf:type owl:Class .
 :PlatformTotalCPUTime rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PlatformTotalCPUTime" ;
               dc:description "total CPU time used by current instrumented application since jvm start (ms)" .
 
+:PlatformCPUUsage rdf:type owl:Class .
 :PlatformCPUUsage rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:double ;
               :hasMeasurementUnit :Percent ;
               rdfs:label "PlatformCPUUsage" ;
               dc:description "average cpu usage since last measurement (%)" .
 
+:PlatformGccCount rdf:type owl:Class .
 :PlatformGccCount rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PlatformGccCount" ;
               dc:description "number of collections since last measurement (count)" .
 
+:PlatformGccTime rdf:type owl:Class .
 :PlatformGccTime rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PlatformGccTime" ;
               dc:description "accumulated collection elapsed time since last measurement (ms)" .
 
+:PlatformTotalGccCount rdf:type owl:Class .
 :PlatformTotalGccCount rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PlatformTotalGccCount" ;
               dc:description "total number of collections since jvm start (count)" .
 
+:PlatformTotalGccTime rdf:type owl:Class .
 :PlatformTotalGccTime rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PlatformTotalGccTime" ;
               dc:description "total accumulated collection elapsed time since jvm start (ms)" .
 
+:PlatformUptime rdf:type owl:Class .
 :PlatformUptime rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PlatformUptime" ;
               dc:description "total time since platform start (ms)" .
 
+:PlatformAllocatedMemory rdf:type owl:Class .
 :PlatformAllocatedMemory rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PlatformAllocatedMemory" ;
               dc:description "the amount of current allocated (commited) memory in bytes" .
 
+:PlatformUsedMemory rdf:type owl:Class .
 :PlatformUsedMemory rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PlatformUsedMemory" ;
               dc:description "the amount of current allocated and used memory in bytes" .
 
+:PlatformFreeMemory rdf:type owl:Class .
 :PlatformFreeMemory rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PlatformFreeMemory" ;
               dc:description "the amount of current allocated and free memory in bytes" .
 
+:PlatformUnallocatedMemory rdf:type owl:Class .
 :PlatformUnallocatedMemory rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PlatformUnallocatedMemory" ;
               dc:description "the amount of current unallocated (and free to allocate) memory in bytes" .
 
+:PlatformThreadsCount rdf:type owl:Class .
 :PlatformThreadsCount rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PlatformThreadsCount" ;
               dc:description "the current number of live threads including both daemon and non-daemon threads (count)" .
 
+:PlatformThreadsStarted rdf:type owl:Class .
 :PlatformThreadsStarted rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PlatformThreadsStarted" ;
               dc:description "the number of threads started since last measurement (count)" .
 
+:PlatformTotalThreadsStarted rdf:type owl:Class .
 :PlatformTotalThreadsStarted rdfs:subClassOf :PlatformMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
@@ -384,121 +427,140 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 
 
-
+:WallClockTime rdf:type owl:Class .
 :WallClockTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WallClockTime" ;
               dc:description "elapsed time between method entry and method exit (ms)" .
 
+:ThreadUserCPUTime rdf:type owl:Class .
 :ThreadUserCPUTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "ThreadUserCPUTime" ;
               dc:description "user CPU time spent by current thread executing this method (ms)" .
 
+:ThreadSystemCPUTime rdf:type owl:Class .
 :ThreadSystemCPUTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "ThreadSystemCPUTime" ;
               dc:description "system CPU time spent by current thread executing this method (ms)" .
 
+:ThreadTotalCPUTime rdf:type owl:Class .
 :ThreadTotalCPUTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "ThreadTotalCPUTime" ;
               dc:description "total CPU time spent by current thread executing this method (user time + system time) (ms)" .
 
+:ThreadCount rdf:type owl:Class .
 :ThreadCount rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "ThreadCount" ;
               dc:description "total number of threads that were started during this method execution (count)" .
 
+:ThreadBlockCount rdf:type owl:Class .
 :ThreadBlockCount rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "ThreadBlockCount" ;
               dc:description "the total number of times that the current thread executing this method entered the BLOCKED state (count)" .
 
+:ThreadBlockTime rdf:type owl:Class .
 :ThreadBlockTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "ThreadBlockTime" ;
               dc:description "the total accumulated time the current thread executing this method has been in the BLOCKED (ms)" .
 
+:ThreadWaitCount rdf:type owl:Class .
 :ThreadWaitCount rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "ThreadWaitCount" ;
               dc:description "the number of times that the current thread executing this method has been in the WAITING or TIMED_WAITING state (count)" .
 
+:ThreadWaitTime rdf:type owl:Class .
 :ThreadWaitTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "ThreadWaitTime" ;
               dc:description "the total accumulated time the current thread executing this method has been in the WAITING or TIMED_WAITING state (ms)" .
 
+:ThreadGccCount rdf:type owl:Class .
 :ThreadGccCount rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "ThreadGccCount" ;
               dc:description "total number of collections that have occurred while executing this method (count)" .
 
+:ThreadGccTime rdf:type owl:Class .
 :ThreadGccTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "ThreadGccTime" ;
               dc:description "approximate accumulated collection elapsed time in milliseconds while executing this method (ms)" .
 
+:ProcessTotalCPUTime rdf:type owl:Class .
 :ProcessTotalCPUTime rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "ProcessTotalCPUTime" ;
               dc:description "total CPU time spent by current process (all threads from the application) executing this method (ms)" .
 
+:AllocatedMemoryBefore rdf:type owl:Class .
 :AllocatedMemoryBefore rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "AllocatedMemoryBefore" ;
               dc:description "the amount of allocated (commited) memory before method execution (bytes)" .
 
+:UsedMemoryBefore rdf:type owl:Class .
 :UsedMemoryBefore rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "UsedMemoryBefore" ;
               dc:description "the amount of allocated and used memory before method execution (bytes)" .
 
+:FreeMemoryBefore rdf:type owl:Class .
 :FreeMemoryBefore rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "FreeMemoryBefore" ;
               dc:description "the amount of allocated and free memory before method execution (bytes)" .
 
+:UnallocatedMemoryBefore rdf:type owl:Class .
 :UnallocatedMemoryBefore rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "UnallocatedMemoryBefore" ;
               dc:description "the amount of unallocated (and free to allocate) memory before method execution (bytes)" .
 
+:AllocatedMemoryAfter rdf:type owl:Class .
 :AllocatedMemoryAfter rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "AllocatedMemoryAfter" ;
               dc:description "the amount of allocated (commited) memory after method execution (bytes)" .
 
+:UsedMemoryAfter rdf:type owl:Class .
 :UsedMemoryAfter rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "UsedMemoryAfter" ;
               dc:description "the amount of allocated and used memory after method execution (bytes)" .
 
+:FreeMemoryAfter rdf:type owl:Class .
 :FreeMemoryAfter rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "FreeMemoryAfter" ;
               dc:description "the amount of allocated and free memory after method execution (bytes)" .
 
+:UnallocatedMemoryAfter rdf:type owl:Class .
 :UnallocatedMemoryAfter rdfs:subClassOf :MethodMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
@@ -515,84 +577,98 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 
 
+:QueryBeginExecutionTime rdf:type owl:Class .
 :QueryBeginExecutionTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :TimePoint ;
               rdfs:label "QueryBeginExecutionTime" ;
               dc:description "query start time (ms)" .
 
+:QueryEndExecutionTime rdf:type owl:Class .
 :QueryEndExecutionTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :TimePoint ;
               rdfs:label "QueryEndExecutionTime" ;
               dc:description "query end time (ms)" .
 
+:QueryErrorStatus rdf:type owl:Class .
 :QueryErrorStatus rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:boolean ;
               :hasMeasurementUnit :ErrorStatus ;
               rdfs:label "QueryErrorStatus" ;
               dc:description "true if there was an error" .
 
+:QueryErrorMessage rdf:type owl:Class .
 :QueryErrorMessage rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:string ;
               :hasMeasurementUnit :ErrorMessage ;
               rdfs:label "QueryErrorMessage" ;
               dc:description "error message if there was an error" .
 
+:QueryTotalResponseTime rdf:type owl:Class .
 :QueryTotalResponseTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryTotalResponseTime" ;
               dc:description "total elapsed time for executing a query (ms)" .
 
+:QueryThreadUserCPUTime rdf:type owl:Class .
 :QueryThreadUserCPUTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryThreadUserCPUTime" ;
               dc:description "user CPU time spent by current thread executing this query (ms)" .
 
+:QueryThreadSystemCPUTime rdf:type owl:Class .
 :QueryThreadSystemCPUTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryThreadSystemCPUTime" ;
               dc:description "system CPU time spent by current thread executing this query (ms)" .
 
+:QueryThreadTotalCPUTime rdf:type owl:Class .
 :QueryThreadTotalCPUTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryThreadTotalCPUTime" ;
               dc:description "total CPU time spent by current thread executing this query (user time + system time) (ms)" .
 
+:QueryThreadCount rdf:type owl:Class .
 :QueryThreadCount rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryThreadCount" ;
               dc:description "total number of threads that were started during this query execution (count)" .
 
+:QueryThreadBlockCount rdf:type owl:Class .
 :QueryThreadBlockCount rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryThreadBlockCount" ;
               dc:description "the total number of times that the current thread executing this query entered the BLOCKED state (count)" .
 
+:QueryThreadBlockTime rdf:type owl:Class .
 :QueryThreadBlockTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryThreadBlockTime" ;
               dc:description "the total accumulated time the current thread executing this query has been in the BLOCKED (ms)" .
 
+:QueryThreadWaitCount rdf:type owl:Class .
 :QueryThreadWaitCount rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryThreadWaitCount" ;
               dc:description "the number of times that the current thread executing this query has been in the WAITING or TIMED_WAITING state (count)" .
 
+:QueryThreadWaitTime rdf:type owl:Class .
 :QueryThreadWaitTime rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryThreadWaitTime" ;
               dc:description "the total accumulated time the current thread executing this query has been in the WAITING or TIMED_WAITING state (ms)" .
 
+:QueryThreadGccCount rdf:type owl:Class .
 :QueryThreadGccCount rdfs:subClassOf :QueryMetric ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
@@ -600,102 +676,119 @@ rdfs:comment rdf:type owl:AnnotationProperty .
               dc:description "total number of collections that have occurred while executing this query (count)" .
 
 :QueryThreadGccTime rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryThreadGccTime" ;
               dc:description "approximate accumulated collection elapsed time in milliseconds while executing this query (ms)" .
 
 :QueryProcessTotalCPUTime rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "QueryProcessTotalCPUTime" ;
               dc:description "total CPU time spent by current process (all threads from the application) executing this query (ms)" .
 
 :QueryAllocatedMemoryBefore rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryAllocatedMemoryBefore" ;
               dc:description "the amount of allocated (commited) memory before query execution (bytes)" .
 
 :QueryUsedMemoryBefore rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryUsedMemoryBefore" ;
               dc:description "the amount of allocated and used memory before query execution (bytes)" .
 
 :QueryFreeMemoryBefore rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryFreeMemoryBefore" ;
               dc:description "the amount of allocated and free memory before query execution (bytes)" .
 
 :QueryUnallocatedMemoryBefore rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryUnallocatedMemoryBefore" ;
               dc:description "the amount of unallocated (and free to allocate) memory before query execution (bytes)" .
 
 :QueryAllocatedMemoryAfter rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryAllocatedMemoryAfter" ;
               dc:description "the amount of allocated (commited) memory after query execution (bytes)" .
 
 :QueryUsedMemoryAfter rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryUsedMemoryAfter" ;
               dc:description "the amount of allocated and used memory after query execution (bytes)" .
 
 :QueryFreeMemoryAfter rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryFreeMemoryAfter" ;
               dc:description "the amount of allocated and free memory after query execution (bytes)" .
 
 :QueryUnallocatedMemoryAfter rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "QueryUnallocatedMemoryAfter" ;
               dc:description "the amount of unallocated (and free to allocate) memory after query execution (bytes)" .
 
 :QueryContent rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:string ;
               :hasMeasurementUnit :StringValue ;
               rdfs:label "QueryContent" ;
               dc:description "sparql query executed by larkc" .
 
 :QuerySizeInCharacters rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QuerySizeInCharacters" ;
               dc:description "query number of characters (count)" .
 
 :QueryNamespaceNb rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryNamespaceNb" ;
               dc:description "query number of defined and used namespaces (count)" .
 
 :QueryNamespaceValues rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:string ;
               :hasMeasurementUnit :StringValue ;
               rdfs:label "QueryNamespaceValues" ;
               dc:description "array of query defined and used namespaces (count)" .
 
 :QueryVariablesNb rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryVariablesNb" ;
               dc:description "query number of variables (count)" .
 
 :QueryDataSetSourcesNb rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryDataSetSourcesNb" ;
               dc:description "specifies the number of dataset source of FROM clauses in a query (count)" .
 
 :QueryDataSetSources rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:string ;
               :hasMeasurementUnit :StringValue ;
               rdfs:label "QueryDataSetSources" ;
@@ -708,60 +801,70 @@ rdfs:comment rdf:type owl:AnnotationProperty .
               dc:description "query number of operators (count)" .
 
 :QueryLiteralsNb rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryLiteralsNb" ;
               dc:description "query number of literals (count)" .
 
 :QueryResultOrderingNb rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryResultOrderingNb" ;
               dc:description "query number of ordering fields (count)" .
 
 :QueryResultLimitNb rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryResultLimitNb" ;
               dc:description "limit value for query" .
 
 :QueryResultOffsetNb rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryResultOffsetNb" ;
               dc:description "offset value for query" .
 
 :QueryResultSizeInCharacters rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryResultSizeInCharacters" ;
               dc:description "query result number of characters (count)" .
 
 :QueryDataLayerInserts rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryDataLayerInserts" ;
               dc:description "query number of datalayer insert operations (count)" .
 
 :QueryDataLayerSelects rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryDataLayerSelects" ;
               dc:description "query number of datalayer select operations (count)" .
 
 :QueryNumberOfExceptions rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryNumberOfExceptions" ;
               dc:description "query number of exceptions (count)" .
 
 :QueryNumberOfOutOfMemoryErrors rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryNumberOfOutOfMemoryErrors" ;
               dc:description "query number of out of memory exceptions (count)" .
 
 :QueryNumberOfMalformedSparqlQueryExceptions rdfs:subClassOf :QueryMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "QueryNumberOfMalformedSparqlQueryExceptions" ;
@@ -773,186 +876,217 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 
 :WorkflowBeginExecutionTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :TimePoint ;
               rdfs:label "WorkflowBeginExecutionTime" ;
               dc:description "Workflow start time (ms)" .
 
 :WorkflowEndExecutionTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :TimePoint ;
               rdfs:label "WorkflowEndExecutionTime" ;
               dc:description "Workflow end time (ms)" .
 
 :WorkflowErrorStatus rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:boolean ;
               :hasMeasurementUnit :ErrorStatus ;
               rdfs:label "WorkflowErrorStatus" ;
               dc:description "true if there was an error" .
 
 :WorkflowErrorMessage rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:string ;
               :hasMeasurementUnit :ErrorMessage ;
               rdfs:label "WorkflowErrorMessage" ;
               dc:description "error message if there was an error" .
 
 :WorkflowTotalResponseTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowTotalResponseTime" ;
               dc:description "total elapsed time for executing a Workflow (ms)" .
 
 :WorkflowThreadUserCPUTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowThreadUserCPUTime" ;
               dc:description "user CPU time spent by current thread executing this Workflow (ms)" .
 
 :WorkflowThreadSystemCPUTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowThreadSystemCPUTime" ;
               dc:description "system CPU time spent by current thread executing this Workflow (ms)" .
 
 :WorkflowThreadTotalCPUTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowThreadTotalCPUTime" ;
               dc:description "total CPU time spent by current thread executing this Workflow (user time + system time) (ms)" .
 
 :WorkflowThreadCount rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowThreadCount" ;
               dc:description "total number of threads that were started during this Workflow execution (count)" .
 
 :WorkflowThreadBlockCount rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowThreadBlockCount" ;
               dc:description "the total number of times that the current thread executing this Workflow entered the BLOCKED state (count)" .
 
 :WorkflowThreadBlockTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowThreadBlockTime" ;
               dc:description "the total accumulated time the current thread executing this Workflow has been in the BLOCKED (ms)" .
 
 :WorkflowThreadWaitCount rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowThreadWaitCount" ;
               dc:description "the number of times that the current thread executing this Workflow has been in the WAITING or TIMED_WAITING state (count)" .
 
 :WorkflowThreadWaitTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowThreadWaitTime" ;
               dc:description "the total accumulated time the current thread executing this Workflow has been in the WAITING or TIMED_WAITING state (ms)" .
 
 :WorkflowThreadGccCount rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowThreadGccCount" ;
               dc:description "total number of collections that have occurred while executing this Workflow (count)" .
 
 :WorkflowThreadGccTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowThreadGccTime" ;
               dc:description "approximate accumulated collection elapsed time in milliseconds while executing this Workflow (ms)" .
 
 :WorkflowProcessTotalCPUTime rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "WorkflowProcessTotalCPUTime" ;
               dc:description "total CPU time spent by current process (all threads from the application) executing this Workflow (ms)" .
 
 :WorkflowAllocatedMemoryBefore rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowAllocatedMemoryBefore" ;
               dc:description "the amount of allocated (commited) memory before Workflow execution (bytes)" .
 
 :WorkflowUsedMemoryBefore rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowUsedMemoryBefore" ;
               dc:description "the amount of allocated and used memory before Workflow execution (bytes)" .
 
 :WorkflowFreeMemoryBefore rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowFreeMemoryBefore" ;
               dc:description "the amount of allocated and free memory before Workflow execution (bytes)" .
 
 :WorkflowUnallocatedMemoryBefore rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowUnallocatedMemoryBefore" ;
               dc:description "the amount of unallocated (and free to allocate) memory before Workflow execution (bytes)" .
 
 :WorkflowAllocatedMemoryAfter rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowAllocatedMemoryAfter" ;
               dc:description "the amount of allocated (commited) memory after Workflow execution (bytes)" .
 
 :WorkflowUsedMemoryAfter rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowUsedMemoryAfter" ;
               dc:description "the amount of allocated and used memory after Workflow execution (bytes)" .
 
 :WorkflowFreeMemoryAfter rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowFreeMemoryAfter" ;
               dc:description "the amount of allocated and free memory after Workflow execution (bytes)" .
 
 :WorkflowUnallocatedMemoryAfter rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "WorkflowUnallocatedMemoryAfter" ;
               dc:description "the amount of unallocated (and free to allocate) memory after Workflow execution (bytes)" .
 
 :WorkflowId rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :NumericValue ;
               rdfs:label "WorkflowId" ;
               dc:description "id of the workflow" .
 
 :WorkflowNumberOfPlugins rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowNumberOfPlugins" ;
               dc:description "number of plugins from the workflow (count)" .
 
 :WorkflowDataLayerInserts rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowDataLayerInserts" ;
               dc:description "Workflow number of datalayer insert operations (count)" .
 
 :WorkflowDataLayerSelects rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowDataLayerSelects" ;
               dc:description "Workflow number of datalayer select operations (count)" .
 
 :WorkflowNumberOfExceptions rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowNumberOfExceptions" ;
               dc:description "Workflow number of exceptions (count)" .
 
 :WorkflowNumberOfOutOfMemoryErrors rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowNumberOfOutOfMemoryErrors" ;
               dc:description "Workflow number of out of memory exceptions (count)" .
 
 :WorkflowNQueryNumberOfMalformedSparqlQueryExceptions rdfs:subClassOf :WorkflowMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "WorkflowNQueryNumberOfMalformedSparqlQueryExceptions" ;
@@ -963,198 +1097,231 @@ rdfs:comment rdf:type owl:AnnotationProperty .
 
 
 :PluginBeginExecutionTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :TimePoint ;
               rdfs:label "PluginBeginExecutionTime" ;
               dc:description "Plugin start time (ms)" .
 
 :PluginEndExecutionTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :TimePoint ;
               rdfs:label "PluginEndExecutionTime" ;
               dc:description "Plugin end time (ms)" .
 
 :PluginErrorStatus rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:boolean ;
               :hasMeasurementUnit :ErrorStatus ;
               rdfs:label "PluginErrorStatus" ;
               dc:description "true if there was an error" .
 
 :PluginErrorMessage rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:string ;
               :hasMeasurementUnit :ErrorMessage ;
               rdfs:label "PluginErrorMessage" ;
               dc:description "error message if there was an error" .
 
 :PluginTotalResponseTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginTotalResponseTime" ;
               dc:description "total elapsed time for executing a Plugin (ms)" .
 
 :PluginThreadUserCPUTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginThreadUserCPUTime" ;
               dc:description "user CPU time spent by current thread executing this Plugin (ms)" .
 
 :PluginThreadSystemCPUTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginThreadSystemCPUTime" ;
               dc:description "system CPU time spent by current thread executing this Plugin (ms)" .
 
 :PluginThreadTotalCPUTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginThreadTotalCPUTime" ;
               dc:description "total CPU time spent by current thread executing this Plugin (user time + system time) (ms)" .
 
 :PluginThreadCount rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginThreadCount" ;
               dc:description "total number of threads that were started during this Plugin execution (count)" .
 
 :PluginThreadBlockCount rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginThreadBlockCount" ;
               dc:description "the total number of times that the current thread executing this Plugin entered the BLOCKED state (count)" .
 
 :PluginThreadBlockTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginThreadBlockTime" ;
               dc:description "the total accumulated time the current thread executing this Plugin has been in the BLOCKED (ms)" .
 
 :PluginThreadWaitCount rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginThreadWaitCount" ;
               dc:description "the number of times that the current thread executing this Plugin has been in the WAITING or TIMED_WAITING state (count)" .
 
 :PluginThreadWaitTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginThreadWaitTime" ;
               dc:description "the total accumulated time the current thread executing this Plugin has been in the WAITING or TIMED_WAITING state (ms)" .
 
 :PluginThreadGccCount rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginThreadGccCount" ;
               dc:description "total number of collections that have occurred while executing this Plugin (count)" .
 
 :PluginThreadGccTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginThreadGccTime" ;
               dc:description "approximate accumulated collection elapsed time in milliseconds while executing this Plugin (ms)" .
 
 :PluginProcessTotalCPUTime rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Millisecond ;
               rdfs:label "PluginProcessTotalCPUTime" ;
               dc:description "total CPU time spent by current process (all threads from the application) executing this Plugin (ms)" .
 
 :PluginAllocatedMemoryBefore rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginAllocatedMemoryBefore" ;
               dc:description "the amount of allocated (commited) memory before Plugin execution (bytes)" .
 
 :PluginUsedMemoryBefore rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginUsedMemoryBefore" ;
               dc:description "the amount of allocated and used memory before Plugin execution (bytes)" .
 
 :PluginFreeMemoryBefore rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginFreeMemoryBefore" ;
               dc:description "the amount of allocated and free memory before Plugin execution (bytes)" .
 
 :PluginUnallocatedMemoryBefore rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginUnallocatedMemoryBefore" ;
               dc:description "the amount of unallocated (and free to allocate) memory before Plugin execution (bytes)" .
 
 :PluginAllocatedMemoryAfter rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginAllocatedMemoryAfter" ;
               dc:description "the amount of allocated (commited) memory after Plugin execution (bytes)" .
 
 :PluginUsedMemoryAfter rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginUsedMemoryAfter" ;
               dc:description "the amount of allocated and used memory after Plugin execution (bytes)" .
 
 :PluginFreeMemoryAfter rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginFreeMemoryAfter" ;
               dc:description "the amount of allocated and free memory after Plugin execution (bytes)" .
 
 :PluginUnallocatedMemoryAfter rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Byte ;
               rdfs:label "PluginUnallocatedMemoryAfter" ;
               dc:description "the amount of unallocated (and free to allocate) memory after Plugin execution (bytes)" .
 
 :PluginName rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:string ;
               :hasMeasurementUnit :StringValue ;
               rdfs:label "PluginName" ;
               dc:description "plugin name" .
 
 :PluginInputSizeInTriples rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginInputSizeInTriples" ;
               dc:description "plugin input size number of triples (count)" .
 
 :PluginOutputSizeInTriples rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginOutputSizeInTriples" ;
               dc:description "plugin output size number of triples (count)" .
 
 :PluginCacheHit rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:boolean ;
               :hasMeasurementUnit :BooleanValue ;
               rdfs:label "PluginCacheHit" ;
               dc:description "true if thee was a cache hit when executing the plugin, false otherwise" .
 
 :PluginDataLayerInserts rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginDataLayerInserts" ;
               dc:description "Plugin number of datalayer insert operations (count)" .
 
 :PluginDataLayerSelects rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginDataLayerSelects" ;
               dc:description "Plugin number of datalayer select operations (count)" .
 
 :PluginNumberOfExceptions rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginNumberOfExceptions" ;
               dc:description "Plugin number of exceptions (count)" .
 
 :PluginNumberOfOutOfMemoryErrors rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginNumberOfOutOfMemoryErrors" ;
               dc:description "Plugin number of out of memory exceptions (count)" .
 
 :PluginNQueryNumberOfMalformedSparqlQueryExceptions rdfs:subClassOf :PluginMetric ;
+              rdf:type owl:Class ;
               :hasDataValueType xsd:long ;
               :hasMeasurementUnit :Counter ;
               rdfs:label "PluginNQueryNumberOfMalformedSparqlQueryExceptions" ;
