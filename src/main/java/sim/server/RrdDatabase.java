@@ -32,7 +32,9 @@ import sim.data.PlatformMetrics;
 import sim.data.SystemMetrics;
 
 /**
- * @author valer
+ * Maps the java object to individual metrics and uploads them to a RRD database.
+ * 
+ * @author valer, mcq
  *
  */
 public class RrdDatabase implements MetricsVisitor {
