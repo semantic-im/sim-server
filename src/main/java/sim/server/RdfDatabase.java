@@ -37,7 +37,9 @@ import sim.server.util.SPARQLQueryContentAnalyzer;
 
 
 /**
- * @author valer
+ * Maps the java object to rdf triples and uploads them to the rdf database.
+ * 
+ * @author valer, mcq
  *
  */
 public class RdfDatabase implements MetricsVisitor {
@@ -100,11 +102,17 @@ public class RdfDatabase implements MetricsVisitor {
 	private static final HashMap<String, URI> methodURICache = new HashMap<String, URI>();
 	private static final HashMap<String, URI> systemURICache = new HashMap<String, URI>();
 	private static final HashMap<String, URI> applicationURICache = new HashMap<String, URI>();
+	
+	private long numberOfTriples = 0;
+	private long time = 0;
 		
 	public RdfDatabase() {
 	}
 	
 	public void open() {
+		numberOfTriples = 0;
+		time = System.currentTimeMillis();
+		
 		this.model = new RepositoryModel(new HTTPRepository("http://" + Main.storage_server_domain + ":" + Main.storage_server_port + "/openrdf-sesame", Main.storage_repository_id));
 		this.model.open();
 		this.model.setAutocommit(false);
@@ -183,7 +191,17 @@ public class RdfDatabase implements MetricsVisitor {
 	}
 	
 	public void close() {
+		this.model.commit();
 		this.model.close();
+		double delta = (double)(System.currentTimeMillis() - time) / 1000.00;
+		double speed;
+		if (delta > 0)
+			speed = numberOfTriples / delta;
+		else
+			speed = numberOfTriples;
+		logger.info("number of triples: {} ; speed: {} triples/second", numberOfTriples, speed);
+		numberOfTriples = 0;
+		time = System.currentTimeMillis();
 	}
 
 	private PlainLiteral getStringTypeURI(String value) {
@@ -284,8 +302,10 @@ public class RdfDatabase implements MetricsVisitor {
 		 */
 		extractAtomicMetricsFromMethodMetric(statements, methodMetrics, idSystemURI, idApplicationURI, idContextURI, dateTimeLiteral);
 
+		logger.debug("method metrics generated {} triples", statements.size());
 		model.addAll(statements.iterator());
-		model.commit();
+		//model.commit();
+		numberOfTriples += statements.size();
 	}
 	
 	@Override
@@ -364,8 +384,10 @@ public class RdfDatabase implements MetricsVisitor {
 		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkReceived", getLongTypeURI(systemMetrics.getLoopbackNetworkReceived()));
 		addSystemMetricStatements(statements, idSystemURI, dateTimeLiteral, "LoopbackNetworkSent", getLongTypeURI(systemMetrics.getLoopbackNetworkSent()));
 
+		logger.debug("system metrics generated {} triples", statements.size());
 		model.addAll(statements.iterator());
-		model.commit();
+		//model.commit();
+		numberOfTriples += statements.size();
 	}
 	
 	private URI addMetricStatements(List<Statement> statements, URI idSystemURI, URI idApplicationURI, URI idContextURI, URI idMethodURI, DatatypeLiteral dateTimeLiteral, String type, Node value) {
@@ -535,8 +557,10 @@ public class RdfDatabase implements MetricsVisitor {
 	public void visit(Context context) {
 		List<Statement> statements = new ArrayList<Statement>();	
 		addContextMetrics(context, statements);
+		logger.debug("context metrics generated {} triples", statements.size());
 		model.addAll(statements.iterator());
-		model.commit();			
+		//model.commit();
+		numberOfTriples += statements.size();
 	}
 
 	public URI generateURI(){
@@ -613,8 +637,10 @@ public class RdfDatabase implements MetricsVisitor {
 		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformThreadsStarted", getLongTypeURI(pm.getThreadsStarted()));
 		addPlatformMetricStatements(statements, idSystemURI, idApplicationURI, dateTimeLiteral, "PlatformTotalThreadsStarted", getLongTypeURI(pm.getTotalThreadsStarted()));
 
+		logger.debug("platform metrics generated {} triples", statements.size());
 		model.addAll(statements.iterator());
-		model.commit();
+		//model.commit();
+		numberOfTriples += statements.size();
 	}
 
 	private void addAtomicMetrics(List<Statement> statements, URI idSystemURI, URI idApplicationURI, URI idContextURI, DatatypeLiteral dateTimeLiteral, String prefix, MethodMetrics methodMetrics) {
