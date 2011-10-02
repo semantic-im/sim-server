@@ -20,6 +20,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +40,7 @@ public class ServerHttpHandler implements HttpHandler {
 
 	private static final Logger logger = LoggerFactory.getLogger(ServerHttpHandler.class);
 	
-	private static final int MAX_METRICS_READ = 10000;
+	private static final int MAX_METRICS_READ = 100000;
 
 	/*
 	 * (non-Javadoc)
@@ -52,25 +53,28 @@ public class ServerHttpHandler implements HttpHandler {
 	public void handle(HttpExchange xchg) throws IOException {
 		ObjectInputStream ois = new ObjectInputStream(xchg.getRequestBody());
 		Object o = null;
+		ArrayList<Metrics> buffer = new ArrayList<Metrics>(10000);
 		try {
 			int count = 0;
 			while (true) {
-				if (count == MAX_METRICS_READ) {
+				if (count >= MAX_METRICS_READ) {
 					logger.info("max object read of " + MAX_METRICS_READ + " was reached, closing connection");
 					break;
 				}
 				try {
 					o = ois.readObject();
-					count++;
 				} catch (EOFException e) {
 					logger.debug("no more data to read, closing connection ...");
 					break;
 				}
 				if (o instanceof Metrics) {
-					logger.info(o.toString());
-					StorageWriter.addMeasurement((Metrics) o);
+					buffer.add((Metrics) o);
+					count++;
+					if (logger.isDebugEnabled())
+						logger.debug(o.toString());
 				}
 			}
+			logger.info("read {} measurements from http stream", count);
 		} catch (ClassNotFoundException e) {
 			logger.error("class not found", e);
 			throw new RuntimeException("class not found", e);
@@ -79,6 +83,7 @@ public class ServerHttpHandler implements HttpHandler {
 		OutputStream os = xchg.getResponseBody();
 		os.write("SUCCESS".getBytes());
 		os.close();
+		StorageWriter.addMeasurements(buffer);
 	}
 
 }
