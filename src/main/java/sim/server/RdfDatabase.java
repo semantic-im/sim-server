@@ -207,8 +207,10 @@ public class RdfDatabase implements MetricsVisitor {
 			StringWriter out = new StringWriter(100 * 1024 * 1024);
 			this.model.writeTo(out, Syntax.Turtle);
 			this.model.close();
+			String data = out.toString();
+			logger.debug("serialized data size is {} bytes", data.length());
 			//  flush the  buffer to the rdf db as a stream (no local parsing)
-			StringReader in = new StringReader(out.toString());
+			StringReader in = new StringReader(data);
 			HTTPRepository repo = new HTTPRepository("http://" + Main.storage_server_domain + ":" + Main.storage_server_port + "/openrdf-sesame", Main.storage_repository_id);
 			repo.initialize();
 			RepositoryConnection con = repo.getConnection();
