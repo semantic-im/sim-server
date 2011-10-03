@@ -74,7 +74,7 @@ public class StorageWriter {
 	private static class StorageComunicator extends Thread {
 		private static final Logger logger = LoggerFactory.getLogger(StorageComunicator.class);
 		private static final long COLLECT_INTERVAL = 5000;
-		private static final int MAX_METRICS_WRITE = 100;
+		private static final int MAX_METRICS_WRITE = 1000;
 
 		private RdfDatabase rdfWriter = new RdfDatabase();
 		private RrdDatabase rrdWriter = new RrdDatabase();

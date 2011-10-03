@@ -3,6 +3,11 @@
  */
 package sim.server;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,16 +16,20 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import org.ontoware.rdf2go.RDF2Go;
 import org.ontoware.rdf2go.model.Model;
 import org.ontoware.rdf2go.model.QueryResultTable;
 import org.ontoware.rdf2go.model.Statement;
+import org.ontoware.rdf2go.model.Syntax;
 import org.ontoware.rdf2go.model.node.DatatypeLiteral;
 import org.ontoware.rdf2go.model.node.Node;
 import org.ontoware.rdf2go.model.node.PlainLiteral;
 import org.ontoware.rdf2go.model.node.URI;
 import org.ontoware.rdf2go.util.RDFTool;
 import org.openrdf.rdf2go.RepositoryModel;
+import org.openrdf.repository.RepositoryConnection;
 import org.openrdf.repository.http.HTTPRepository;
+import org.openrdf.rio.RDFFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -113,7 +122,8 @@ public class RdfDatabase implements MetricsVisitor {
 		numberOfTriples = 0;
 		time = System.currentTimeMillis();
 		
-		this.model = new RepositoryModel(new HTTPRepository("http://" + Main.storage_server_domain + ":" + Main.storage_server_port + "/openrdf-sesame", Main.storage_repository_id));
+		// create in memory model
+		this.model = RDF2Go.getModelFactory().createModel();
 		this.model.open();
 		this.model.setAutocommit(false);
 		
@@ -191,17 +201,33 @@ public class RdfDatabase implements MetricsVisitor {
 	}
 	
 	public void close() {
-		this.model.commit();
-		this.model.close();
-		double delta = (double)(System.currentTimeMillis() - time) / 1000.00;
-		double speed;
-		if (delta > 0)
-			speed = numberOfTriples / delta;
-		else
-			speed = numberOfTriples;
-		logger.info("number of triples: {} ; speed: {} triples/second", numberOfTriples, speed);
-		numberOfTriples = 0;
-		time = System.currentTimeMillis();
+		try {
+			// write the triples to a string writer buffer
+			this.model.commit();
+			StringWriter out = new StringWriter(100 * 1024 * 1024);
+			this.model.writeTo(out, Syntax.Turtle);
+			this.model.close();
+			//  flush the  buffer to the rdf db as a stream (no local parsing)
+			StringReader in = new StringReader(out.toString());
+			HTTPRepository repo = new HTTPRepository("http://" + Main.storage_server_domain + ":" + Main.storage_server_port + "/openrdf-sesame", Main.storage_repository_id);
+			repo.initialize();
+			RepositoryConnection con = repo.getConnection();
+			con.add(in, "", RDFFormat.TURTLE);
+			con.close();
+			repo.shutDown();
+			// calculate and log speed info
+			double delta = (double)(System.currentTimeMillis() - time) / 1000.00;
+			double speed;
+			if (delta > 0)
+				speed = numberOfTriples / delta;
+			else
+				speed = numberOfTriples;
+			logger.info("number of triples: {} ; speed: {} triples/second", numberOfTriples, speed);
+			numberOfTriples = 0;
+			time = System.currentTimeMillis();
+		} catch (Exception e) {
+			logger.error("error when closing rdf db", e);
+		}
 	}
 
 	private PlainLiteral getStringTypeURI(String value) {
